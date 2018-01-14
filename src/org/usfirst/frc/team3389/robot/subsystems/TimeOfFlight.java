@@ -43,6 +43,7 @@ public class TimeOfFlight extends Subsystem {
 
 		// sets mm to distance in mm
 		if (checksum == buffer[I2C_BUF_SIZE - 1]) {
+			//magic numbers
 			mm = buffer[3] << 8 + buffer[4];
 		}
 

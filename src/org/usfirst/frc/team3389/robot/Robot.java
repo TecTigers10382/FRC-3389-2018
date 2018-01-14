@@ -8,7 +8,6 @@
 package org.usfirst.frc.team3389.robot;
 
 import org.usfirst.frc.team3389.robot.commands.ExampleCommand;
-import org.usfirst.frc.team3389.robot.subsystems.ExampleSubsystem;
 import org.usfirst.frc.team3389.robot.subsystems.TimeOfFlight;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -25,8 +24,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-	public static final ExampleSubsystem kExampleSubsystem = new ExampleSubsystem();
+	
+	//Initialize all subsystems
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
+	
 	public static OI m_oi;
 
 	Command m_autonomousCommand;
@@ -112,6 +113,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		//Display on SmartDashboard
 		SmartDashboard.putNumber("Distance", timeOfFlight.getDistance());
 		Scheduler.getInstance().run();
 	}

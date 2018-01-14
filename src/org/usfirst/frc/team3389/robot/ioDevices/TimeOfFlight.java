@@ -13,7 +13,11 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class TimeOfFlight extends Subsystem {
 
-	public final byte TOF_ADDR = 0x30, I2C_BUF_SIZE = 6;
+	// Address of TOF, default is 30
+	public final byte TOF_ADDR = 0x30;
+
+	// Buffer size of how much data is received
+	public final int I2C_BUF_SIZE = 6;
 
 	I2C timeOfFlight;
 
@@ -35,15 +39,16 @@ public class TimeOfFlight extends Subsystem {
 		byte[] buffer = new byte[I2C_BUF_SIZE];
 		timeOfFlight.readOnly(buffer, I2C_BUF_SIZE);
 
-		// sum
 		int checksum = 0;
+		// calculates checksum by adding together all values. the first byte is garbage,
+		// and the last is the checksum.
 		for (int i = 1; i < I2C_BUF_SIZE - 1; i++) {
 			checksum += buffer[i];
 		}
 
-		// sets mm to distance in mm
+		// sets mm to distance in mm after making sure checksum checks out.
 		if (checksum == buffer[I2C_BUF_SIZE - 1]) {
-			//magic numbers
+			// magic numbers
 			mm = buffer[3] << 8 + buffer[4];
 		}
 

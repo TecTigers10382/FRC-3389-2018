@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import org.usfirst.frc.team3389.robot.Robot;
 
 /**
- * An example command.  You can replace me with your own command.
+ * An example command. You can replace me with your own command.
  */
 public class ExampleCommand extends Command {
 	public ExampleCommand() {

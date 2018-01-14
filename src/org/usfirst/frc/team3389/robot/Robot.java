@@ -8,7 +8,7 @@
 package org.usfirst.frc.team3389.robot;
 
 import org.usfirst.frc.team3389.robot.commands.ExampleCommand;
-import org.usfirst.frc.team3389.robot.subsystems.TimeOfFlight;
+import org.usfirst.frc.team3389.robot.ioDevices.TimeOfFlight;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;

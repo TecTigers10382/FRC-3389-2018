@@ -11,3 +11,4 @@ sysProps.xml
 *.dSYM/
 out/
 *.pyc
+.classpath

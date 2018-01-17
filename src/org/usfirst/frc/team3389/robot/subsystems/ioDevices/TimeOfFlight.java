@@ -49,6 +49,10 @@ public class TimeOfFlight extends Subsystem {
 
 		// doesn't let mm go over
 		if (mm > 1200) {
+			// todo XYZZY
+			// if you return 1200 then the caller will not be able to distinguish 
+			// a real value of 1200 vs the sensor is beyond its limit
+			// would throwing an error (or returning -1) be a better option?
 			mm = 1200;
 		}
 

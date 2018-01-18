@@ -5,6 +5,10 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
+// todo XYZZY - you may find it easier to use the VL53L0X code from another team
+// eg. https://github.com/FRC-Team-Vern/VL53L0X_Example/blob/master/src/org/usfirst/frc/team5461/robot/sensors/VL53L0X.java
+
+
 package org.usfirst.frc.team3389.robot.subsystems.ioDevices;
 
 import edu.wpi.first.wpilibj.I2C;
@@ -49,11 +53,7 @@ public class TimeOfFlight extends Subsystem {
 
 		// doesn't let mm go over
 		if (mm > 1200) {
-			// todo XYZZY
-			// if you return 1200 then the caller will not be able to distinguish 
-			// a real value of 1200 vs the sensor is beyond its limit
-			// would throwing an error (or returning -1) be a better option?
-			// yeah probably
+			// if we exceed the high resolution distance, indicate an out of range condition
 			mm = -1;
 		}
 

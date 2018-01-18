@@ -53,7 +53,8 @@ public class TimeOfFlight extends Subsystem {
 			// if you return 1200 then the caller will not be able to distinguish 
 			// a real value of 1200 vs the sensor is beyond its limit
 			// would throwing an error (or returning -1) be a better option?
-			mm = 1200;
+			// yeah probably
+			mm = -1;
 		}
 
 		return mm;

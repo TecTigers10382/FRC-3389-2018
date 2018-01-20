@@ -16,8 +16,7 @@ import org.usfirst.frc.team3389.robot.commands.ExampleCommand;
 import org.usfirst.frc.team3389.robot.subsystems.ExampleSubsystem;
 
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.TimeOfFlight;
-
-import org.usfirst.frc.team3389.robot.subsystems.Logger;
+import org.usfirst.frc.team3389.robot.utils.Logger;
 
 
 // TODO learn Command based programming - https://wpilib.screenstepslive.com/s/currentCS/m/java/c/88893

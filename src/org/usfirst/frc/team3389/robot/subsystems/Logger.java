@@ -21,10 +21,6 @@ import java.io.PrintWriter;
  */
 
 public class Logger {
-	/**
-	 * Log message to stderr along with the caller class and method name.
-	 * @param msg message to log
-	 */
 
 	public final static int NONE = 0;
 	public final static int SEVERE = 1;

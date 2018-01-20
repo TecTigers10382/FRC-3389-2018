@@ -39,6 +39,11 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
+		// XYZZY - in Eclipse, use Windows -> Show View -> Other -> Tasks 
+		//         this will find all TODO tasks embedded in the code
+		// TODO - initialize logging here; for now, also set logging level here (https://docs.oracle.com/javase/7/docs/api/java/util/logging/Level.html)
+		// TODO log using log.level FINE to log entry and exit of all methods
+
 		m_oi = new OI();
 		m_chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());

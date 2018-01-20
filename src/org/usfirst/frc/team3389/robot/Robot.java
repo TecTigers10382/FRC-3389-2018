@@ -9,6 +9,7 @@ package org.usfirst.frc.team3389.robot;
 
 import org.usfirst.frc.team3389.robot.commands.ExampleCommand;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.TimeOfFlight;
+import org.usfirst.frc.team3389.robot.subsystems.Logger;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -27,7 +28,7 @@ public class Robot extends TimedRobot {
 	
 	//Initialize all subsystems
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
-	
+	public static final Logger robotLogger = new Logger(Logger.DEBUG, true);
 	public static OI m_oi;
 
 	Command m_autonomousCommand;
@@ -39,15 +40,14 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		// XYZZY - in Eclipse, use Windows -> Show View -> Other -> Tasks 
-		//         this will find all TODO tasks embedded in the code
-		// TODO - initialize logging here; for now, also set logging level here (https://docs.oracle.com/javase/7/docs/api/java/util/logging/Level.html)
-		// TODO log using log.level FINE to log entry and exit of all methods
+		robotLogger.log(Logger.DEBUG, this, "enter");
 
 		m_oi = new OI();
 		m_chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", m_chooser);
+
+		robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
 	/**
@@ -128,5 +128,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void testPeriodic() {
+		robotLogger.log(Logger.DEBUG, this, "enter");
+		robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 }

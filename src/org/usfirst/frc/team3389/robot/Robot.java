@@ -7,18 +7,20 @@
 
 package org.usfirst.frc.team3389.robot;
 
-import org.usfirst.frc.team3389.robot.commands.ExampleCommand;
-import org.usfirst.frc.team3389.robot.subsystems.ioDevices.TimeOfFlight;
-
-import org.usfirst.frc.team3389.robot.subsystems.Logger;
-
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.usfirst.frc.team3389.robot.commands.ExampleCommand;
+import org.usfirst.frc.team3389.robot.subsystems.ExampleSubsystem;
 
-// TODO consider switching to Command based programming - https://wpilib.screenstepslive.com/s/currentCS/m/java/c/88893
+import org.usfirst.frc.team3389.robot.subsystems.ioDevices.TimeOfFlight;
+
+import org.usfirst.frc.team3389.robot.subsystems.Logger;
+
+
+// TODO learn Command based programming - https://wpilib.screenstepslive.com/s/currentCS/m/java/c/88893
 
 /**
  * This class is expected by the Java Virtual Machine on the roboRIO and is run automatically.
@@ -32,8 +34,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
 	
 	//Initialize all subsystems
-	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
 	public static final Logger robotLogger = new Logger(Logger.INFO);
+	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
+
+	public static final ExampleSubsystem kExampleSubsystem = new ExampleSubsystem();
 	public static OI m_oi;
 
 	Command m_autonomousCommand;

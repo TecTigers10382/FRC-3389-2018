@@ -13,6 +13,7 @@ import org.usfirst.frc.team3389.robot.subsystems.ExampleSubsystem;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.TimeOfFlight;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -101,7 +102,17 @@ public class Robot extends TimedRobot {
 
 		m_autonomousCommand = m_chooser.getSelected();
 		robotLogger.log(Logger.INFO, this, "autonomous mode = " + m_chooser.getName() + "::" + m_autonomousCommand.getName());
-
+		
+		//This pulls the FMS game data
+		String gameData;
+		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		if(gameData.charAt(0) == 'L')
+		{
+			//Put left auto code here
+		} else {
+			//Put right auto code here
+		}
+		robotLogger.log(Logger.INFO, this, "The field configuration is "+gameData);
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
 		 * switch(autoSelected) { case "My Auto": autonomousCommand = new

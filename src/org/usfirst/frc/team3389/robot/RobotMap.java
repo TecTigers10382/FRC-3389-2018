@@ -17,8 +17,8 @@ public class RobotMap {
 	public final static int
 		DRIVE_LEFTFRONT = 0,
 		DRIVE_LEFTBACK = 1,
-		DRIVE_RIGHTFRONT = 2,
-		DRIVE_RIGHTBACK = 3;
+		DRIVE_RIGHTFRONT = 3,
+		DRIVE_RIGHTBACK = 2;
 	
 	
 	// For example to map the left and right motors, you could define the

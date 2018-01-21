@@ -102,7 +102,8 @@ public class Robot extends TimedRobot {
 
 		m_autonomousCommand = m_chooser.getSelected();
 		robotLogger.log(Logger.INFO, this, "autonomous mode = " + m_chooser.getName() + "::" + m_autonomousCommand.getName());
-
+		
+		//This pulls the FMS game data
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		if(gameData.charAt(0) == 'L')
@@ -111,7 +112,7 @@ public class Robot extends TimedRobot {
 		} else {
 			//Put right auto code here
 		}
-		robotLogger.log(Logger.INFO, this, gameData);
+		robotLogger.log(Logger.INFO, this, "The field configuration is "+gameData);
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
 		 * switch(autoSelected) { case "My Auto": autonomousCommand = new

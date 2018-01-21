@@ -1,4 +1,4 @@
-s/*----------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------*/
 /* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
@@ -15,7 +15,7 @@ public class Drive extends Command {
 	public Drive() {
 		// Use requires() here to declare subsystem dependencies
 		// requires(Robot.kExampleSubsystem);
-		requires(Robot.driveTrain);
+		requires(Robot.DriveTrain);
 	}
 
 	// Called just before this Command runs the first time
@@ -26,6 +26,8 @@ public class Drive extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
+		Robot.DriveTrain.TeleopDrive(Robot.m_oi.getleftStickJoystick(),Robot.m_oi.getrightStickJoystick());
+				
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

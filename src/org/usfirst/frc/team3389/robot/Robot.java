@@ -36,7 +36,7 @@ public class Robot extends TimedRobot {
 	//Initialize all subsystems
 	public static final Logger robotLogger = new Logger(Logger.INFO);
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
-	public static final DriveTrain driveTrain = new DriveTrain();
+	public static final DriveTrain DriveTrain = new DriveTrain();
 
 	public static final ExampleSubsystem kExampleSubsystem = new ExampleSubsystem();
 	public static OI m_oi;

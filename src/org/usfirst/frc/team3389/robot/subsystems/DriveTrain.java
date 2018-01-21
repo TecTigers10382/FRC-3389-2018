@@ -28,10 +28,10 @@ public class DriveTrain extends Subsystem {
 	}
 	
 	private void rawDrive(double leftPower, double rightPower){
-		leftFront.set(ControlMode.Follower, leftPower);
-		leftBack.set(ControlMode.Follower, leftPower);
-		rightFront.set(ControlMode.Follower, rightPower);
-		rightBack.set(ControlMode.Follower, rightPower);
+		leftFront.set(ControlMode.Current, leftPower);
+		leftBack.set(ControlMode.Current, leftPower);
+		rightFront.set(ControlMode.Current, rightPower);
+		rightBack.set(ControlMode.Current, rightPower);
 	}
 	
 	public void tankDrive(double left,double right){

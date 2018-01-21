@@ -1,14 +1,16 @@
 package org.usfirst.frc.team3389.robot.subsystems;
 
-import org.usfirst.frc.team3389.robot.RobotMap;
 import org.usfirst.frc.team3389.robot.commands.Drive;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
+@SuppressWarnings("deprecation")
 public class DriveTrain extends Subsystem {
-	private RobotDrive chassis = new RobotDrive(RobotMap.Drive_left, RobotMap.Drive_right);
+	
+	
+	private DifferentialDrive chassis = new DifferentialDrive(null, null);
 
 	@Override
 	protected void initDefaultCommand() {
@@ -21,7 +23,7 @@ public class DriveTrain extends Subsystem {
 	}
 	
 	public void Stop(){
-		chassis.drive(0,0);
+		chassis.tankDrive(0,0);
 	}
 	
 }

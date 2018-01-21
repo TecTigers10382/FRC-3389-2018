@@ -35,9 +35,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
 	
 	//Initialize all subsystems
-	public static final Logger robotLogger = new Logger(Logger.INFO);
+	public static final Logger robotLogger = new Logger(Logger.DEBUG);
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
-	public static final DriveTrain DriveTrain = new DriveTrain();
+	public static final DriveTrain driveTrain = new DriveTrain();
 
 	public static final ExampleSubsystem kExampleSubsystem = new ExampleSubsystem();
 	public static OI m_oi;
@@ -177,7 +177,10 @@ public class Robot extends TimedRobot {
 	@Override
 	public void testPeriodic() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
-
+		
+		driveTrain.tankDrive(0.5,0.5);
+		
+		
 		// any code goes between the 'enter' and the 'exit' log messages
 
 		robotLogger.log(Logger.DEBUG, this, "exit");

@@ -20,7 +20,7 @@ public class Drive extends Command {
 	public Drive() {
 		// Use requires() here to declare subsystem dependencies
 		// requires(Robot.kExampleSubsystem);
-		requires(Robot.DriveTrain);
+		requires(Robot.driveTrain);
 	}
 
 	// Called just before this Command runs the first time
@@ -33,8 +33,15 @@ public class Drive extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		Robot.DriveTrain.tankDrive(driveStick.getRawAxis(1), driveStick.getRawAxis(5));
-				
+		double left = -driveStick.getRawAxis(1);
+		double right = -driveStick.getRawAxis(5);
+		
+		Robot.driveTrain.tankDrive(left, right);
+		
+		if(Math.abs(left) < .1) 
+			left = 0;
+		if(Math.abs(right) < .1) 
+			left = 0;
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

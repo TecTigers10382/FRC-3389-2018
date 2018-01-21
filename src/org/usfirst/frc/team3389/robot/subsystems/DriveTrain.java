@@ -10,9 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-@SuppressWarnings("deprecation")
 public class DriveTrain extends Subsystem {
-	
 	
 	TalonSRX leftFront;
 	TalonSRX leftBack;
@@ -27,6 +25,11 @@ public class DriveTrain extends Subsystem {
 		rightFront = new TalonSRX(RobotMap.DRIVE_RIGHTFRONT);
 		rightBack = new TalonSRX(RobotMap.DRIVE_RIGHTBACK);	
 		
+		leftFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
+		leftBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
+		rightFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
+		rightBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
+		
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 	@Override
@@ -39,14 +42,14 @@ public class DriveTrain extends Subsystem {
 	}
 	
 	private void rawDrive(double leftPower, double rightPower){
-		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter:" + leftPower+", "+rightPower);
+			
+		leftFront.set(ControlMode.PercentOutput, leftPower);
+		leftBack.set(ControlMode.PercentOutput, leftPower);
+		rightFront.set(ControlMode.PercentOutput, rightPower);
+		rightBack.set(ControlMode.PercentOutput, rightPower);
 		
-		leftFront.set(ControlMode.Current, leftPower);
-		leftBack.set(ControlMode.Current, leftPower);
-		rightFront.set(ControlMode.Current, rightPower);
-		rightBack.set(ControlMode.Current, rightPower);
-		
-		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit"+leftFront.getMotorOutputPercent());
 	}
 	
 	public void tankDrive(double left,double right){

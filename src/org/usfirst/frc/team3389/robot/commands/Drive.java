@@ -9,9 +9,14 @@ package org.usfirst.frc.team3389.robot.commands;
 
 import org.usfirst.frc.team3389.robot.Robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class Drive extends Command {
+	
+	Joystick driveStick;
+	
+	
 	public Drive() {
 		// Use requires() here to declare subsystem dependencies
 		// requires(Robot.kExampleSubsystem);
@@ -21,12 +26,14 @@ public class Drive extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
+		driveStick = Robot.m_oi.getLeftJoystick();
+		
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		Robot.DriveTrain.TeleopDrive(Robot.m_oi.getleftStickJoystick(),Robot.m_oi.getrightStickJoystick());
+		Robot.DriveTrain.TeleopDrive(driveStick.getRawAxis(1), driveStick.getRawAxis(5));
 				
 	}
 

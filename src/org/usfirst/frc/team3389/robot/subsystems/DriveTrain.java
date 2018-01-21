@@ -18,8 +18,8 @@ public class DriveTrain extends Subsystem {
 		setDefaultCommand(new Drive());
 	}
 	
-	public void TeleopDrive(Joystick leftStick,Joystick rightStick){
-		chassis.tankDrive(leftStick,rightStick);
+	public void TeleopDrive(double left,double right){
+		chassis.tankDrive(left,right);
 	}
 	
 	public void Stop(){

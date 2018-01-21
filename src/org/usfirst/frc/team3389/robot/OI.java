@@ -21,11 +21,11 @@ public class OI {
 		
 	}
 	
-	public Joystick getleftStickJoystick(){
+	public Joystick getLeftJoystick(){
 		return leftStick;
 	}
 	
-	public Joystick getrightStickJoystick(){
+	public Joystick getrightJoystick(){
 		return rightStick;
 	}
 	

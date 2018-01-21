@@ -31,6 +31,9 @@ public class DriveTrain extends Subsystem {
 		rightBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
+		//Outputs Talon debug info
+		Debug();
+		
 	}
 	@Override
 	protected void initDefaultCommand() {
@@ -65,6 +68,33 @@ public class DriveTrain extends Subsystem {
 		
 		rawDrive(0,0);
 		
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
+	}
+	private void Debug() {
+		Robot.robotLogger.log(Logger.DEBUG, this, "TALON DEBUG\n==================================");
+		Robot.robotLogger.log(Logger.DEBUG, this, "Output Current");
+		Robot.robotLogger.log(Logger.DEBUG, this, "leftFront : "+leftFront.getOutputCurrent());
+		Robot.robotLogger.log(Logger.DEBUG, this, "rightFront: "+rightFront.getOutputCurrent());
+		Robot.robotLogger.log(Logger.DEBUG, this, "leftBack  : "+leftBack.getOutputCurrent());
+		Robot.robotLogger.log(Logger.DEBUG, this, "rightBack : "+rightBack.getOutputCurrent());
+		
+		Robot.robotLogger.log(Logger.DEBUG, this, "Output Voltage");
+		Robot.robotLogger.log(Logger.DEBUG, this, "leftFront : "+leftFront.getMotorOutputVoltage());
+		Robot.robotLogger.log(Logger.DEBUG, this, "rightFront: "+rightFront.getMotorOutputVoltage());
+		Robot.robotLogger.log(Logger.DEBUG, this, "leftBack  : "+leftBack.getMotorOutputVoltage());
+		Robot.robotLogger.log(Logger.DEBUG, this, "rightBack : "+rightBack.getMotorOutputVoltage());
+		
+		Robot.robotLogger.log(Logger.DEBUG, this, "Bus Voltage");
+		Robot.robotLogger.log(Logger.DEBUG, this, "leftFront : "+leftFront.getBusVoltage());
+		Robot.robotLogger.log(Logger.DEBUG, this, "rightFront: "+rightFront.getBusVoltage());
+		Robot.robotLogger.log(Logger.DEBUG, this, "leftBack  : "+leftBack.getBusVoltage());
+		Robot.robotLogger.log(Logger.DEBUG, this, "rightBack : "+rightBack.getBusVoltage());
+		
+		Robot.robotLogger.log(Logger.DEBUG, this, "Output Percent");
+		Robot.robotLogger.log(Logger.DEBUG, this, "leftFront : "+leftFront.getMotorOutputPercent());
+		Robot.robotLogger.log(Logger.DEBUG, this, "rightFront: "+rightFront.getMotorOutputPercent());
+		Robot.robotLogger.log(Logger.DEBUG, this, "leftBack  : "+leftBack.getMotorOutputPercent());
+		Robot.robotLogger.log(Logger.DEBUG, this, "rightBack : "+rightBack.getMotorOutputPercent());
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 	

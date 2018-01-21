@@ -33,7 +33,7 @@ public class Drive extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		Robot.DriveTrain.TeleopDrive(driveStick.getRawAxis(1), driveStick.getRawAxis(5));
+		Robot.DriveTrain.tankDrive(driveStick.getRawAxis(1), driveStick.getRawAxis(5));
 				
 	}
 

@@ -1,29 +1,45 @@
 package org.usfirst.frc.team3389.robot.subsystems;
 
+import org.usfirst.frc.team3389.robot.RobotMap;
 import org.usfirst.frc.team3389.robot.commands.Drive;
 
-import edu.wpi.first.wpilibj.Joystick;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 @SuppressWarnings("deprecation")
 public class DriveTrain extends Subsystem {
+	TalonSRX leftFront;
+	TalonSRX leftBack;
+	TalonSRX rightFront;
+	TalonSRX rightBack;	
 	
-	
-	private DifferentialDrive chassis = new DifferentialDrive(null, null);
-
+	public DriveTrain() {
+		leftFront = new TalonSRX(RobotMap.DRIVE_LEFTFRONT);
+		leftBack = new TalonSRX(RobotMap.DRIVE_LEFTBACK);
+		rightFront = new TalonSRX(RobotMap.DRIVE_RIGHTFRONT);
+		rightBack = new TalonSRX(RobotMap.DRIVE_RIGHTBACK);	
+	}
 	@Override
 	protected void initDefaultCommand() {
 		// TODO Auto-generated method stub
 		setDefaultCommand(new Drive());
 	}
 	
-	public void TeleopDrive(double left,double right){
-		chassis.tankDrive(left,right);
+	private void rawDrive(double leftPower, double rightPower){
+		leftFront.set(ControlMode.Follower, leftPower);
+		leftBack.set(ControlMode.Follower, leftPower);
+		rightFront.set(ControlMode.Follower, rightPower);
+		rightBack.set(ControlMode.Follower, rightPower);
+	}
+	
+	public void tankDrive(double left,double right){
+		rawDrive(left,right);
 	}
 	
 	public void Stop(){
-		chassis.tankDrive(0,0);
+		rawDrive(0,0);
 	}
 	
 }

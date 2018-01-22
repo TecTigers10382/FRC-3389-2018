@@ -98,7 +98,7 @@ public class DriveTrain extends Subsystem {
 	/**
 	 * Stops all Talons.
 	 */
-	public void Stop() {
+	public void stop() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 
 		rawDrive(0, 0);

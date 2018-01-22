@@ -76,11 +76,12 @@ public class Drive extends Command {
 
 	/**
 	 * Stops drivetrain's motion if command is ended with isFinished
-	 * @see	org.usfirst.frc.team3389.robot.commands.Drive#isFinished()
+	 * 
+	 * @see org.usfirst.frc.team3389.robot.commands.Drive#isFinished()
 	 */
 	@Override
 	protected void end() {
-		Robot.driveTrain.Stop();
+		Robot.driveTrain.stop();
 	}
 
 	/**
@@ -88,6 +89,6 @@ public class Drive extends Command {
 	 */
 	@Override
 	protected void interrupted() {
-		Robot.driveTrain.Stop();
+		Robot.driveTrain.stop();
 	}
 }

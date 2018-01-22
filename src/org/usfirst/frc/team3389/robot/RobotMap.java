@@ -14,6 +14,10 @@ package org.usfirst.frc.team3389.robot;
  * floating around.
  */
 public class RobotMap {
+	
+	/**
+	 * CAN IDs of all Talon SRXs used for drive train
+	 */
 	public final static int
 		DRIVE_LEFTFRONT = 0,
 		DRIVE_LEFTBACK = 1,

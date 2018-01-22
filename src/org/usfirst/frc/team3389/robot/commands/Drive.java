@@ -12,52 +12,82 @@ import org.usfirst.frc.team3389.robot.Robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 
+/**
+ * Tele-Op command that continuously updates the DriveTrain with the values from
+ * the left JoyStick.
+ * 
+ * @author TEC Tigers
+ * @see org.usfirst.frc.team3389.robot.subsystems.DriveTrain
+ * 
+ */
 public class Drive extends Command {
-	
+
 	Joystick driveStick;
-	
-	
+
+	/**
+	 * Constructor gains control of the DriveTrain subsystem of the robot.
+	 * 
+	 * @see org.usfirst.frc.team3389.robot.subsystems.DriveTrain
+	 */
 	public Drive() {
 		// Use requires() here to declare subsystem dependencies
 		// requires(Robot.kExampleSubsystem);
 		requires(Robot.driveTrain);
 	}
 
-	// Called just before this Command runs the first time
+	/**
+	 * Grabs the joystick from the OI object of the robot before running the
+	 * command.
+	 * 
+	 * @see org.usfirst.frc.team3389.robot.OIs
+	 */
 	@Override
 	protected void initialize() {
 		driveStick = Robot.m_oi.getLeftJoystick();
-		
+
 	}
 
-	// Called repeatedly when this Command is scheduled to run
+	/**
+	 * As the command is run, updates the joystick values and controls the
+	 * DriveTrain with them.
+	 * 
+	 * @see org.usfirst.frc.team3389.robot.subsystems.DriveTrain
+	 */
 	@Override
 	protected void execute() {
 		double left = -driveStick.getRawAxis(1);
 		double right = -driveStick.getRawAxis(5);
-		
+
 		Robot.driveTrain.tankDrive(left, right);
-		
-		if(Math.abs(left) < .1) 
+
+		if (Math.abs(left) < .1)
 			left = 0;
-		if(Math.abs(right) < .1) 
+		if (Math.abs(right) < .1)
 			left = 0;
 	}
 
-	// Make this return true when this Command no longer needs to run execute()
+	/**
+	 * Never allows Drive command to finish on its own terms.
+	 */
 	@Override
 	protected boolean isFinished() {
 		return false;
 	}
 
-	// Called once after isFinished returns true
+	/**
+	 * Stops drivetrain's motion if command is ended with isFinished
+	 * @see	org.usfirst.frc.team3389.robot.commands.Drive#isFinished()
+	 */
 	@Override
 	protected void end() {
+		Robot.driveTrain.Stop();
 	}
 
-	// Called when another command which requires one or more of the same
-	// subsystems is scheduled to run
+	/**
+	 * Stops drivetrain's motion if another command is ran that needs it.
+	 */
 	@Override
 	protected void interrupted() {
+		Robot.driveTrain.Stop();
 	}
 }

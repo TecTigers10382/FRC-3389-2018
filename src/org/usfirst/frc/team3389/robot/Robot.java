@@ -20,21 +20,21 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-
 // TODO learn Command based programming - https://wpilib.screenstepslive.com/s/currentCS/m/java/c/88893
 
 /**
- * This class is expected by the Java Virtual Machine on the roboRIO and is run automatically.
- * functions corresponding to each mode, as described in the TimedRobot class.
- * If you change the name of this class or the package after
+ * This class is expected by the Java Virtual Machine on the roboRIO and is run
+ * automatically. functions corresponding to each mode, as described in the
+ * TimedRobot class. If you change the name of this class or the package after
  * creating this project, you must also update the build.properties file in the
  * project.
+ * 
  * @see TimedRobot documentation
  */
 
 public class Robot extends TimedRobot {
-	
-	//Initialize all subsystems
+
+	// Initialize all subsystems
 	public static final Logger robotLogger = new Logger(Logger.DEBUG);
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
 	public static final DriveTrain driveTrain = new DriveTrain();
@@ -101,18 +101,27 @@ public class Robot extends TimedRobot {
 		robotLogger.log(Logger.DEBUG, this, "enter");
 
 		m_autonomousCommand = m_chooser.getSelected();
-		robotLogger.log(Logger.INFO, this, "autonomous mode = " + m_chooser.getName() + "::" + m_autonomousCommand.getName());
-		
-		//This pulls the FMS game data
+		robotLogger.log(Logger.INFO, this,
+				"autonomous mode = " + m_chooser.getName() + "::" + m_autonomousCommand.getName());
+
+		// This pulls the FMS game data
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
-		if(gameData.charAt(0) == 'L')
-		{
-			//Put left auto code here
+		if (gameData.charAt(0) == 'L') {
+			if(gameData.charAt(1)=='L') {
+				//
+			} else {
+				
+			}
 		} else {
-			//Put right auto code here
+			if(gameData.charAt(1)=='L') {
+				
+			} else {
+				
+			}
 		}
-		robotLogger.log(Logger.INFO, this, "The field configuration is "+gameData);
+		
+		robotLogger.log(Logger.INFO, this, "The field configuration is " + gameData);
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
 		 * switch(autoSelected) { case "My Auto": autonomousCommand = new
@@ -137,14 +146,14 @@ public class Robot extends TimedRobot {
 		robotLogger.log(Logger.DEBUG, this, "enter");
 
 		Scheduler.getInstance().run();
-		
+
 		robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
 	@Override
 	public void teleopInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
-		
+
 		// This makes sure that the autonomous stops running when
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
@@ -153,7 +162,7 @@ public class Robot extends TimedRobot {
 			robotLogger.log(Logger.INFO, this, "teleop cancels autonomous");
 			m_autonomousCommand.cancel();
 		}
-		
+
 		robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
@@ -163,11 +172,11 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
-		
-		//Display on SmartDashboard
+
+		// Display on SmartDashboard
 		SmartDashboard.putNumber("Distance", timeOfFlight.getDistance());
 		Scheduler.getInstance().run();
-		
+
 		robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
@@ -177,10 +186,9 @@ public class Robot extends TimedRobot {
 	@Override
 	public void testPeriodic() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
-		
-		driveTrain.tankDrive(0.5,0.5);
-		
-		
+
+		driveTrain.tankDrive(0.5, 0.5);
+
 		// any code goes between the 'enter' and the 'exit' log messages
 
 		robotLogger.log(Logger.DEBUG, this, "exit");

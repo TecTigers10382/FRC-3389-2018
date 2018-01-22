@@ -104,20 +104,24 @@ public class Robot extends TimedRobot {
 		robotLogger.log(Logger.INFO, this,
 				"autonomous mode = " + m_chooser.getName() + "::" + m_autonomousCommand.getName());
 
+		/* I would recommend instead of changing the auto command here, have the command have the conditionals
+		 * We will most likely need a Left, Center, and Right auto depending on robot placement
+		 * Having it be decided here will limit you to only one auto per situation.
+		 */
 		// This pulls the FMS game data
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		if (gameData.charAt(0) == 'L') {
 			if(gameData.charAt(1)=='L') {
-				//
+				//Put LL auto here
 			} else {
-				
+				//Put LR auto here
 			}
 		} else {
 			if(gameData.charAt(1)=='L') {
-				
+				//Put RL auto here
 			} else {
-				
+				//Put RR auto here
 			}
 		}
 		

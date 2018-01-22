@@ -48,7 +48,8 @@ public class DriveTrain extends Subsystem {
 	}
 
 	/**
-	 * Initializes the DriveTrain's default command.
+	 * Initializes the DriveTrain's default command to the Drive command.
+	 * @see	Drive Command
 	 */
 	@Override
 	protected void initDefaultCommand() {

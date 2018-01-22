@@ -27,7 +27,7 @@ public class TimeOfFlight extends Subsystem {
 	public void initDefaultCommand() {
 		// setDefaultCommand(new MySpecialCommand());
 	}
-	
+
 	/**
 	 * Constructor.
 	 */
@@ -37,7 +37,8 @@ public class TimeOfFlight extends Subsystem {
 
 	/**
 	 * Get's the distance in millimeters from the Time of Flight Sensor
-	 * @return	distance in millimeters; -1 if there is an error
+	 * 
+	 * @return distance in millimeters; -1 if there is an error
 	 */
 	public int getDistanceMillimeters() {
 		try {
@@ -45,7 +46,7 @@ public class TimeOfFlight extends Subsystem {
 		} catch (NACKException e) {
 			Robot.robotLogger.log(Logger.ERROR, this, "Could not read Time of Flight Sensor\n" + e.getStackTrace());
 		}
-		
+
 		return -1;
 	}
 

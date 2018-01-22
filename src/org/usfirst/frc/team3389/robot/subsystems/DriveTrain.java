@@ -49,7 +49,7 @@ public class DriveTrain extends Subsystem {
 
 	/**
 	 * Initializes the DriveTrain's default command to the Drive command.
-	 * @see	Drive Command
+	 * @see	org.usfirst.frc.team3389.robot.commands.Drive
 	 */
 	@Override
 	protected void initDefaultCommand() {

@@ -11,6 +11,7 @@ import org.usfirst.frc.team3389.robot.commands.ExampleCommand;
 import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team3389.robot.subsystems.ExampleSubsystem;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.TimeOfFlight;
+import org.usfirst.frc.team3389.robot.subsystems.ioDevices.VL53L0X.I2CUpdatableAddress.NACKException;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -104,27 +105,29 @@ public class Robot extends TimedRobot {
 		robotLogger.log(Logger.INFO, this,
 				"autonomous mode = " + m_chooser.getName() + "::" + m_autonomousCommand.getName());
 
-		/* I would recommend instead of changing the auto command here, have the command have the conditionals
-		 * We will most likely need a Left, Center, and Right auto depending on robot placement
-		 * Having it be decided here will limit you to only one auto per situation.
+		/*
+		 * I would recommend instead of changing the auto command here, have the command
+		 * have the conditionals We will most likely need a Left, Center, and Right auto
+		 * depending on robot placement Having it be decided here will limit you to only
+		 * one auto per situation.
 		 */
 		// This pulls the FMS game data
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		if (gameData.charAt(0) == 'L') {
-			if(gameData.charAt(1)=='L') {
-				//Put LL auto here
+			if (gameData.charAt(1) == 'L') {
+				// Put LL auto here
 			} else {
-				//Put LR auto here
+				// Put LR auto here
 			}
 		} else {
-			if(gameData.charAt(1)=='L') {
-				//Put RL auto here
+			if (gameData.charAt(1) == 'L') {
+				// Put RL auto here
 			} else {
-				//Put RR auto here
+				// Put RR auto here
 			}
 		}
-		
+
 		robotLogger.log(Logger.INFO, this, "The field configuration is " + gameData);
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
@@ -178,7 +181,8 @@ public class Robot extends TimedRobot {
 		robotLogger.log(Logger.DEBUG, this, "enter");
 
 		// Display on SmartDashboard
-		SmartDashboard.putNumber("Distance", timeOfFlight.getDistance());
+		SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());
+
 		Scheduler.getInstance().run();
 
 		robotLogger.log(Logger.DEBUG, this, "exit");

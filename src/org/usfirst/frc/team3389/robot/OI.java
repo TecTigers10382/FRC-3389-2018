@@ -21,10 +21,18 @@ public class OI {
 		
 	}
 	
+	/**
+	 * Let's other objects get values from the left joystick.
+	 * @return	Returns the leftStick object
+	 */
 	public Joystick getLeftJoystick(){
 		return leftStick;
 	}
 	
+	/**
+	 * Let's other objects get values from the right joystick.
+	 * @return	Returns the rightStick object
+	 */
 	public Joystick getrightJoystick(){
 		return rightStick;
 	}

@@ -8,6 +8,13 @@ import org.usfirst.frc.team3389.robot.utils.Logger;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
+/**
+ * Intake subsystem of robot. Intakes cubes using two rollers on springy things.
+ * Default command is IntakeStick
+ * 
+ * @author Tec Tigers
+ * @see org.usfirst.frc.team3389.robot.commands.IntakeStick
+ */
 public class Intake extends Subsystem {
 	Spark intakeLeft;
 	Spark intakeRight;

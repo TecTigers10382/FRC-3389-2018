@@ -6,6 +6,8 @@ import org.usfirst.frc.team3389.robot.commands.Drive;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.Faults;
+import com.ctre.phoenix.motorcontrol.StickyFaults;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -23,7 +25,15 @@ public class DriveTrain extends Subsystem {
 	TalonSRX leftBack;
 	TalonSRX rightFront;
 	TalonSRX rightBack;
-
+	
+	StickyFaults LFsFaults = new StickyFaults();
+	StickyFaults RFsFaults = new StickyFaults();
+	StickyFaults LBsFaults = new StickyFaults();
+	StickyFaults RBsFaults = new StickyFaults();
+	Faults LFFaults = new Faults();
+	Faults RFFaults = new Faults();
+	Faults LBFaults = new Faults();
+	Faults RBFaults = new Faults();
 	/**
 	 * Creates the Drive Train with 4 TalonSRX motor controllers over CAN.
 	 */
@@ -135,5 +145,22 @@ public class DriveTrain extends Subsystem {
 		Robot.robotLogger.log(Logger.DEBUG, this, "leftBack  : " + leftBack.getMotorOutputPercent());
 		Robot.robotLogger.log(Logger.DEBUG, this, "rightBack : " + rightBack.getMotorOutputPercent());
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
+
+		//Talon Faults
+		leftFront.getFaults(LFFaults);
+		rightFront.getFaults(RFFaults);
+		leftBack.getFaults(LBFaults);
+		rightBack.getFaults(RBFaults);
+		//Talon Stick Faults
+		leftFront.getStickyFaults(LFsFaults);
+		rightFront.getStickyFaults(RFsFaults);
+		leftBack.getStickyFaults(LBsFaults);
+		rightBack.getStickyFaults(RBsFaults);
+	}
+	private void clearStickyFaults() {
+		leftFront.clearStickyFaults(0);
+		rightFront.clearStickyFaults(0);
+		leftBack.clearStickyFaults(0);
+		rightBack.clearStickyFaults(0);
 	}
 }

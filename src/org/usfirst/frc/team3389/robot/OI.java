@@ -9,6 +9,7 @@ package org.usfirst.frc.team3389.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 
+
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj.Joystick;
 public class OI {
 	Joystick leftStick = new Joystick(0);
 	Joystick rightStick = new Joystick(1);
+	
 	
 	public OI(){
 		
@@ -33,7 +35,7 @@ public class OI {
 	 * Let's other objects get values from the right joystick.
 	 * @return	Returns the rightStick object
 	 */
-	public Joystick getrightJoystick(){
+	public Joystick getRightJoystick(){
 		return rightStick;
 	}
 	

@@ -22,7 +22,9 @@ public class RobotMap {
 		DRIVE_LEFTFRONT = 0,
 		DRIVE_LEFTBACK = 1,
 		DRIVE_RIGHTFRONT = 3,
-		DRIVE_RIGHTBACK = 2;
+		DRIVE_RIGHTBACK = 2,
+		INTAKE_LEFT=4,
+		INTAKE_RIGHT=5;
 	
 	
 	// For example to map the left and right motors, you could define the

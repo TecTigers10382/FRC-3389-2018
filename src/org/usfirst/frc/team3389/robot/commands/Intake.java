@@ -8,6 +8,7 @@
 package org.usfirst.frc.team3389.robot.commands;
 
 import org.usfirst.frc.team3389.robot.Robot;
+import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
@@ -32,7 +33,9 @@ public class Intake extends Command {
 	public Intake() {
 		// Use requires() here to declare subsystem dependencies
 		// requires(Robot.kExampleSubsystem);
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		requires(Robot.intake);
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
 	/**
@@ -43,7 +46,11 @@ public class Intake extends Command {
 	 */
 	@Override
 	protected void initialize() {
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
+
 		intakeStick = Robot.m_oi.getRightJoystick();
+
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 
 	}
 
@@ -55,12 +62,17 @@ public class Intake extends Command {
 	 */
 	@Override
 	protected void execute() {
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
+
 		double power = intakeStick.getRawAxis(1);
 
 		Robot.intake.driveBoth(power);
 
 		if (Math.abs(power) < .1)
 			power = 0;
+		
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
+
 	}
 
 	/**
@@ -78,7 +90,12 @@ public class Intake extends Command {
 	 */
 	@Override
 	protected void end() {
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
+
 		Robot.intake.stop();
+		
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
+
 	}
 
 	/**
@@ -86,6 +103,11 @@ public class Intake extends Command {
 	 */
 	@Override
 	protected void interrupted() {
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
+
 		Robot.intake.stop();
+		
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
+
 	}
 }

@@ -8,6 +8,7 @@
 package org.usfirst.frc.team3389.robot.commands;
 
 import org.usfirst.frc.team3389.robot.Robot;
+import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
@@ -43,8 +44,11 @@ public class Drive extends Command {
 	 */
 	@Override
 	protected void initialize() {
-		driveStick = Robot.m_oi.getLeftJoystick();
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 
+		driveStick = Robot.m_oi.getLeftJoystick();
+		
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
 	/**
@@ -55,15 +59,22 @@ public class Drive extends Command {
 	 */
 	@Override
 	protected void execute() {
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
+
 		double left = -driveStick.getRawAxis(1);
 		double right = -driveStick.getRawAxis(5);
 
-		Robot.driveTrain.tankDrive(left, right);
+
 
 		if (Math.abs(left) < .1)
 			left = 0;
 		if (Math.abs(right) < .1)
 			left = 0;
+		
+		Robot.driveTrain.tankDrive(left, right);
+		
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
+
 	}
 
 	/**
@@ -81,7 +92,11 @@ public class Drive extends Command {
 	 */
 	@Override
 	protected void end() {
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
+
 		Robot.driveTrain.stop();
+		
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
 	/**

@@ -25,7 +25,7 @@ public class DriveTrain extends Subsystem {
 	TalonSRX leftBack;
 	TalonSRX rightFront;
 	TalonSRX rightBack;
-	
+
 	StickyFaults LFsFaults = new StickyFaults();
 	StickyFaults RFsFaults = new StickyFaults();
 	StickyFaults LBsFaults = new StickyFaults();
@@ -34,6 +34,7 @@ public class DriveTrain extends Subsystem {
 	Faults RFFaults = new Faults();
 	Faults LBFaults = new Faults();
 	Faults RBFaults = new Faults();
+
 	/**
 	 * Creates the Drive Train with 4 TalonSRX motor controllers over CAN.
 	 */
@@ -59,7 +60,8 @@ public class DriveTrain extends Subsystem {
 
 	/**
 	 * Initializes the DriveTrain's default command to the Drive command.
-	 * @see	org.usfirst.frc.team3389.robot.commands.Drive
+	 * 
+	 * @see org.usfirst.frc.team3389.robot.commands.Drive
 	 */
 	@Override
 	protected void initDefaultCommand() {
@@ -146,17 +148,18 @@ public class DriveTrain extends Subsystem {
 		Robot.robotLogger.log(Logger.DEBUG, this, "rightBack : " + rightBack.getMotorOutputPercent());
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 
-		//Talon Faults
-		leftFront.getFaults(LFFaults);
-		rightFront.getFaults(RFFaults);
-		leftBack.getFaults(LBFaults);
-		rightBack.getFaults(RBFaults);
-		//Talon Stick Faults
-		leftFront.getStickyFaults(LFsFaults);
-		rightFront.getStickyFaults(RFsFaults);
-		leftBack.getStickyFaults(LBsFaults);
-		rightBack.getStickyFaults(RBsFaults);
+		// Talon Faults
+		Robot.robotLogger.log(Logger.DEBUG, this, leftFront.getFaults(LFFaults).toString());
+		Robot.robotLogger.log(Logger.DEBUG, this, rightFront.getFaults(RFFaults).toString());
+		Robot.robotLogger.log(Logger.DEBUG, this, leftBack.getFaults(LBFaults).toString());
+		Robot.robotLogger.log(Logger.DEBUG, this, rightBack.getFaults(RBFaults).toString());
+		// Talon Stick Faults
+		Robot.robotLogger.log(Logger.DEBUG, this, leftFront.getStickyFaults(LFsFaults).toString());
+		Robot.robotLogger.log(Logger.DEBUG, this, rightFront.getStickyFaults(RFsFaults).toString());
+		Robot.robotLogger.log(Logger.DEBUG, this, leftBack.getStickyFaults(LBsFaults).toString());
+		Robot.robotLogger.log(Logger.DEBUG, this, rightBack.getStickyFaults(RBsFaults).toString());
 	}
+
 	private void clearStickyFaults() {
 		leftFront.clearStickyFaults(0);
 		rightFront.clearStickyFaults(0);

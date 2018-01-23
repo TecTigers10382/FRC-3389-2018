@@ -25,6 +25,8 @@ public class DriveTrain extends Subsystem {
 	TalonSRX leftBack;
 	TalonSRX rightFront;
 	TalonSRX rightBack;
+	
+	//I still have to add some more code for this
 	StickyFaults sFaults = new StickyFaults();
 	Faults faults = new Faults();
 
@@ -150,5 +152,11 @@ public class DriveTrain extends Subsystem {
 		rightFront.getStickyFaults(sFaults);
 		leftBack.getStickyFaults(sFaults);
 		leftFront.getStickyFaults(sFaults);
+	}
+	private void clearStickyFaults() {
+		leftFront.clearStickyFaults(0);
+		rightFront.clearStickyFaults(0);
+		leftBack.clearStickyFaults(0);
+		rightBack.clearStickyFaults(0);
 	}
 }

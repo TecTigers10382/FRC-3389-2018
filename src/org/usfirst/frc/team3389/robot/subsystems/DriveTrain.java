@@ -6,6 +6,8 @@ import org.usfirst.frc.team3389.robot.commands.Drive;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.Faults;
+import com.ctre.phoenix.motorcontrol.StickyFaults;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -23,6 +25,8 @@ public class DriveTrain extends Subsystem {
 	TalonSRX leftBack;
 	TalonSRX rightFront;
 	TalonSRX rightBack;
+	StickyFaults sFaults = new StickyFaults();
+	Faults faults = new Faults();
 
 	/**
 	 * Creates the Drive Train with 4 TalonSRX motor controllers over CAN.
@@ -135,5 +139,16 @@ public class DriveTrain extends Subsystem {
 		Robot.robotLogger.log(Logger.DEBUG, this, "leftBack  : " + leftBack.getMotorOutputPercent());
 		Robot.robotLogger.log(Logger.DEBUG, this, "rightBack : " + rightBack.getMotorOutputPercent());
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
+
+		//Talon Faults
+		leftFront.getFaults(faults);
+		rightFront.getFaults(faults);
+		leftBack.getFaults(faults);
+		leftFront.getFaults(faults);
+		//Talon Stick Faults
+		leftFront.getStickyFaults(sFaults);
+		rightFront.getStickyFaults(sFaults);
+		leftBack.getStickyFaults(sFaults);
+		leftFront.getStickyFaults(sFaults);
 	}
 }

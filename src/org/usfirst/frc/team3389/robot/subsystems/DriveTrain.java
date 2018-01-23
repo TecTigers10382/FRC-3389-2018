@@ -26,10 +26,14 @@ public class DriveTrain extends Subsystem {
 	TalonSRX rightFront;
 	TalonSRX rightBack;
 	
-	//I still have to add some more code for this
-	StickyFaults sFaults = new StickyFaults();
-	Faults faults = new Faults();
-
+	StickyFaults LFsFaults = new StickyFaults();
+	StickyFaults RFsFaults = new StickyFaults();
+	StickyFaults LBsFaults = new StickyFaults();
+	StickyFaults RBsFaults = new StickyFaults();
+	Faults LFFaults = new Faults();
+	Faults RFFaults = new Faults();
+	Faults LBFaults = new Faults();
+	Faults RBFaults = new Faults();
 	/**
 	 * Creates the Drive Train with 4 TalonSRX motor controllers over CAN.
 	 */
@@ -143,15 +147,15 @@ public class DriveTrain extends Subsystem {
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 
 		//Talon Faults
-		leftFront.getFaults(faults);
-		rightFront.getFaults(faults);
-		leftBack.getFaults(faults);
-		leftFront.getFaults(faults);
+		leftFront.getFaults(LFFaults);
+		rightFront.getFaults(RFFaults);
+		leftBack.getFaults(LBFaults);
+		rightBack.getFaults(RBFaults);
 		//Talon Stick Faults
-		leftFront.getStickyFaults(sFaults);
-		rightFront.getStickyFaults(sFaults);
-		leftBack.getStickyFaults(sFaults);
-		leftFront.getStickyFaults(sFaults);
+		leftFront.getStickyFaults(LFsFaults);
+		rightFront.getStickyFaults(RFsFaults);
+		leftBack.getStickyFaults(LBsFaults);
+		rightBack.getStickyFaults(RBsFaults);
 	}
 	private void clearStickyFaults() {
 		leftFront.clearStickyFaults(0);

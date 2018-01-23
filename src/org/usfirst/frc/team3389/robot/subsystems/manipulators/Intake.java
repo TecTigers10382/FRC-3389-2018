@@ -2,7 +2,7 @@ package org.usfirst.frc.team3389.robot.subsystems.manipulators;
 
 import org.usfirst.frc.team3389.robot.Robot;
 import org.usfirst.frc.team3389.robot.RobotMap;
-import org.usfirst.frc.team3389.robot.commands.Drive;
+import org.usfirst.frc.team3389.robot.commands.IntakeStick;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import edu.wpi.first.wpilibj.Spark;
@@ -43,7 +43,7 @@ public class Intake extends Subsystem {
 	protected void initDefaultCommand() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 
-		setDefaultCommand(new org.usfirst.frc.team3389.robot.commands.Intake());
+		setDefaultCommand(new IntakeStick());
 		
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 

@@ -158,6 +158,8 @@ public class DriveTrain extends Subsystem {
 		Robot.robotLogger.log(Logger.DEBUG, this, rightFront.getStickyFaults(RFsFaults).toString());
 		Robot.robotLogger.log(Logger.DEBUG, this, leftBack.getStickyFaults(LBsFaults).toString());
 		Robot.robotLogger.log(Logger.DEBUG, this, rightBack.getStickyFaults(RBsFaults).toString());
+		
+		clearStickyFaults();
 	}
 
 	private void clearStickyFaults() {

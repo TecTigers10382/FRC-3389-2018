@@ -36,7 +36,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
 
 	// Initialize all subsystems
-	public static final Logger robotLogger = new Logger(Logger.DEBUG);
+	public static final Logger robotLogger = new Logger(Logger.INFO);
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
 	public static final DriveTrain driveTrain = new DriveTrain();
 	public static final Intake intake = new Intake();
@@ -54,7 +54,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
-
 		m_oi = new OI();
 		m_chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());
@@ -79,11 +78,11 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledPeriodic() {
-		robotLogger.log(Logger.DEBUG, this, "enter");
+		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "enter");
 
 		Scheduler.getInstance().run();
 
-		robotLogger.log(Logger.DEBUG, this, "exit");
+		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
 	/**
@@ -151,11 +150,11 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		robotLogger.log(Logger.DEBUG, this, "enter");
+		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "enter");
 
 		Scheduler.getInstance().run();
 
-		robotLogger.log(Logger.DEBUG, this, "exit");
+		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
 	@Override
@@ -179,14 +178,14 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		robotLogger.log(Logger.DEBUG, this, "enter");
+		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "enter");
 
 		// Display on SmartDashboard
 		SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());
 
 		Scheduler.getInstance().run();
 
-		robotLogger.log(Logger.DEBUG, this, "exit");
+		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
 	/**
@@ -194,12 +193,15 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void testPeriodic() {
-		robotLogger.log(Logger.DEBUG, this, "enter");
-
-		driveTrain.tankDrive(0.5, 0.5);
-
+		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "enter");
 		// any code goes between the 'enter' and the 'exit' log messages
 
-		robotLogger.log(Logger.DEBUG, this, "exit");
+		// quick test of drive train
+		// driveTrain.tankDrive(0.5, 0.5);
+
+		// quick test of time-of-flight sensor
+		//System.out.println("range distance = " + timeOfFlight.getDistanceMillimeters() + "mm");
+
+		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 }

@@ -12,6 +12,8 @@ package org.usfirst.frc.team3389.robot.subsystems.ioDevices.VL53L0X;
 import java.nio.ByteBuffer;
 
 import edu.wpi.first.wpilibj.hal.HALUtil;
+import org.usfirst.frc.team3389.robot.Robot;
+import org.usfirst.frc.team3389.robot.utils.Logger;
 
 /**
  * 
@@ -20,12 +22,12 @@ import edu.wpi.first.wpilibj.hal.HALUtil;
  */
 public class VL53L0X extends I2CUpdatableAddress {
 
-	private Port m_port = Port.kOnboard;
+	private Port m_port = Port.kMXP;
 	// Store address given when the class is initialized.
 
 	private static final int defaultAddress = 0x29;
 	// The value of the address above the default address.
-	private int deviceAddress;
+	private int deviceAddressOffset;
 	// private int _i2caddress;
 	private byte stop_variable;
 	private int measurement_timing_budget_us;
@@ -66,16 +68,18 @@ public class VL53L0X extends I2CUpdatableAddress {
 		}
 	}
 
-	public VL53L0X(int deviceAddress) {
-		super(Port.kOnboard, defaultAddress);
-		this.deviceAddress = deviceAddress;
+	public VL53L0X(int offset) {
+		super(Port.kMXP, defaultAddress);
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
+		this.deviceAddressOffset = offset;
 		this.did_timeout = false;
-
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
 	public final boolean init(boolean io_2v8) throws NACKException {
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		// Start by changing to new address. This is required after every power up.
-		setAddress(defaultAddress + deviceAddress);
+		setAddress(defaultAddress + deviceAddressOffset);
 		// sensor uses 1V8 mode for I/O by default; switch to 2V8 mode if necessary
 		if (io_2v8) {
 			write(VL53L0X_Constants.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV.value,
@@ -106,6 +110,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 		byte[] spad_count = new byte[1];
 		BooleanCarrier spad_type_is_aperture = new BooleanCarrier(false);
 		if (!getSpadInfo(spad_count, spad_type_is_aperture)) {
+			Robot.robotLogger.log(Logger.ERROR, this, "unable to get spad info");
 			return false;
 		}
 
@@ -252,6 +257,10 @@ public class VL53L0X extends I2CUpdatableAddress {
 
 		// -- VL53L0X_SetSequenceStepEnable() end
 
+		// improve accuracy slightly by not attempting to measure faster than 50ms
+		//if (measurement_timing_budget_us < 50000)
+		//	measurement_timing_budget_us = 50000;
+
 		// "Recalculate timing budget"
 		setMeasurementTimingBudget(measurement_timing_budget_us);
 
@@ -263,6 +272,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 
 		write(VL53L0X_Constants.SYSTEM_SEQUENCE_CONFIG.value, 0x01);
 		if (!performSingleRefCalibration((byte) 0x40)) {
+			Robot.robotLogger.log(Logger.ERROR, this, "failed vhv performance calibration");
 			return false;
 		}
 
@@ -272,6 +282,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 
 		write(VL53L0X_Constants.SYSTEM_SEQUENCE_CONFIG.value, 0x02);
 		if (!performSingleRefCalibration((byte) 0x00)) {
+			Robot.robotLogger.log(Logger.ERROR, this, "failed phase performance calibration");
 			return false;
 		}
 
@@ -282,6 +293,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 
 		// VL53L0X_PerformRefCalibration() end
 
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 		return true;
 	}
 
@@ -304,6 +316,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 		while ((read(VL53L0X_Constants.SYSRANGE_START.value).get() & 0x01) == 0x01) {
 			if (checkTimeoutExpired()) {
 				did_timeout = true;
+				Robot.robotLogger.log(Logger.WARNING, this, "timeout reading single range");
 				return 65535;
 			}
 		}
@@ -315,10 +328,12 @@ public class VL53L0X extends I2CUpdatableAddress {
 	// (readRangeSingleMillimeters() also calls this function after starting a
 	// single-shot range measurement)
 	public int readRangeContinuousMillimeters() throws NACKException {
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		startTimeout();
 		while ((read(VL53L0X_Constants.RESULT_INTERRUPT_STATUS.value).get() & 0x07) == 0) {
 			if (checkTimeoutExpired()) {
 				did_timeout = true;
+				Robot.robotLogger.log(Logger.INFO, this, "timeout reading continuous range");
 				return 65535;
 			}
 		}
@@ -332,10 +347,12 @@ public class VL53L0X extends I2CUpdatableAddress {
 
 		write(VL53L0X_Constants.SYSTEM_INTERRUPT_CLEAR.value, 0x01);
 		// byte_buffer_range.clear();
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 		return range;
 	}
 
 	public final int setAddress(int new_address) throws NACKException {
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		// NOTICE: CHANGING THE ADDRESS IS NOT STORED IN NON-VOLATILE MEMORY
 		// POWER CYCLING THE DEVICE REVERTS ADDRESS BACK TO 0x29
 		// Field field = I2C.class.getDeclaredField("m_deviceAddress");
@@ -343,11 +360,15 @@ public class VL53L0X extends I2CUpdatableAddress {
 		//
 		// int deviceAddress = (int) field.get(this);
 
+		Robot.robotLogger.log(Logger.DEBUG, this, "setting address to 0x" + Integer.toHexString(new_address));
+
 		if (m_deviceAddress == new_address) {
+			Robot.robotLogger.log(Logger.DEBUG, this, "exit - no address change required");
 			return m_deviceAddress;
 		}
 		// Device addresses cannot go higher than 127
 		if (new_address > 127) {
+			Robot.robotLogger.log(Logger.ERROR, this, "address out of range");
 			return m_deviceAddress;
 		}
 
@@ -355,13 +376,24 @@ public class VL53L0X extends I2CUpdatableAddress {
 		if (success) {
 			m_deviceAddress = new_address;
 		}
-		return getAddressFromDevice();
+		else
+			Robot.robotLogger.log(Logger.ERROR, this, "failed to change address");
+		
+		int val = getAddressFromDevice();
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
+		return val;
 	}
 
 	public final int getAddressFromDevice() {
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		ByteBuffer deviceAddress = ByteBuffer.allocateDirect(BYTE_SIZE.SINGLE.value);
 		read(VL53L0X_Constants.I2C_SLAVE_DEVICE_ADDRESS.value, BYTE_SIZE.SINGLE.value, deviceAddress);
-		return deviceAddress.get();
+
+		int val = deviceAddress.get();
+		Robot.robotLogger.log(Logger.DEBUG, this, "current address is 0x" + Integer.toHexString(val));
+
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
+		return val;
 	}
 
 	// Writing two bytes of data back-to-back is a special case of writeBulk
@@ -657,7 +689,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 
 	// Check if timeout is enabled (set to nonzero value) and has expired
 	private boolean checkTimeoutExpired() {
-		int now = (int) (HALUtil.getFPGATime() * 1000);
+		double now = (HALUtil.getFPGATime() * 1000);
 		return (io_timeout > 0 && (now - timeout_start_ms) > io_timeout);
 	}
 

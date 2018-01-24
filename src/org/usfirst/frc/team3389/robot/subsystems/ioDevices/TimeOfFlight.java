@@ -32,7 +32,15 @@ public class TimeOfFlight extends Subsystem {
 	 * Constructor.
 	 */
 	public TimeOfFlight() {
-		timeOfFlightSensor = new VL53L0X(1);
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
+		timeOfFlightSensor = new VL53L0X(0);
+		try {
+			timeOfFlightSensor.init(false);
+		} catch (NACKException e) {
+			// TODO Auto-generated catch block
+			Robot.robotLogger.log(Logger.ERROR, this, "failed to initialize VL53L0X sensor");
+		}
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
 	/**
@@ -41,13 +49,19 @@ public class TimeOfFlight extends Subsystem {
 	 * @return distance in millimeters; -1 if there is an error
 	 */
 	public int getDistanceMillimeters() {
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
+		int val = -1;
 		try {
-			return timeOfFlightSensor.readRangeSingleMillimeters();
+			val = timeOfFlightSensor.readRangeSingleMillimeters();
 		} catch (NACKException e) {
-			Robot.robotLogger.log(Logger.ERROR, this, "Could not read Time of Flight Sensor\n" + e.getStackTrace());
+			Robot.robotLogger.log(Logger.ERROR, this, "Could not read Time of Flight Sensor\n");
 		}
-
-		return -1;
+		if (val > 8000) { // values aroudn 8190 are all erroneous conditions
+			Robot.robotLogger.log(Logger.DEBUG, this, "erroneous range value = " + val);
+			val = -1;
+		}
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
+		return val;
 	}
 
 }

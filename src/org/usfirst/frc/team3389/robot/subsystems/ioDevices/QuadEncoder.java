@@ -52,7 +52,7 @@ public class QuadEncoder extends SensorBase implements CounterBase, PIDSource, S
 
 	@Override
 	public int get() {
-		return enc.get();
+		return 0;
 	}
 
 	@Override

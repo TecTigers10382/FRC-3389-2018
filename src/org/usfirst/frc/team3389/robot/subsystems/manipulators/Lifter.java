@@ -1,10 +1,15 @@
 package org.usfirst.frc.team3389.robot.subsystems.manipulators;
 
+<<<<<<< HEAD
 import org.usfirst.frc.team3389.robot.Robot;
 import org.usfirst.frc.team3389.robot.RobotMap;
 import org.usfirst.frc.team3389.robot.commands.LiftStick;
 import org.usfirst.frc.team3389.robot.utils.Logger;
+=======
+import org.usfirst.frc.team3389.robot.subsystems.ioDevices.QuadEncoder;
+>>>>>>> branch 'master' of https://github.com/booolean/3389FRC.git
 
+<<<<<<< HEAD
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -12,7 +17,10 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class Lifter extends Subsystem{
 	TalonSRX lift;
-	
+	private double height;
+	private double radius;
+	public static final QuadEncoder enc = new QuadEncoder();
+		
 	public Lifter() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		
@@ -43,5 +51,9 @@ public class Lifter extends Subsystem{
 		driveLift(0);
 		
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
+	}
+	
+	public void getHeight() {
+		height=Math.pi*enc.getVal();
 	}
 }

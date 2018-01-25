@@ -23,6 +23,10 @@ public class QuadEncoder extends SensorBase implements CounterBase, PIDSource, S
 		enc.reset();
 	}
 	
+	public int getVal() {
+		return enc.get();
+	}
+	
 	public double getRate() {
 		return enc.getRate();
 	}
@@ -52,7 +56,7 @@ public class QuadEncoder extends SensorBase implements CounterBase, PIDSource, S
 
 	@Override
 	public int get() {
-		return enc.get();
+		return 0;
 	}
 
 	@Override

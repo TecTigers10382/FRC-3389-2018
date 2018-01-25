@@ -50,6 +50,6 @@ public class Lifter extends Subsystem{
 	}
 	
 	public void getHeight() {
-		height=Math.PI*enc.getVal();
+		height=radius*(enc.getVal()/360);
 	}
 }

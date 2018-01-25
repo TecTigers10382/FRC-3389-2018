@@ -23,6 +23,9 @@ public class RobotMap {
 		DRIVE_LEFTBACK = 1,
 		DRIVE_RIGHTFRONT = 3,
 		DRIVE_RIGHTBACK = 2;
+	
+	public final static int
+		LIFT = 4;
 		
 	/**
 	 * PWM IDs for intake motor controllers
@@ -30,6 +33,7 @@ public class RobotMap {
 	public final static int
 		INTAKE_LEFT=0,
 		INTAKE_RIGHT=1;
+	
 	
 	
 	// For example to map the left and right motors, you could define the

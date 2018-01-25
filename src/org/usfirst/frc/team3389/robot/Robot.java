@@ -12,6 +12,7 @@ import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team3389.robot.subsystems.ExampleSubsystem;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.TimeOfFlight;
 import org.usfirst.frc.team3389.robot.subsystems.manipulators.Intake;
+import org.usfirst.frc.team3389.robot.subsystems.manipulators.Lifter;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -40,6 +41,7 @@ public class Robot extends TimedRobot {
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
 	public static final DriveTrain driveTrain = new DriveTrain();
 	public static final Intake intake = new Intake();
+	public static final Lifter lifter = new Lifter();
 
 	public static final ExampleSubsystem kExampleSubsystem = new ExampleSubsystem();
 	public static OI m_oi;

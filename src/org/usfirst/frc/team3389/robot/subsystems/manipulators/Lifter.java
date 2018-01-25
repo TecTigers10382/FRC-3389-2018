@@ -52,4 +52,20 @@ public class Lifter extends Subsystem{
 	public void getHeight() {
 		height=radius*(enc.getVal()/360);
 	}
+	public void gotoHeight(int inches) {
+		getHeight();
+		double wantedInch = inches;
+		while(!((height>=wantedInch-1)&&(height<=wantedInch+1))){
+			getHeight();
+			if(wantedInch>height) {
+				//TODO Make motor go up
+			}
+			if(wantedInch<height) {
+				//TODO Make motor go down
+			}
+		}
+		
+		
+		
+	}
 }

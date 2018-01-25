@@ -1,21 +1,16 @@
 /*
- * Copyright (C) 2016 Florian Frankenberger and 2018 FRC Team 3389
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
+* Copyright (c) 2017-2018 FRC TEAM 3389. All Rights Reserved.
+* Open Source Software - may be modified and shared by FRC teams. The code
+* must be accompanied by the FIRST BSD license file in the root directory of
+* the project.
+*/
+/*
+ * Based on material from Florian Frankenberger and made available
+ * under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301  USA
  */
+
 package org.usfirst.frc.team3389.robot.subsystems.ioDevices;
 
 import edu.wpi.first.wpilibj.I2C;

@@ -11,9 +11,10 @@ package org.usfirst.frc.team3389.robot.subsystems.ioDevices.VL53L0X;
 
 import java.nio.ByteBuffer;
 
-import edu.wpi.first.wpilibj.hal.HALUtil;
 import org.usfirst.frc.team3389.robot.Robot;
 import org.usfirst.frc.team3389.robot.utils.Logger;
+
+import edu.wpi.first.wpilibj.hal.HALUtil;
 
 /**
  * 

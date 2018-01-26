@@ -205,7 +205,7 @@ public class Robot extends TimedRobot {
 
 		// quick test of time-of-flight sensor
 		// System.out.println("range distance = " + timeOfFlight.getDistanceMillimeters() + "mm");
-		//robotScreen.updateTextLine("range = " + timeOfFlight.getDistanceMillimeters() + "mm", 0);
+		// robotScreen.updateTextLine("range = " + timeOfFlight.getDistanceMillimeters() + "mm", 0);
 
 		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "exit");
 	}

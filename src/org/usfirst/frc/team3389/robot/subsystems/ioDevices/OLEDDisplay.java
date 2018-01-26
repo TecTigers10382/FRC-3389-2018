@@ -56,6 +56,9 @@ import org.usfirst.frc.team3389.robot.utils.Logger;
  * @author Florian Frankenberger
  * @author FRC Team 3389
  */
+
+// TODO - needs javadocs commenting
+
 public class OLEDDisplay {
 
     private static final Port DEFAULT_I2C_BUS = Port.kMXP;

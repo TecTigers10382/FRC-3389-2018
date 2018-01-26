@@ -112,6 +112,7 @@ public class OLEDDisplay {
     private static final byte  SSD1306_VERTICAL_AND_LEFT_HORIZONTAL_SCROLL = (byte) 0x2A;
 
     private final I2C oled_device;
+    private boolean inited = false;
     private OLEDFont currentFont;
     private int maxChars;
     private int maxLines;
@@ -126,7 +127,7 @@ public class OLEDDisplay {
      *
      * @throws IOException
      */
-    public OLEDDisplay() throws IOException {
+    public OLEDDisplay() {
         this(DEFAULT_I2C_BUS, DEFAULT_DISPLAY_ADDRESS);
     }
 
@@ -137,7 +138,7 @@ public class OLEDDisplay {
      * @param displayAddress the i2c bus address of the display
      * @throws IOException
      */
-    public OLEDDisplay(int displayAddress) throws IOException {
+    public OLEDDisplay(int displayAddress) {
         this(DEFAULT_I2C_BUS, displayAddress);
     }
 
@@ -148,7 +149,7 @@ public class OLEDDisplay {
      * @param displayAddress the i2c bus address of the display
      * @throws IOException
      */
-    public OLEDDisplay(Port busNumber, int displayAddress) throws IOException {
+    public OLEDDisplay(Port busNumber, int displayAddress) {
         Robot.robotLogger.log(Logger.DEBUG, this, "enter");
         oled_device = new I2C (busNumber, displayAddress);
 
@@ -166,8 +167,18 @@ public class OLEDDisplay {
             }
         });
 
-        init();
-        update(); // render screen buffer 
+        try {
+			init();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			Robot.robotLogger.log(Logger.ERROR, this, "unable to initialize OLED display");
+		}
+        try {
+			refresh();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			Robot.robotLogger.log(Logger.ERROR, this, "unable to update OLED display");
+		} // render screen buffer 
         Robot.robotLogger.log(Logger.DEBUG, this, "exit");
     }
     
@@ -175,6 +186,10 @@ public class OLEDDisplay {
         shutdown();
     }
 
+    public boolean isReady() {
+    	return this.inited;
+    }
+    
     public void invertColors(boolean invert) {
     	invert_display = invert;
     }
@@ -249,6 +264,7 @@ public class OLEDDisplay {
         writeCommand(SSD1306_NORMALDISPLAY);
         writeCommand(SSD1306_DISPLAYON);//--turn on oled panel
         
+        this.inited = true;;
         Robot.robotLogger.log(Logger.DEBUG, this, "exit");
     }
 
@@ -348,8 +364,7 @@ public class OLEDDisplay {
     	clearTextLine(row);
     	drawTextString(string, row, 0);
     	try {
-    		//updateLine(row);
-			update();
+    		refreshLine(row);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			Robot.robotLogger.log(Logger.ERROR, this, "failed to update line " + row + " on OLED display");
@@ -399,7 +414,7 @@ public class OLEDDisplay {
      * sends the current buffer to the display
      * @throws IOException
      */
-    public synchronized void update() throws IOException {
+    public synchronized void refresh() throws IOException {
         writeCommand(SSD1306_COLUMNADDR);
         writeCommand((byte) 0);   // Column start address (0 = reset)
         writeCommand((byte) (DISPLAY_WIDTH - 1)); // Column end address (127 = reset)
@@ -414,7 +429,7 @@ public class OLEDDisplay {
         }
     }
 
-    public synchronized void updateLine(int row) throws IOException {
+    public synchronized void refreshLine(int row) throws IOException {
         writeCommand(SSD1306_COLUMNADDR);
         writeCommand((byte) 0);   // Column start address (0 = reset)
         writeCommand((byte) (DISPLAY_WIDTH - 1)); // Column end address (127 = reset)
@@ -451,7 +466,7 @@ public class OLEDDisplay {
     	try {
     		//before we shut down we clear the display
     		clear();
-    		update();
+    		refresh();
     		//now we close the bus
     	} catch (IOException ex) {
     		Robot.robotLogger.log(Logger.INFO, this, "Closing i2c bus");

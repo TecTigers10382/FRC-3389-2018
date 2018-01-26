@@ -10,6 +10,7 @@ package org.usfirst.frc.team3389.robot;
 import org.usfirst.frc.team3389.robot.commands.ExampleCommand;
 import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team3389.robot.subsystems.ExampleSubsystem;
+import org.usfirst.frc.team3389.robot.subsystems.ioDevices.OLEDDisplay;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.TimeOfFlight;
 import org.usfirst.frc.team3389.robot.subsystems.manipulators.Intake;
 import org.usfirst.frc.team3389.robot.subsystems.manipulators.Lifter;
@@ -39,6 +40,7 @@ public class Robot extends TimedRobot {
 	// Initialize all subsystems
 	public static final Logger robotLogger = new Logger(Logger.INFO);
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
+	public static final OLEDDisplay robotScreen = new OLEDDisplay();;
 	public static final DriveTrain driveTrain = new DriveTrain();
 	public static final Intake intake = new Intake();
 	public static final Lifter lifter= new Lifter();
@@ -202,7 +204,8 @@ public class Robot extends TimedRobot {
 		// driveTrain.tankDrive(0.5, 0.5);
 
 		// quick test of time-of-flight sensor
-		//System.out.println("range distance = " + timeOfFlight.getDistanceMillimeters() + "mm");
+		// System.out.println("range distance = " + timeOfFlight.getDistanceMillimeters() + "mm");
+		//robotScreen.updateTextLine("range = " + timeOfFlight.getDistanceMillimeters() + "mm", 0);
 
 		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "exit");
 	}

@@ -385,7 +385,6 @@ public enum OLEDFont {
         if (c > maxChar || c < minChar) {
             c = '?';
         }
-
         c-= minChar;
 
         for (int i = 0; i < width; ++i) {

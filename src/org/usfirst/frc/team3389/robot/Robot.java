@@ -38,7 +38,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
 
 	// Initialize all subsystems
-	public static final Logger robotLogger = new Logger(Logger.INFO);
+	public static final Logger robotLogger = new Logger(Logger.DEBUG);
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
 	public static final OLEDDisplay robotScreen = new OLEDDisplay();;
 	public static final DriveTrain driveTrain = new DriveTrain();
@@ -187,7 +187,7 @@ public class Robot extends TimedRobot {
 		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "enter");
 
 		// Display on SmartDashboard
-		SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());
+		//SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());
 
 		Scheduler.getInstance().run();
 

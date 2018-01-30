@@ -8,7 +8,6 @@
 package org.usfirst.frc.team3389.robot.subsystems.ioDevices;
 
 import org.usfirst.frc.team3389.robot.Robot;
-import org.usfirst.frc.team3389.robot.subsystems.ioDevices.I2CUpdatableAddress.NACKException;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.VL53L0X.VL53L0X;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
@@ -34,12 +33,9 @@ public class TimeOfFlight extends Subsystem {
 	public TimeOfFlight() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		timeOfFlightSensor = new VL53L0X(0);
-		try {
-			timeOfFlightSensor.init(false);
-		} catch (NACKException e) {
-			// TODO Auto-generated catch block
+		if (!timeOfFlightSensor.init(false))
 			Robot.robotLogger.log(Logger.ERROR, this, "failed to initialize VL53L0X sensor");
-		}
+
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
@@ -51,11 +47,8 @@ public class TimeOfFlight extends Subsystem {
 	public int getDistanceMillimeters() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		int val = -1;
-		try {
-			val = timeOfFlightSensor.readRangeSingleMillimeters();
-		} catch (NACKException e) {
-			Robot.robotLogger.log(Logger.ERROR, this, "Could not read Time of Flight Sensor\n");
-		}
+		val = timeOfFlightSensor.readRangeSingleMillimeters();
+
 		if (val > 8000) { // values aroudn 8190 are all erroneous conditions
 			Robot.robotLogger.log(Logger.DEBUG, this, "erroneous range value = " + val);
 			val = -1;

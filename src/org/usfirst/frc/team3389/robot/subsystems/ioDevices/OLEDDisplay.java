@@ -57,12 +57,7 @@ import org.usfirst.frc.team3389.robot.utils.Logger;
 
 public class OLEDDisplay extends I2CUpdatableAddress {
 
-	private Port m_port = Port.kMXP;
-	// Store address given when the class is initialized.
-
 	private static final int defaultAddress = 0x3C;
-	// The value of the address above the default address.
-	private int deviceAddressOffset;
 
     private static final int DISPLAY_WIDTH = 128;
     private static final int DISPLAY_HEIGHT = 64;
@@ -151,36 +146,36 @@ public class OLEDDisplay extends I2CUpdatableAddress {
         shutdown();
     }
 
-    public final boolean init() throws NACKException {
+    public final boolean init() {
     	Robot.robotLogger.log(Logger.DEBUG, this, "enter");
     	invert_display = false;
     	setFont(OLEDFont.FONT_5X8);
             
-    	writeCommand(SSD1306_DISPLAYOFF);                    // 0xAE
-    	writeCommand(SSD1306_SETDISPLAYCLOCKDIV);            // 0xD5
-    	writeCommand((byte) 0x80);                           // the suggested ratio 0x80
-    	writeCommand(SSD1306_SETMULTIPLEX);                  // 0xA8
-    	writeCommand((byte) 0x3F);
-    	writeCommand(SSD1306_SETDISPLAYOFFSET);              // 0xD3
-    	writeCommand((byte) 0x0);                            // no offset
-    	writeCommand((byte) (SSD1306_SETSTARTLINE | 0x0));   // line #0
-    	writeCommand(SSD1306_CHARGEPUMP);                    // 0x8D
-    	writeCommand((byte) 0x14);
-    	writeCommand(SSD1306_MEMORYMODE);                    // 0x20
-    	writeCommand((byte) 0x00);                           // 0x0 act like ks0108
-    	writeCommand((byte) (SSD1306_SEGREMAP | 0x1));
-    	writeCommand(SSD1306_COMSCANDEC);
-    	writeCommand(SSD1306_SETCOMPINS);                    // 0xDA
-    	writeCommand((byte) 0x12);
-    	writeCommand(SSD1306_SETCONTRAST);                   // 0x81
-    	writeCommand((byte) 0xCF);
-    	writeCommand(SSD1306_SETPRECHARGE);                  // 0xd9
-    	writeCommand((byte) 0xF1);
-    	writeCommand(SSD1306_SETVCOMDETECT);                 // 0xDB
-    	writeCommand((byte) 0x40);
-    	writeCommand(SSD1306_DISPLAYALLON_RESUME);           // 0xA4
-    	writeCommand(SSD1306_NORMALDISPLAY);
-    	writeCommand(SSD1306_DISPLAYON);//--turn on oled panel
+    	writeByte(0x00,SSD1306_DISPLAYOFF);                    // 0xAE
+    	writeByte(0x00,SSD1306_SETDISPLAYCLOCKDIV);            // 0xD5
+    	writeByte(0x00,(byte) 0x80);                           // the suggested ratio 0x80
+    	writeByte(0x00,SSD1306_SETMULTIPLEX);                  // 0xA8
+    	writeByte(0x00,(byte) 0x3F);
+    	writeByte(0x00,SSD1306_SETDISPLAYOFFSET);              // 0xD3
+    	writeByte(0x00,(byte) 0x0);                            // no offset
+    	writeByte(0x00,(byte) (SSD1306_SETSTARTLINE | 0x0));   // line #0
+    	writeByte(0x00,SSD1306_CHARGEPUMP);                    // 0x8D
+    	writeByte(0x00,(byte) 0x14);
+    	writeByte(0x00,SSD1306_MEMORYMODE);                    // 0x20
+    	writeByte(0x00,(byte) 0x00);                           // 0x0 act like ks0108
+    	writeByte(0x00,(byte) (SSD1306_SEGREMAP | 0x1));
+    	writeByte(0x00,SSD1306_COMSCANDEC);
+    	writeByte(0x00,SSD1306_SETCOMPINS);                    // 0xDA
+    	writeByte(0x00,(byte) 0x12);
+    	writeByte(0x00,SSD1306_SETCONTRAST);                   // 0x81
+    	writeByte(0x00,(byte) 0xCF);
+    	writeByte(0x00,SSD1306_SETPRECHARGE);                  // 0xd9
+    	writeByte(0x00,(byte) 0xF1);
+    	writeByte(0x00,SSD1306_SETVCOMDETECT);                 // 0xDB
+    	writeByte(0x00,(byte) 0x40);
+    	writeByte(0x00,SSD1306_DISPLAYALLON_RESUME);           // 0xA4
+    	writeByte(0x00,SSD1306_NORMALDISPLAY);
+    	writeByte(0x00,SSD1306_DISPLAYON);//--turn on oled panel
             
     	this.inited = true;;
 
@@ -314,12 +309,7 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     public synchronized void updateTextLine(String string, int row) {
     	clearTextLine(row);
     	drawTextString(string, row, 0);
-    	try {
-    		refreshLine(row);
-		} catch (NACKException e) {
-			// TODO Auto-generated catch block
-			Robot.robotLogger.log(Logger.ERROR, this, "failed to update line " + row + " on OLED display");
-		}
+    	refreshLine(row);
     }
 
     public synchronized void clearTextArea(int row, int col, int chars, int lines) {
@@ -365,14 +355,16 @@ public class OLEDDisplay extends I2CUpdatableAddress {
      * sends the current buffer to the display
      * @throws IOException
      */
-    public synchronized void refresh() throws NACKException {
-        writeCommand(SSD1306_COLUMNADDR);
-        writeCommand((byte) 0);   // Column start address (0 = reset)
-        writeCommand((byte) (DISPLAY_WIDTH - 1)); // Column end address (127 = reset)
+    public synchronized void refresh() {
+    	if (!this.inited)
+    		return;
+        writeByte(0x00,SSD1306_COLUMNADDR);
+        writeByte(0x00,(byte) 0);   // Column start address (0 = reset)
+        writeByte(0x00,(byte) (DISPLAY_WIDTH - 1)); // Column end address (127 = reset)
 
-        writeCommand(SSD1306_PAGEADDR);
-        writeCommand((byte) 0); // Page start address (0 = reset)
-        writeCommand((byte) 7); // Page end address
+        writeByte(0x00,SSD1306_PAGEADDR);
+        writeByte(0x00,(byte) 0); // Page start address (0 = reset)
+        writeByte(0x00,(byte) 7); // Page end address
 
         byte[] buffer = new byte[16 + 1];
         buffer[0] = SSD1306_SETSTARTLINE;
@@ -384,9 +376,35 @@ public class OLEDDisplay extends I2CUpdatableAddress {
         }
     }
 
-    public synchronized void refreshLine(int row) throws NACKException {
-    	// TODO refreshLine() method does not work and temporarily redirects to a full refresh()
+    public synchronized void refreshLine(int row) {
+    	// line level refreshes have a bug so we just do a full refresh until we fix it
     	refresh();
+    	// TODO fix line level refresh
+    	/*
+        writeByte(0x00, SSD1306_COLUMNADDR);
+        writeByte(0x00, (byte) 0);   // Column start address (0 = reset)
+        writeByte(0x00, (byte) (DISPLAY_WIDTH - 1)); // Column end address (127 = reset)
+
+        writeByte(0x00, SSD1306_PAGEADDR);
+        writeByte(0x00, (byte) 0); // Page start address (0 = reset)
+        writeByte(0x00, (byte) 7); // Page end address
+
+        byte[] buffer = new byte[16 + 1];
+        buffer[0] = SSD1306_SETSTARTLINE;
+
+        // the display buffer is loaded in 16 byte chucks
+        // for a monochrome display, this is 64 pixels
+        // on a 128x64 display, this is one pixel line
+
+        if ((row >= 0) && (row < this.maxLines)) {
+        	int pixelHeight= currentFont.getOuterHeight();
+            for (int i = (row * pixelHeight); i < ((row+1) * pixelHeight); i++) {
+                // send a bunch of data in one transmission
+        		System.arraycopy(imageBuffer, i*16, buffer, 1, 16);
+            	writeBulk(buffer);
+            }
+        }
+    	 */
     }
 
     // the I2C OLED Display supports hardware horizontal scrolling
@@ -402,13 +420,8 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     
     
     private synchronized void shutdown() {
-    	try {
-    		//before we shut down we clear the display
-    		clear();
-    		refresh();
-    		//now we close the bus
-    	} catch (NACKException ex) {
-    		Robot.robotLogger.log(Logger.INFO, this, "Closing i2c bus");
-    	}
+    	//before we shut down we clear the display
+    	clear();
+    	refresh();
     }
 }

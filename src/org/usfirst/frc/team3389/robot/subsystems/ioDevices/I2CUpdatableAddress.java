@@ -9,16 +9,14 @@
 
 package org.usfirst.frc.team3389.robot.subsystems.ioDevices;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+
 import java.nio.ByteBuffer;
 
-import edu.wpi.first.wpilibj.SensorBase;
-import edu.wpi.first.wpilibj.hal.FRCNetComm.tResourceType;
-import edu.wpi.first.wpilibj.hal.HAL;
-import edu.wpi.first.wpilibj.hal.I2CJNI;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
-import edu.wpi.first.wpilibj.util.BoundaryException;
+import org.usfirst.frc.team3389.robot.Robot;
+import org.usfirst.frc.team3389.robot.utils.Logger;
+
+//import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.I2C;
 
 /**
  * I2C bus interface class.
@@ -29,436 +27,105 @@ import edu.wpi.first.wpilibj.util.BoundaryException;
  * 
  * @author FRC Team 5461
  */
-public class I2CUpdatableAddress extends SensorBase {
-	public enum Port {
-		kOnboard(0), kMXP(1);
+public class I2CUpdatableAddress extends I2C {
 
-		public final int value;
-
-		private Port(int value) {
-			this.value = value;
-		}
-	}
-
-	private final Port m_port;
-	protected int m_deviceAddress;
-
-	/**
-	 * Constructor.
-	 *
-	 * @param port
-	 *            The I2C port the device is connected to.
-	 * @param deviceAddress
-	 *            The address of the device on the I2C bus.
-	 */
+	private Port _port;
+	private int _device;
+	
 	public I2CUpdatableAddress(Port port, int deviceAddress) {
-		m_port = port;
-		m_deviceAddress = deviceAddress;
-
-		I2CJNI.i2CInitialize((byte) port.value);
-
-		HAL.report(tResourceType.kResourceType_I2C, deviceAddress);
+		super(port, deviceAddress);
+		this._port = port;
+		this._device = deviceAddress;
 	}
 
-	/**
-	 * Destructor.
-	 */
-	public void free() {
-	}
-
-	/**
-	 * Generic transaction.
-	 *
-	 * <p>
-	 * This is a lower-level interface to the I2C hardware giving you more control
-	 * over each transaction.
-	 *
-	 * @param dataToSend
-	 *            Buffer of data to send as part of the transaction.
-	 * @param sendSize
-	 *            Number of bytes to send as part of the transaction.
-	 * @param dataReceived
-	 *            Buffer to read data into.
-	 * @param receiveSize
-	 *            Number of bytes to read from the device.
-	 * @return Transfer Aborted... false for success, true for aborted.
-	 */
-	public synchronized boolean transaction(byte[] dataToSend, int sendSize, byte[] dataReceived, int receiveSize) {
-		final int status;
-
-		ByteBuffer dataToSendBuffer = ByteBuffer.allocateDirect(sendSize);
-		if (sendSize > 0 && dataToSend != null) {
-			dataToSendBuffer.put(dataToSend);
-		}
-		ByteBuffer dataReceivedBuffer = ByteBuffer.allocateDirect(receiveSize);
-
-		status = I2CJNI.i2CTransaction((byte) m_port.value, (byte) m_deviceAddress, dataToSendBuffer, (byte) sendSize,
-				dataReceivedBuffer, (byte) receiveSize);
-		if (receiveSize > 0 && dataReceived != null) {
-			dataReceivedBuffer.get(dataReceived);
-		}
-		return status < receiveSize;
-	}
-
-	/**
-	 * Generic transaction.
-	 *
-	 * <p>
-	 * This is a lower-level interface to the I2C hardware giving you more control
-	 * over each transaction.
-	 *
-	 * @param dataToSend
-	 *            Buffer of data to send as part of the transaction. Must be
-	 *            allocated using ByteBuffer.allocateDirect().
-	 * @param sendSize
-	 *            Number of bytes to send as part of the transaction.
-	 * @param dataReceived
-	 *            Buffer to read data into. Must be allocated using
-	 *            {@link ByteBuffer#allocateDirect(int)}.
-	 * @param receiveSize
-	 *            Number of bytes to read from the device.
-	 * @return Transfer Aborted... false for success, true for aborted.
-	 */
-	public synchronized boolean transaction(ByteBuffer dataToSend, int sendSize, ByteBuffer dataReceived,
-			int receiveSize) {
-		if (!dataToSend.isDirect()) {
-			throw new IllegalArgumentException("dataToSend must be a direct buffer");
-		}
-		if (dataToSend.capacity() < sendSize) {
-			throw new IllegalArgumentException("dataToSend is too small, must be at least " + sendSize);
-		}
-		if (!dataReceived.isDirect()) {
-			throw new IllegalArgumentException("dataReceived must be a direct buffer");
-		}
-		if (dataReceived.capacity() < receiveSize) {
-			throw new IllegalArgumentException("dataReceived is too small, must be at least " + receiveSize);
-		}
-
-		boolean result = I2CJNI.i2CTransaction((byte) m_port.value, (byte) m_deviceAddress, dataToSend, (byte) sendSize,
-				dataReceived, (byte) receiveSize) < receiveSize;
-		try {
-			destroyDirectByteBuffer(dataToSend);
-		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-
-	/**
-	 * Attempt to address a device on the I2C bus.
-	 *
-	 * <p>
-	 * This allows you to figure out if there is a device on the I2C bus that
-	 * responds to the address specified in the constructor.
-	 *
-	 * @return Transfer Aborted... false for success, true for aborted.
-	 */
-	public boolean addressOnly() {
-		return transaction((byte[]) null, (byte) 0, null, (byte) 0);
-	}
-
-	/**
-	 * Execute a write transaction with the device.
-	 *
-	 * <p>
-	 * Write multiple bytes to a register on a device and wait until the transaction
-	 * is complete.
-	 *
-	 * @param data
-	 *            The data to write to the device. Must be created using
-	 *            ByteBuffer.allocateDirect().
-	 * @param size
-	 *            The size of the data to write to the device.
-	 */
-	public synchronized boolean writeBulk(ByteBuffer data, int size) {
-		if (!data.isDirect()) {
-			throw new IllegalArgumentException("must be a direct buffer");
-		}
-		if (data.capacity() < size) {
-			throw new IllegalArgumentException("buffer is too small, must be at least " + size);
-		}
-
-		return I2CJNI.i2CWrite((byte) m_port.value, (byte) m_deviceAddress, data, (byte) size) < size;
-	}
-
-	/**
-	 * Execute a write transaction with the device.
-	 *
-	 * <p>
-	 * Write multiple bytes to a register on a device and wait until the transaction
-	 * is complete.
-	 *
-	 * @param data
-	 *            The data to write to the device.
-	 */
-	public synchronized boolean writeBulk(byte[] data) {
-		ByteBuffer dataToSendBuffer = ByteBuffer.allocateDirect(data.length);
-		dataToSendBuffer.put(data);
-
-		boolean result = writeBulk(dataToSendBuffer, data.length);
-		try {
-			destroyDirectByteBuffer(dataToSendBuffer);
-		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-
-	/**
-	 * Execute a write transaction with the device.
-	 *
-	 * <p>
-	 * Write a single byte to a register on a device and wait until the transaction
-	 * is complete.
-	 *
-	 * @param registerAddress
-	 *            The address of the register on the device to be written.
-	 * @param data
-	 *            The byte to write to the register on the device.
-	 * @throws NACKException
-	 */
-	public synchronized boolean write(byte registerAddress, byte data) throws NACKException {
-		byte[] buffer = new byte[2];
-		buffer[0] = (byte) registerAddress;
-		buffer[1] = data;
-
-		return writeBulk(buffer);
-	}
-
-	/**
-	 * Execute a write transaction with the device.
-	 *
-	 * <p>
-	 * Write a single byte to a register on a device and wait until the transaction
-	 * is complete.
-	 *
-	 * @param registerAddress
-	 *            The address of the register on the device to be written.
-	 * @param data
-	 *            The byte to write to the register on the device.
-	 * @throws NACKException
-	 */
-	public synchronized boolean write(int registerAddress, int data) throws NACKException {
-		return write((byte) registerAddress, (byte)data);
-	}
-
-	/**
-	 * Execute a write transaction with the device.
-	 *
-	 * <p>
-	 * Write a single byte command to a command register 0x00.
-	 *
-	 * @param command
-	 *            The command to write.
-	 * @throws NACKException
-	 */
-	public synchronized boolean writeCommand(byte command) throws NACKException {
-		return write((byte)0x00, command);
+	public byte readByte(int registerAddress) {
+		byte val = 0;
+		byte[] buffer = new byte[1];
+		read(registerAddress, 1, buffer);
+		val = (byte) (buffer[0] & 0xff);
+		return val;
 	}
 	
-
-	/**
-	 * Execute a read transaction with the device.
-	 *
-	 * <p>
-	 * Read bytes from a device. Most I2C devices will auto-increment the register
-	 * pointer internally allowing you to read consecutive registers on a device in
-	 * a single transaction.
-	 *
-	 * @param registerAddress
-	 *            The register to read first in the transaction.
-	 * @param count
-	 *            The number of bytes to read in the transaction.
-	 * @param buffer
-	 *            A pointer to the array of bytes to store the data read from the
-	 *            device.
-	 * @return Transfer Aborted... false for success, true for aborted.
-	 */
-	public boolean read(int registerAddress, int count, byte[] buffer) {
-		if (count < 1) {
-			throw new BoundaryException("Value must be at least 1, " + count + " given");
-		}
-
-		if (buffer == null) {
-			throw new NullPointerException("Null return buffer was given");
-		}
-		byte[] registerAddressArray = new byte[1];
-		registerAddressArray[0] = (byte) registerAddress;
-
-		return transaction(registerAddressArray, registerAddressArray.length, buffer, count);
+	public short readShort(int registerAddress) {
+		short val = 0;
+		ByteBuffer bufferResults = ByteBuffer.allocateDirect(2);
+		read(registerAddress, 2, bufferResults);
+		val = bufferResults.getShort();
+		return val;
+	}
+	
+	public boolean writeByte(int registerAddress, byte data) {
+		// simple passthru to maintain API consistency with 'read' methods
+		boolean failed = write(registerAddress, (((int)data) & 0xff));
+		if (failed)
+			Robot.robotLogger.log(Logger.INFO, this, "writeByte failed");
+		return failed;
 	}
 
-	/**
-	 * Execute a read transaction with the device.
-	 *
-	 * <p>
-	 * Read bytes from a device. Most I2C devices will auto-increment the register
-	 * pointer internally allowing you to read consecutive registers on a device in
-	 * a single transaction.
-	 *
-	 * @param registerAddress
-	 *            The register to read first in the transaction.
-	 * @param count
-	 *            The number of bytes to read in the transaction.
-	 * @param buffer
-	 *            A buffer to store the data read from the device. Must be created
-	 *            using ByteBuffer.allocateDirect().
-	 * @return Transfer Aborted... false for success, true for aborted.
-	 */
-	public boolean read(int registerAddress, int count, ByteBuffer buffer) {
-		if (count < 1) {
-			throw new BoundaryException("Value must be at least 1, " + count + " given");
-		}
-
-		if (!buffer.isDirect()) {
-			throw new IllegalArgumentException("must be a direct buffer");
-		}
-		if (buffer.capacity() < count) {
-			throw new IllegalArgumentException("buffer is too small, must be at least " + count);
-		}
-
-		ByteBuffer dataToSendBuffer = ByteBuffer.allocateDirect(1);
-		dataToSendBuffer.put(0, (byte) registerAddress);
-
-		return transaction(dataToSendBuffer, 1, buffer, count);
+	public boolean writeByte(int registerAddress, int data) {
+		// simple passthru to maintain API consistency with 'read' methods
+		boolean failed = write(registerAddress, (data & 0xff));
+		if (failed)
+			Robot.robotLogger.log(Logger.INFO, this, "writeByte failed");
+		return failed;
+	}
+	
+	public boolean writeShort(int registerAddress, int data) {
+		// the following guarantees correct byte order regardless of big/little endian
+		ByteBuffer registerWithDataToSendBuffer = ByteBuffer.allocateDirect(3);
+		registerWithDataToSendBuffer.put((byte) registerAddress);
+		registerWithDataToSendBuffer.putShort(1, (short) data);
+		return writeBulk(registerWithDataToSendBuffer, 3);
 	}
 
-	/**
-	 * Execute a read only transaction with the device.
-	 *
-	 * <p>
-	 * Read bytes from a device. This method does not write any data to prompt the
-	 * device.
-	 *
-	 * @param buffer
-	 *            A pointer to the array of bytes to store the data read from the
-	 *            device.
-	 * @param count
-	 *            The number of bytes to read in the transaction.
-	 * @return Transfer Aborted... false for success, true for aborted.
-	 */
-	public boolean readOnly(byte[] buffer, int count) {
-		if (count < 1) {
-			throw new BoundaryException("Value must be at least 1, " + count + " given");
+	
+	public final int setAddress(int deviceCommandSetAddress, int new_address) {
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
+		// NOTICE: CHANGING THE ADDRESS IS NOT STORED IN NON-VOLATILE MEMORY
+		// POWER CYCLING THE DEVICE REVERTS ADDRESS BACK TO its default
+		// Field field = I2C.class.getDeclaredField("m_deviceAddress");
+		// field.setAccessible(true);
+		//
+		// int deviceAddress = (int) field.get(this);
+		
+		// changing an I2C device address, when there are more than one device defaulting to the same address
+		// requires that all other devices on the same address be disabled first
+		// this is typically done with a digital IO signal pin - DigitalOutput(pin); 
+		// /* for all other devices */ DigitalOutput.set(false); /* for current device */ DigitalOutput.set(true); setAddress(new_address);
+		// example of wiring:
+		// https://raw.githubusercontent.com/johnbryanmoore/VL53L0X_rasp_python/master/VL53L0X_Mutli_Rpi3_bb.jpg
+		// example of digital IO control code:
+		// https://github.com/FRC-Team-Vern/VL53L0X_Example/blob/master/src/org/usfirst/frc/team5461/robot/sensors/VL53L0XSensors.java
+
+		Robot.robotLogger.log(Logger.DEBUG, this, "setting address to 0x" + Integer.toHexString(new_address));
+
+		if (this._device == new_address) {
+			Robot.robotLogger.log(Logger.DEBUG, this, "exit - no address change required");
+			return this._device;
+		}
+		// Device addresses cannot go higher than 127
+		if (new_address > 127) {
+			Robot.robotLogger.log(Logger.ERROR, this, "address out of range");
+			return this._device;
 		}
 
-		if (buffer == null) {
-			throw new NullPointerException("Null return buffer was given");
+		boolean success = write(deviceCommandSetAddress, new_address & 0x7F);
+		if (success) {
+			this._device = new_address;
 		}
-
-		ByteBuffer dataReceivedBuffer = ByteBuffer.allocateDirect(count);
-
-		int retVal = I2CJNI.i2CRead((byte) m_port.value, (byte) m_deviceAddress, dataReceivedBuffer, (byte) count);
-		dataReceivedBuffer.get(buffer);
-		return retVal < count;
+		else
+			Robot.robotLogger.log(Logger.ERROR, this, "failed to change address");
+		
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
+		return this._device;
 	}
 
-	/**
-	 * Execute a read only transaction with the device.
-	 *
-	 * <p>
-	 * Read bytes from a device. This method does not write any data to prompt the
-	 * device.
-	 *
-	 * @param buffer
-	 *            A pointer to the array of bytes to store the data read from the
-	 *            device. Must be created using ByteBuffer.allocateDirect().
-	 * @param count
-	 *            The number of bytes to read in the transaction.
-	 * @return Transfer Aborted... false for success, true for aborted.
-	 */
-	public boolean readOnly(ByteBuffer buffer, int count) {
-		if (count < 1) {
-			throw new BoundaryException("Value must be at least 1, " + count + " given");
-		}
-
-		if (!buffer.isDirect()) {
-			throw new IllegalArgumentException("must be a direct buffer");
-		}
-		if (buffer.capacity() < count) {
-			throw new IllegalArgumentException("buffer is too small, must be at least " + count);
-		}
-
-		return I2CJNI.i2CRead((byte) m_port.value, (byte) m_deviceAddress, buffer, (byte) count) < count;
+	public final int getAddressFromDevice(int deviceCommandGetAddress) {
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
+		byte val;
+		val = readByte(deviceCommandGetAddress);
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
+		return val;
 	}
 
-	/*
-	 * Send a broadcast write to all devices on the I2C bus.
-	 *
-	 * <p>This is not currently implemented!
-	 *
-	 * @param registerAddress The register to write on all devices on the bus.
-	 * 
-	 * @param data The value to write to the devices.
-	 */
-	// public void broadcast(int registerAddress, int data) {
-	// }
-
-	/**
-	 * Verify that a device's registers contain expected values.
-	 *
-	 * <p>
-	 * Most devices will have a set of registers that contain a known value that can
-	 * be used to identify them. This allows an I2C device driver to easily verify
-	 * that the device contains the expected value.
-	 *
-	 * @param registerAddress
-	 *            The base register to start reading from the device.
-	 * @param count
-	 *            The size of the field to be verified.
-	 * @param expected
-	 *            A buffer containing the values expected from the device.
-	 * @return true if the sensor was verified to be connected
-	 * @pre The device must support and be configured to use register
-	 *      auto-increment.
-	 */
-	public boolean verifySensor(int registerAddress, int count, byte[] expected) {
-		// TODO: Make use of all 7 read bytes
-		ByteBuffer dataToSendBuffer = ByteBuffer.allocateDirect(1);
-
-		ByteBuffer deviceData = ByteBuffer.allocateDirect(4);
-		for (int i = 0, curRegisterAddress = registerAddress; i < count; i += 4, curRegisterAddress += 4) {
-			int toRead = count - i < 4 ? count - i : 4;
-			// Read the chunk of data. Return false if the sensor does not
-			// respond.
-			dataToSendBuffer.put(0, (byte) curRegisterAddress);
-			if (transaction(dataToSendBuffer, 1, deviceData, toRead)) {
-				return false;
-			}
-
-			for (byte j = 0; j < toRead; j++) {
-				if (deviceData.get(j) != expected[i + j]) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	public void close() {
-		I2CJNI.i2CClose((byte) m_port.value);
-	}
-
-	public static void destroyDirectByteBuffer(ByteBuffer toBeDestroyed) throws NoSuchMethodException,
-			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
-{
-		Method cleanerMethod = toBeDestroyed.getClass().getMethod("cleaner");
-		cleanerMethod.setAccessible(true);
-		Object cleaner = cleanerMethod.invoke(toBeDestroyed);
-		Method cleanMethod = cleaner.getClass().getMethod("clean");
-		cleanMethod.setAccessible(true);
-		cleanMethod.invoke(cleaner);
-	}
-
-	@SuppressWarnings("serial")
-	public class NACKException extends Exception {
-	}
-
-	@Override
-	public void initSendable(SendableBuilder builder) {
-		// TODO Auto-generated method stub
-
-	}
 }

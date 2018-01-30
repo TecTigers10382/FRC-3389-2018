@@ -12,6 +12,7 @@ import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team3389.robot.subsystems.ExampleSubsystem;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.OLEDDisplay;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.TimeOfFlight;
+import org.usfirst.frc.team3389.robot.subsystems.ioDevices.I2CUpdatableAddress.NACKException;
 import org.usfirst.frc.team3389.robot.subsystems.manipulators.Intake;
 import org.usfirst.frc.team3389.robot.subsystems.manipulators.Lifter;
 import org.usfirst.frc.team3389.robot.utils.Logger;
@@ -59,6 +60,13 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
 		m_oi = new OI();
+		try {
+			robotScreen.init();
+		} catch (NACKException e) {
+			// TODO Auto-generated catch block
+			robotLogger.log(Logger.ERROR, this, "failted to initialize OLED display");
+			e.printStackTrace();
+		}
 		m_chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", m_chooser);
@@ -205,7 +213,7 @@ public class Robot extends TimedRobot {
 
 		// quick test of time-of-flight sensor
 		// System.out.println("range distance = " + timeOfFlight.getDistanceMillimeters() + "mm");
-		// robotScreen.updateTextLine("range = " + timeOfFlight.getDistanceMillimeters() + "mm", 0);
+		robotScreen.updateTextLine("range = " + timeOfFlight.getDistanceMillimeters() + "mm", 0);
 
 		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "exit");
 	}

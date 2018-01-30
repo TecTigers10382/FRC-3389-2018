@@ -12,6 +12,7 @@ package org.usfirst.frc.team3389.robot.subsystems.ioDevices.VL53L0X;
 import java.nio.ByteBuffer;
 
 import org.usfirst.frc.team3389.robot.Robot;
+import org.usfirst.frc.team3389.robot.subsystems.ioDevices.I2CUpdatableAddress;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import edu.wpi.first.wpilibj.hal.HALUtil;
@@ -23,13 +24,11 @@ import edu.wpi.first.wpilibj.hal.HALUtil;
  */
 public class VL53L0X extends I2CUpdatableAddress {
 
-	private Port m_port = Port.kMXP;
 	// Store address given when the class is initialized.
 
 	private static final int defaultAddress = 0x29;
 	// The value of the address above the default address.
 	private int deviceAddressOffset;
-	// private int _i2caddress;
 	private byte stop_variable;
 	private int measurement_timing_budget_us;
 	private short timeout_start_ms;

@@ -8,7 +8,7 @@
 package org.usfirst.frc.team3389.robot.subsystems.ioDevices;
 
 import org.usfirst.frc.team3389.robot.Robot;
-import org.usfirst.frc.team3389.robot.subsystems.ioDevices.VL53L0X.I2CUpdatableAddress.NACKException;
+import org.usfirst.frc.team3389.robot.subsystems.ioDevices.I2CUpdatableAddress.NACKException;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.VL53L0X.VL53L0X;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 

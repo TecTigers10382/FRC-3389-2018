@@ -7,7 +7,7 @@
 
 //https://github.com/FRC-Team-Vern/VL53L0X_Example/blob/master/src/org/usfirst/frc/team5461/robot/sensors/I2CUpdatableAddress.java
 
-package org.usfirst.frc.team3389.robot.subsystems.ioDevices.VL53L0X;
+package org.usfirst.frc.team3389.robot.subsystems.ioDevices;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -162,37 +162,24 @@ public class I2CUpdatableAddress extends SensorBase {
 	 * Execute a write transaction with the device.
 	 *
 	 * <p>
-	 * Write a single byte to a register on a device and wait until the transaction
+	 * Write multiple bytes to a register on a device and wait until the transaction
 	 * is complete.
 	 *
-	 * @param registerAddress
-	 *            The address of the register on the device to be written.
 	 * @param data
-	 *            The byte to write to the register on the device.
-	 * @throws NACKException
+	 *            The data to write to the device. Must be created using
+	 *            ByteBuffer.allocateDirect().
+	 * @param size
+	 *            The size of the data to write to the device.
 	 */
-	public synchronized boolean write(int registerAddress, int data) throws NACKException {
-		byte[] buffer = new byte[2];
-		buffer[0] = (byte) registerAddress;
-		buffer[1] = (byte) data;
-
-		ByteBuffer dataToSendBuffer = ByteBuffer.allocateDirect(2);
-		dataToSendBuffer.put(buffer);
-
-		int result = I2CJNI.i2CWrite((byte) m_port.value, (byte) m_deviceAddress, dataToSendBuffer,
-				(byte) buffer.length);
-		boolean bufferLengthResult = (result < buffer.length);
-		if (result == -1) {
-			throw new NACKException();
+	public synchronized boolean writeBulk(ByteBuffer data, int size) {
+		if (!data.isDirect()) {
+			throw new IllegalArgumentException("must be a direct buffer");
+		}
+		if (data.capacity() < size) {
+			throw new IllegalArgumentException("buffer is too small, must be at least " + size);
 		}
 
-		try {
-			destroyDirectByteBuffer(dataToSendBuffer);
-		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
-			e.printStackTrace();
-		}
-		return bufferLengthResult;
+		return I2CJNI.i2CWrite((byte) m_port.value, (byte) m_deviceAddress, data, (byte) size) < size;
 	}
 
 	/**
@@ -209,8 +196,7 @@ public class I2CUpdatableAddress extends SensorBase {
 		ByteBuffer dataToSendBuffer = ByteBuffer.allocateDirect(data.length);
 		dataToSendBuffer.put(data);
 
-		boolean result = I2CJNI.i2CWrite((byte) m_port.value, (byte) m_deviceAddress, dataToSendBuffer,
-				(byte) data.length) < data.length;
+		boolean result = writeBulk(dataToSendBuffer, data.length);
 		try {
 			destroyDirectByteBuffer(dataToSendBuffer);
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
@@ -224,23 +210,54 @@ public class I2CUpdatableAddress extends SensorBase {
 	 * Execute a write transaction with the device.
 	 *
 	 * <p>
-	 * Write multiple bytes to a register on a device and wait until the transaction
+	 * Write a single byte to a register on a device and wait until the transaction
 	 * is complete.
 	 *
+	 * @param registerAddress
+	 *            The address of the register on the device to be written.
 	 * @param data
-	 *            The data to write to the device. Must be created using
-	 *            ByteBuffer.allocateDirect().
+	 *            The byte to write to the register on the device.
+	 * @throws NACKException
 	 */
-	public synchronized boolean writeBulk(ByteBuffer data, int size) {
-		if (!data.isDirect()) {
-			throw new IllegalArgumentException("must be a direct buffer");
-		}
-		if (data.capacity() < size) {
-			throw new IllegalArgumentException("buffer is too small, must be at least " + size);
-		}
+	public synchronized boolean write(byte registerAddress, byte data) throws NACKException {
+		byte[] buffer = new byte[2];
+		buffer[0] = (byte) registerAddress;
+		buffer[1] = data;
 
-		return I2CJNI.i2CWrite((byte) m_port.value, (byte) m_deviceAddress, data, (byte) size) < size;
+		return writeBulk(buffer);
 	}
+
+	/**
+	 * Execute a write transaction with the device.
+	 *
+	 * <p>
+	 * Write a single byte to a register on a device and wait until the transaction
+	 * is complete.
+	 *
+	 * @param registerAddress
+	 *            The address of the register on the device to be written.
+	 * @param data
+	 *            The byte to write to the register on the device.
+	 * @throws NACKException
+	 */
+	public synchronized boolean write(int registerAddress, int data) throws NACKException {
+		return write((byte) registerAddress, (byte)data);
+	}
+
+	/**
+	 * Execute a write transaction with the device.
+	 *
+	 * <p>
+	 * Write a single byte command to a command register 0x00.
+	 *
+	 * @param command
+	 *            The command to write.
+	 * @throws NACKException
+	 */
+	public synchronized boolean writeCommand(byte command) throws NACKException {
+		return write((byte)0x00, command);
+	}
+	
 
 	/**
 	 * Execute a read transaction with the device.
@@ -425,7 +442,8 @@ public class I2CUpdatableAddress extends SensorBase {
 	}
 
 	public static void destroyDirectByteBuffer(ByteBuffer toBeDestroyed) throws NoSuchMethodException,
-			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+{
 		Method cleanerMethod = toBeDestroyed.getClass().getMethod("cleaner");
 		cleanerMethod.setAccessible(true);
 		Object cleaner = cleanerMethod.invoke(toBeDestroyed);

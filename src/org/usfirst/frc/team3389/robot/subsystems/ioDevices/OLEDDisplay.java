@@ -13,12 +13,8 @@
 
 package org.usfirst.frc.team3389.robot.subsystems.ioDevices;
 
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.I2C.Port;
-
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.io.IOException;
 import java.util.Arrays;
 
 import org.usfirst.frc.team3389.robot.Robot;
@@ -59,10 +55,14 @@ import org.usfirst.frc.team3389.robot.utils.Logger;
 
 // TODO - needs javadocs commenting
 
-public class OLEDDisplay {
+public class OLEDDisplay extends I2CUpdatableAddress {
 
-    private static final Port DEFAULT_I2C_BUS = Port.kMXP;
-    private static final int DEFAULT_DISPLAY_ADDRESS = 0x3C;
+	private Port m_port = Port.kMXP;
+	// Store address given when the class is initialized.
+
+	private static final int defaultAddress = 0x3C;
+	// The value of the address above the default address.
+	private int deviceAddressOffset;
 
     private static final int DISPLAY_WIDTH = 128;
     private static final int DISPLAY_HEIGHT = 64;
@@ -114,7 +114,6 @@ public class OLEDDisplay {
     private static final byte  SSD1306_VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL = (byte) 0x29;
     private static final byte  SSD1306_VERTICAL_AND_LEFT_HORIZONTAL_SCROLL = (byte) 0x2A;
 
-    private final I2C oled_device;
     private boolean inited = false;
     private OLEDFont currentFont;
     private int maxChars;
@@ -128,35 +127,11 @@ public class OLEDDisplay {
      * creates an oled display object with default
      * i2c bus 1 and default display address of 0x3C
      *
-     * @throws IOException
+     * @throws NACKException
      */
     public OLEDDisplay() {
-        this(DEFAULT_I2C_BUS, DEFAULT_DISPLAY_ADDRESS);
-    }
-
-    /**
-     * creates an oled display object with default
-     * i2c bus 1 and the given display address
-     *
-     * @param displayAddress the i2c bus address of the display
-     * @throws IOException
-     */
-    public OLEDDisplay(int displayAddress) {
-        this(DEFAULT_I2C_BUS, displayAddress);
-    }
-
-    /**
-     * constructor with all parameters
-     *
-     * @param busNumber the i2c bus number (use constants from I2CBus)
-     * @param displayAddress the i2c bus address of the display
-     * @throws IOException
-     */
-    public OLEDDisplay(Port busNumber, int displayAddress) {
-        Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-        oled_device = new I2C (busNumber, displayAddress);
-
-        Robot.robotLogger.log(Logger.INFO, this, "Opened i2c bus");
+		super(Port.kMXP, defaultAddress);
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 
         clear();  // erase screen buffer
 
@@ -169,24 +144,49 @@ public class OLEDDisplay {
                 shutdown();
             }
         });
-
-        try {
-			init();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			Robot.robotLogger.log(Logger.ERROR, this, "unable to initialize OLED display");
-		}
-        try {
-			refresh();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			Robot.robotLogger.log(Logger.ERROR, this, "unable to update OLED display");
-		} // render screen buffer 
         Robot.robotLogger.log(Logger.DEBUG, this, "exit");
     }
     
     public void finalize() {
         shutdown();
+    }
+
+    public final boolean init() throws NACKException {
+    	Robot.robotLogger.log(Logger.DEBUG, this, "enter");
+    	invert_display = false;
+    	setFont(OLEDFont.FONT_5X8);
+            
+    	writeCommand(SSD1306_DISPLAYOFF);                    // 0xAE
+    	writeCommand(SSD1306_SETDISPLAYCLOCKDIV);            // 0xD5
+    	writeCommand((byte) 0x80);                           // the suggested ratio 0x80
+    	writeCommand(SSD1306_SETMULTIPLEX);                  // 0xA8
+    	writeCommand((byte) 0x3F);
+    	writeCommand(SSD1306_SETDISPLAYOFFSET);              // 0xD3
+    	writeCommand((byte) 0x0);                            // no offset
+    	writeCommand((byte) (SSD1306_SETSTARTLINE | 0x0));   // line #0
+    	writeCommand(SSD1306_CHARGEPUMP);                    // 0x8D
+    	writeCommand((byte) 0x14);
+    	writeCommand(SSD1306_MEMORYMODE);                    // 0x20
+    	writeCommand((byte) 0x00);                           // 0x0 act like ks0108
+    	writeCommand((byte) (SSD1306_SEGREMAP | 0x1));
+    	writeCommand(SSD1306_COMSCANDEC);
+    	writeCommand(SSD1306_SETCOMPINS);                    // 0xDA
+    	writeCommand((byte) 0x12);
+    	writeCommand(SSD1306_SETCONTRAST);                   // 0x81
+    	writeCommand((byte) 0xCF);
+    	writeCommand(SSD1306_SETPRECHARGE);                  // 0xd9
+    	writeCommand((byte) 0xF1);
+    	writeCommand(SSD1306_SETVCOMDETECT);                 // 0xDB
+    	writeCommand((byte) 0x40);
+    	writeCommand(SSD1306_DISPLAYALLON_RESUME);           // 0xA4
+    	writeCommand(SSD1306_NORMALDISPLAY);
+    	writeCommand(SSD1306_DISPLAYON);//--turn on oled panel
+            
+    	this.inited = true;;
+
+		refresh();
+    	Robot.robotLogger.log(Logger.DEBUG, this, "exit");
+    	return this.inited;
     }
 
     public boolean isReady() {
@@ -217,58 +217,6 @@ public class OLEDDisplay {
 
     public int getMaxLines() {
         return maxLines;
-    }
-
-    private void writeBufferAtAddress(int address, int offset, byte[] data, int size) {
-    	byte[] buffer = new byte[size+1];
-    	buffer[0] = (byte) address;
-    	System.arraycopy(data, offset, buffer, 1, size);
-    	oled_device.writeBulk(buffer, size+1);
-    }
-    private void writeByteAtAddress(int address, byte data) {
-    	byte[] buffer = new byte[2];
-    	buffer[0] = (byte) address;
-    	buffer[1] = data;
-    	oled_device.writeBulk(buffer, 2);
-    }
-    private void writeCommand(byte command) throws IOException {
-    	// write 'command' at address 0x00
-        writeByteAtAddress(0x00, command);
-    }
-
-    private void init() throws IOException {
-        Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-        invert_display = false;
-        setFont(OLEDFont.FONT_5X8);
-        
-        writeCommand(SSD1306_DISPLAYOFF);                    // 0xAE
-        writeCommand(SSD1306_SETDISPLAYCLOCKDIV);            // 0xD5
-        writeCommand((byte) 0x80);                           // the suggested ratio 0x80
-        writeCommand(SSD1306_SETMULTIPLEX);                  // 0xA8
-        writeCommand((byte) 0x3F);
-        writeCommand(SSD1306_SETDISPLAYOFFSET);              // 0xD3
-        writeCommand((byte) 0x0);                            // no offset
-        writeCommand((byte) (SSD1306_SETSTARTLINE | 0x0));   // line #0
-        writeCommand(SSD1306_CHARGEPUMP);                    // 0x8D
-        writeCommand((byte) 0x14);
-        writeCommand(SSD1306_MEMORYMODE);                    // 0x20
-        writeCommand((byte) 0x00);                           // 0x0 act like ks0108
-        writeCommand((byte) (SSD1306_SEGREMAP | 0x1));
-        writeCommand(SSD1306_COMSCANDEC);
-        writeCommand(SSD1306_SETCOMPINS);                    // 0xDA
-        writeCommand((byte) 0x12);
-        writeCommand(SSD1306_SETCONTRAST);                   // 0x81
-        writeCommand((byte) 0xCF);
-        writeCommand(SSD1306_SETPRECHARGE);                  // 0xd9
-        writeCommand((byte) 0xF1);
-        writeCommand(SSD1306_SETVCOMDETECT);                 // 0xDB
-        writeCommand((byte) 0x40);
-        writeCommand(SSD1306_DISPLAYALLON_RESUME);           // 0xA4
-        writeCommand(SSD1306_NORMALDISPLAY);
-        writeCommand(SSD1306_DISPLAYON);//--turn on oled panel
-        
-        this.inited = true;;
-        Robot.robotLogger.log(Logger.DEBUG, this, "exit");
     }
 
     public synchronized void setPixelColor(int x, int y, boolean color) {
@@ -368,7 +316,7 @@ public class OLEDDisplay {
     	drawTextString(string, row, 0);
     	try {
     		refreshLine(row);
-		} catch (IOException e) {
+		} catch (NACKException e) {
 			// TODO Auto-generated catch block
 			Robot.robotLogger.log(Logger.ERROR, this, "failed to update line " + row + " on OLED display");
 		}
@@ -417,7 +365,7 @@ public class OLEDDisplay {
      * sends the current buffer to the display
      * @throws IOException
      */
-    public synchronized void refresh() throws IOException {
+    public synchronized void refresh() throws NACKException {
         writeCommand(SSD1306_COLUMNADDR);
         writeCommand((byte) 0);   // Column start address (0 = reset)
         writeCommand((byte) (DISPLAY_WIDTH - 1)); // Column end address (127 = reset)
@@ -426,31 +374,19 @@ public class OLEDDisplay {
         writeCommand((byte) 0); // Page start address (0 = reset)
         writeCommand((byte) 7); // Page end address
 
+        byte[] buffer = new byte[16 + 1];
+        buffer[0] = SSD1306_SETSTARTLINE;
+        
         for (int i = 0; i < ((DISPLAY_WIDTH * DISPLAY_HEIGHT / 8) / 16); i++) {
             // send a bunch of data in one transmission
-        	writeBufferAtAddress(SSD1306_SETSTARTLINE, i*16, imageBuffer, 16);
+    		System.arraycopy(imageBuffer, i*16, buffer, 1, 16);
+        	writeBulk(buffer);
         }
     }
 
-    public synchronized void refreshLine(int row) throws IOException {
-        writeCommand(SSD1306_COLUMNADDR);
-        writeCommand((byte) 0);   // Column start address (0 = reset)
-        writeCommand((byte) (DISPLAY_WIDTH - 1)); // Column end address (127 = reset)
-
-        writeCommand(SSD1306_PAGEADDR);
-        writeCommand((byte) 0); // Page start address (0 = reset)
-        writeCommand((byte) 7); // Page end address
-
-        // the display buffer is loaded in 16 byte chucks
-        // for a monochrome display, this is 64 pixels
-        // on a 128x64 display, this is one pixel line
-        if ((row >= 0) && (row < this.maxLines)) {
-        	int pixelHeight= currentFont.getOuterHeight();
-            for (int i = (row * pixelHeight); i < ((row+1) * pixelHeight); i++) {
-                // send a bunch of data in one transmission
-            	writeBufferAtAddress(SSD1306_SETSTARTLINE, i*16, imageBuffer, 16);
-            }
-        }
+    public synchronized void refreshLine(int row) throws NACKException {
+    	// TODO refreshLine() method does not work and temporarily redirects to a full refresh()
+    	refresh();
     }
 
     // the I2C OLED Display supports hardware horizontal scrolling
@@ -471,7 +407,7 @@ public class OLEDDisplay {
     		clear();
     		refresh();
     		//now we close the bus
-    	} catch (IOException ex) {
+    	} catch (NACKException ex) {
     		Robot.robotLogger.log(Logger.INFO, this, "Closing i2c bus");
     	}
     }

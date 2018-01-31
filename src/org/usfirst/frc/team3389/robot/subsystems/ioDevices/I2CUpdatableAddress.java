@@ -38,27 +38,136 @@ public class I2CUpdatableAddress extends I2C {
 		this._device = deviceAddress;
 	}
 
-	public byte readByte(int registerAddress) {
-		byte val = 0;
-		byte[] buffer = new byte[1];
-		read(registerAddress, 1, buffer);
-		val = (byte) (buffer[0] & 0xff);
-		return val;
+    /**
+     * Read a single bit from an 8-bit device register.
+     *
+     * @param reg Register regAddr to read from
+     * @param bit Bit position to read (0-7)
+     * @return Status of read operation 'transaction aborted ?'
+     */
+    public boolean readBitBoolean(int reg, int bit, boolean[] data){
+        byte[] a = new byte[1];
+        boolean failed = readBit(reg, bit, a);
+        data[0] = (a[0] & 0x01) != 0;
+		if (failed)
+			Robot.robotLogger.log(Logger.INFO, this, "read failed");
+		return failed;
+    }
+
+    /**
+     * Read a single bit from an 8-bit device register.
+     *
+     * @param reg Register regAddr to read from
+     * @param bit Bit position to read (0-7)
+     * @param data Container for single bit value
+     * @return Status of read operation 'transaction aborted ?'
+     */
+    public boolean readBit(int reg, int bit, byte[] data){
+        boolean failed = readByte(reg, data);
+        data[0] = (byte) (data[0] & (1 << bit));
+		if (failed)
+			Robot.robotLogger.log(Logger.INFO, this, "read failed");
+		return failed;
+    }
+    
+    /**
+     * Read multiple bits from an 8-bit device register.
+     *
+     * @param reg Register regAddr to read from
+     * @param bitStart First bit position to read (0-7)
+     * @param length Number of bits to read (not more than 8)
+     * @param data Container for right-aligned value (i.e. '101' read from any bitStart position will equal 0x05)
+     * @return Status of read operation 'transaction aborted ?'
+     */
+    public boolean readBits(int reg, int bitStart, int length, byte[] data){
+        byte[] b = new byte[1];
+        if (readByte(reg, b)) {
+        	Robot.robotLogger.log(Logger.INFO, this, "read failed");
+        	return true; // transaction failed
+        }
+        byte mask = (byte) (((1 << length) - 1) << (bitStart - length + 1));
+        b[0] &= mask;
+        b[0] >>= (byte) (bitStart - length + 1);
+        data[0] = b[0];
+        return false;
+    }
+
+    public boolean readByte(int registerAddress, byte[] data) {
+    	boolean failed = read(registerAddress, 1, data);
+		data[0] = (byte) (data[0] & 0xff);
+		if (failed)
+			Robot.robotLogger.log(Logger.INFO, this, "read failed");
+		return failed;
 	}
-	
-	public short readShort(int registerAddress) {
-		short val = 0;
-		ByteBuffer bufferResults = ByteBuffer.allocateDirect(2);
-		read(registerAddress, 2, bufferResults);
-		val = bufferResults.getShort();
-		return val;
+
+	public boolean readShort(int registerAddress, short[] data) {
+		ByteBuffer buffer = ByteBuffer.allocate(2);
+		boolean failed = read(registerAddress, 2, buffer);
+		data[0] = buffer.getShort();
+		if (failed)
+			Robot.robotLogger.log(Logger.INFO, this, "read failed");
+		return failed;
 	}
-	
+
+
+	   /**
+     * write a single bit in an 8-bit device register.
+     *
+     * @param reg Register regAddr to write to
+     * @param bit Bit position to write (0-7)
+     * @param value New bit value to write
+     * @return 'transaction aborted ?'
+     */
+    public synchronized final boolean writeBit(int reg, int bit, byte value){
+        return writeBit(reg, bit, value != 0);
+    }
+
+    /**
+     * write a single bit in an 8-bit device register.
+     *
+     * @param reg Register regAddr to write to
+     * @param bit Bit position to write (0-7)
+     * @param value New bit value to write
+     * @return 'transaction aborted ?'
+     */
+    public boolean writeBit(int reg, int bit, boolean value){
+        byte[] b = new byte[1];
+        if (readByte(reg, b)) {
+        	Robot.robotLogger.log(Logger.INFO, this, "read failed");
+        	return true; // transaction failed
+        }
+        b[0] = (byte) (value ? (b[0] | (1 << bit)) : (b[0] & ~(1 << bit)));
+        return writeByte(reg, b[0]);
+    }
+
+    /**
+     * Write multiple bits in an 8-bit device register.
+     *
+     * @param reg Register regAddr to write to
+     * @param bitStart First bit position to write (0-7)
+     * @param length Number of bits to write (not more than 8)
+     * @param data Right-aligned value to write
+     * @return 'transaction aborted ?'
+     */
+    public boolean writeBits(int reg, int bitStart, int length, byte data){
+        byte[] b = new byte[1];
+        if(readByte(reg, b)) {
+        	Robot.robotLogger.log(Logger.INFO, this, "read failed");
+        	return true; // transaction failed
+        }
+        byte mask = (byte) (((1 << length) - 1) << (bitStart - length + 1));
+        data <<= (bitStart - length + 1);
+        data &= mask;
+        b[0] &= ~(mask);
+        b[0] |= data;
+        return writeByte(reg, b[0]);
+    }
+
 	public boolean writeByte(int registerAddress, byte data) {
 		// simple passthru to maintain API consistency with 'read' methods
 		boolean failed = write(registerAddress, (((int)data) & 0xff));
 		if (failed)
-			Robot.robotLogger.log(Logger.INFO, this, "writeByte failed");
+			Robot.robotLogger.log(Logger.INFO, this, "write failed");
 		return failed;
 	}
 
@@ -66,7 +175,7 @@ public class I2CUpdatableAddress extends I2C {
 		// simple passthru to maintain API consistency with 'read' methods
 		boolean failed = write(registerAddress, (data & 0xff));
 		if (failed)
-			Robot.robotLogger.log(Logger.INFO, this, "writeByte failed");
+			Robot.robotLogger.log(Logger.INFO, this, "write failed");
 		return failed;
 	}
 	
@@ -75,7 +184,10 @@ public class I2CUpdatableAddress extends I2C {
 		ByteBuffer registerWithDataToSendBuffer = ByteBuffer.allocateDirect(3);
 		registerWithDataToSendBuffer.put((byte) registerAddress);
 		registerWithDataToSendBuffer.putShort(1, (short) data);
-		return writeBulk(registerWithDataToSendBuffer, 3);
+		boolean failed = writeBulk(registerWithDataToSendBuffer, 3);
+		if (failed)
+			Robot.robotLogger.log(Logger.INFO, this, "write failed");
+		return failed;
 	}
 
 	
@@ -122,10 +234,10 @@ public class I2CUpdatableAddress extends I2C {
 
 	public final int getAddressFromDevice(int deviceCommandGetAddress) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-		byte val;
-		val = readByte(deviceCommandGetAddress);
+		byte[] val = new byte[1];
+		readByte(deviceCommandGetAddress, val);
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
-		return val;
+		return val[0];
 	}
 
 }

@@ -83,7 +83,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 		// sensor uses 1V8 mode for I/O by default; switch to 2V8 mode if necessary
 		if (io_2v8) {
 			write(VL53L0X_Constants.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV.value,
-					readByte(VL53L0X_Constants.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV.value) | 0x01); // set bit 0
+					readByteNoErr(VL53L0X_Constants.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV.value) | 0x01); // set bit 0
 		}
 
 		// "Set I2C standard mode"
@@ -92,7 +92,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 		write(0x80, 0x01);
 		write(0xFF, 0x01);
 		write(0x00, 0x00);
-		stop_variable = readByte(0x91);
+		stop_variable = readByteNoErr(0x91);
 		write(0x00, 0x01);
 		write(0xFF, 0x00);
 		write(0x80, 0x00);
@@ -100,7 +100,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 		// disable SIGNAL_RATE_MSRC (bit 1) and SIGNAL_RATE_PRE_RANGE (bit 4) limit
 		// checks
 		write(VL53L0X_Constants.MSRC_CONFIG_CONTROL.value,
-				readByte(VL53L0X_Constants.MSRC_CONFIG_CONTROL.value) | 0x12);
+				readByteNoErr(VL53L0X_Constants.MSRC_CONFIG_CONTROL.value) | 0x12);
 
 		// set final range signal rate limit to 0.25 MCPS (million counts per second)
 		setSignalRateLimit(0.25f);
@@ -240,7 +240,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 		write(0x80, 0x00);
 
 		write(VL53L0X_Constants.SYSTEM_INTERRUPT_CONFIG_GPIO.value, 0x04);
-		write(VL53L0X_Constants.GPIO_HV_MUX_ACTIVE_HIGH.value, readByte(VL53L0X_Constants.GPIO_HV_MUX_ACTIVE_HIGH.value) & ~0x10); // active low
+		write(VL53L0X_Constants.GPIO_HV_MUX_ACTIVE_HIGH.value, readByteNoErr(VL53L0X_Constants.GPIO_HV_MUX_ACTIVE_HIGH.value) & ~0x10); // active low
 		write(VL53L0X_Constants.SYSTEM_INTERRUPT_CLEAR.value, 0x01);
 
 		// -- VL53L0X_SetGpioConfig() end
@@ -312,7 +312,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 
 		// "Wait until start bit has been cleared"
 		startTimeout();
-		while ((readByte(VL53L0X_Constants.SYSRANGE_START.value) & 0x01) == 0x01) {
+		while ((readByteNoErr(VL53L0X_Constants.SYSRANGE_START.value) & 0x01) == 0x01) {
 			if (checkTimeoutExpired()) {
 				did_timeout = true;
 				Robot.robotLogger.log(Logger.WARNING, this, "timeout reading single range");
@@ -329,7 +329,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 	public int readRangeContinuousMillimeters() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		startTimeout();
-		while ((readByte(VL53L0X_Constants.RESULT_INTERRUPT_STATUS.value) & 0x07) == 0) {
+		while ((readByteNoErr(VL53L0X_Constants.RESULT_INTERRUPT_STATUS.value) & 0x07) == 0) {
 			if (checkTimeoutExpired()) {
 				did_timeout = true;
 				Robot.robotLogger.log(Logger.INFO, this, "timeout reading continuous range");
@@ -342,7 +342,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 		// ByteBuffer byte_buffer_range =
 		// read16(VL53L0X_Constants.RESULT_RANGE_STATUS.value + 10);
 
-		short range = readShort(VL53L0X_Constants.RESULT_RANGE_STATUS.value + 10);
+		short range = readShortNoErr(VL53L0X_Constants.RESULT_RANGE_STATUS.value + 10);
 
 		write(VL53L0X_Constants.SYSTEM_INTERRUPT_CLEAR.value, 0x01);
 		// byte_buffer_range.clear();
@@ -352,7 +352,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 
 	public final int getAddressFromDevice() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-		int val = (int) readByte(VL53L0X_Constants.I2C_SLAVE_DEVICE_ADDRESS.value);
+		int val = (int) readByteNoErr(VL53L0X_Constants.I2C_SLAVE_DEVICE_ADDRESS.value);
 		Robot.robotLogger.log(Logger.DEBUG, this, "current address is 0x" + Integer.toHexString(val));
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 		return val;
@@ -391,7 +391,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 		write(0x00, 0x00);
 
 		write(0xFF, 0x06);
-		write(0x83, readByte(0x83) | 0x04);
+		write(0x83, readByteNoErr(0x83) | 0x04);
 		write(0xFF, 0x07);
 		write(0x81, 0x01);
 
@@ -400,13 +400,13 @@ public class VL53L0X extends I2CUpdatableAddress {
 		write(0x94, 0x6b);
 		write(0x83, 0x00);
 		startTimeout();
-		while (readByte(0x83) == 0x00) {
+		while (readByteNoErr(0x83) == 0x00) {
 			if (checkTimeoutExpired()) {
 				return false;
 			}
 		}
 		write(0x83, 0x01);
-		tmp_byte = readByte(0x92);
+		tmp_byte = readByteNoErr(0x92);
 
 		count[0] = (byte) (tmp_byte & 0x7f);
 		// count.put(0, count_byte);
@@ -415,7 +415,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 
 		write(0x81, 0x00);
 		write(0xFF, 0x06);
-		write(0x83, readByte(0x83 & ~0x04));
+		write(0x83, readByteNoErr(0x83 & ~0x04));
 		write(0xFF, 0x01);
 		write(0x00, 0x01);
 
@@ -428,7 +428,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 	// Get the measurement timing budget in microseconds
 	// based on VL53L0X_get_measurement_timing_budget_micro_seconds()
 	// in us
-	int getMeasurementTimingBudget() {
+	private int getMeasurementTimingBudget() {
 		SequenceStepEnables enables = new SequenceStepEnables();
 		SequenceStepTimeouts timeouts = new SequenceStepTimeouts();
 
@@ -555,7 +555,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 	// Get sequence step enables
 	// based on VL53L0X_GetSequenceStepEnables()
 	private void getSequenceStepEnables(SequenceStepEnables enables) {
-		byte sequence_config = readByte(VL53L0X_Constants.SYSTEM_SEQUENCE_CONFIG.value);
+		byte sequence_config = readByteNoErr(VL53L0X_Constants.SYSTEM_SEQUENCE_CONFIG.value);
 
 		enables.tcc = (byte) ((sequence_config >> 4) & 0x1);
 		enables.dss = (byte) ((sequence_config >> 3) & 0x1);
@@ -580,18 +580,18 @@ public class VL53L0X extends I2CUpdatableAddress {
 	private void getSequenceStepTimeouts(SequenceStepEnables enables, SequenceStepTimeouts timeouts) {
 		timeouts.pre_range_vcsel_period_pclks = getVcselPulsePeriod(vcselPeriodType.VcselPeriodPreRange);
 
-		timeouts.msrc_dss_tcc_mclks = (short) (readByte(VL53L0X_Constants.MSRC_CONFIG_TIMEOUT_MACROP.value) + 1);
+		timeouts.msrc_dss_tcc_mclks = (short) (readByteNoErr(VL53L0X_Constants.MSRC_CONFIG_TIMEOUT_MACROP.value) + 1);
 		timeouts.msrc_dss_tcc_us = timeoutMclksToMicroseconds(timeouts.msrc_dss_tcc_mclks,
 				timeouts.pre_range_vcsel_period_pclks);
 
 		short result;
-		result = readShort(VL53L0X_Constants.PRE_RANGE_CONFIG_TIMEOUT_MACROP_HI.value);
+		result = readShortNoErr(VL53L0X_Constants.PRE_RANGE_CONFIG_TIMEOUT_MACROP_HI.value);
 		timeouts.pre_range_mclks = decodeTimeout(result);
 		timeouts.pre_range_us = timeoutMclksToMicroseconds(timeouts.pre_range_mclks,
 				timeouts.pre_range_vcsel_period_pclks);
 
 		timeouts.final_range_vcsel_period_pclks = getVcselPulsePeriod(vcselPeriodType.VcselPeriodFinalRange);
-		result = readShort(VL53L0X_Constants.FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI.value);
+		result = readShortNoErr(VL53L0X_Constants.FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI.value);
 		timeouts.final_range_mclks = decodeTimeout(result);
 
 		if (enables.pre_range == 0x01) {
@@ -639,9 +639,9 @@ public class VL53L0X extends I2CUpdatableAddress {
 	// based on VL53L0X_get_vcsel_pulse_period()
 	byte getVcselPulsePeriod(vcselPeriodType type) {
 		if (type == vcselPeriodType.VcselPeriodPreRange) {
-			return (byte) decodeVcselPeriod(readByte(VL53L0X_Constants.PRE_RANGE_CONFIG_VCSEL_PERIOD.value));
+			return (byte) decodeVcselPeriod(readByteNoErr(VL53L0X_Constants.PRE_RANGE_CONFIG_VCSEL_PERIOD.value));
 		} else if (type == vcselPeriodType.VcselPeriodFinalRange) {
-			return (byte) decodeVcselPeriod(readByte(VL53L0X_Constants.FINAL_RANGE_CONFIG_VCSEL_PERIOD.value));
+			return (byte) decodeVcselPeriod(readByteNoErr(VL53L0X_Constants.FINAL_RANGE_CONFIG_VCSEL_PERIOD.value));
 		} else {
 			return (byte) 255;
 		}
@@ -683,7 +683,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 		write(VL53L0X_Constants.SYSRANGE_START.value, 0x01 | vhv_init_byte); // VL53L0X_REG_SYSRANGE_MODE_START_STOP
 
 		startTimeout();
-		while ((readByte(VL53L0X_Constants.RESULT_INTERRUPT_STATUS.value) & 0x07) == 0) {
+		while ((readByteNoErr(VL53L0X_Constants.RESULT_INTERRUPT_STATUS.value) & 0x07) == 0) {
 			if (checkTimeoutExpired()) {
 				return false;
 			}
@@ -695,4 +695,19 @@ public class VL53L0X extends I2CUpdatableAddress {
 
 		return true;
 	}
+
+	// local private helper methods which ignore error handling
+	
+	public byte readByteNoErr(int registerAddress) {
+    	byte[] data = new byte[1];
+    	readByte(registerAddress, data);
+    	return data[0];
+    }
+	
+    public short readShortNoErr(int registerAddress) {
+    	short[] data = new short[1];
+    	readShort(registerAddress, data);
+    	return data[0];
+    }
+	
 }

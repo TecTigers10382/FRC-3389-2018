@@ -61,15 +61,15 @@ public class Drive extends Command {
 	protected void execute() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 
-		double left = -driveStick.getRawAxis(1);
-		double right = -driveStick.getRawAxis(5);
+		double left = driveStick.getRawAxis(1);
+		double right = driveStick.getRawAxis(5);
 
 
 
 		if (Math.abs(left) < .1)
 			left = 0;
 		if (Math.abs(right) < .1)
-			left = 0;
+			right = 0;
 		
 		Robot.driveTrain.tankDrive(left, right);
 		

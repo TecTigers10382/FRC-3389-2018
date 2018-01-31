@@ -66,10 +66,10 @@ public class IntakeStick extends Command {
 
 		double power = intakeStick.getRawAxis(1);
 
-		Robot.intake.driveBoth(power);
-
 		if (Math.abs(power) < .1)
 			power = 0;
+		
+		Robot.intake.driveBoth(power/2);
 		
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 

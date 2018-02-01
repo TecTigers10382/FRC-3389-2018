@@ -80,9 +80,9 @@ public enum VL53L0X_Constants {
 	ALGO_PHASECAL_LIM(0x30),
 	ALGO_PHASECAL_CONFIG_TIMEOUT(0x30);
 	
-	public final int value;
+	public final byte value;
 	
 	private VL53L0X_Constants(int value) {
-		this.value = value;
+		this.value = (byte) value;
 	}
 }

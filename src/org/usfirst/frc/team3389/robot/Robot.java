@@ -38,7 +38,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
 
 	// Initialize all subsystems
-	public static final Logger robotLogger = new Logger(Logger.INFO);
+	public static final Logger robotLogger = new Logger(Logger.DEBUG);
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
 	public static final OLEDDisplay robotScreen = new OLEDDisplay();;
 	public static final DriveTrain driveTrain = new DriveTrain();
@@ -59,6 +59,8 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
 		m_oi = new OI();
+		if (!robotScreen.init())
+			robotLogger.log(Logger.ERROR, this, "failted to initialize OLED display");
 		m_chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", m_chooser);
@@ -185,7 +187,7 @@ public class Robot extends TimedRobot {
 		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "enter");
 
 		// Display on SmartDashboard
-		SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());
+		//SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());
 
 		Scheduler.getInstance().run();
 
@@ -205,7 +207,9 @@ public class Robot extends TimedRobot {
 
 		// quick test of time-of-flight sensor
 		// System.out.println("range distance = " + timeOfFlight.getDistanceMillimeters() + "mm");
-		// robotScreen.updateTextLine("range = " + timeOfFlight.getDistanceMillimeters() + "mm", 0);
+		// robotScreen.drawTextLine("test message", 0);
+		// robotScreen.drawTextLine("range = " + timeOfFlight.getDistanceMillimeters() + "mm", 1);
+		// robotScreen.refresh();
 
 		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "exit");
 	}

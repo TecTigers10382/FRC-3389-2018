@@ -12,9 +12,10 @@ package org.usfirst.frc.team3389.robot.subsystems.ioDevices.VL53L0X;
 import java.nio.ByteBuffer;
 
 import org.usfirst.frc.team3389.robot.Robot;
+import org.usfirst.frc.team3389.robot.subsystems.ioDevices.I2CUpdatableAddress;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
-import edu.wpi.first.wpilibj.hal.HALUtil;
+import edu.wpi.first.wpilibj.RobotController;
 
 /**
  * 
@@ -23,17 +24,15 @@ import edu.wpi.first.wpilibj.hal.HALUtil;
  */
 public class VL53L0X extends I2CUpdatableAddress {
 
-	private Port m_port = Port.kMXP;
 	// Store address given when the class is initialized.
 
 	private static final int defaultAddress = 0x29;
 	// The value of the address above the default address.
 	private int deviceAddressOffset;
-	// private int _i2caddress;
 	private byte stop_variable;
 	private int measurement_timing_budget_us;
-	private short timeout_start_ms;
-	private short io_timeout = 0;
+	private long timeout_start_ms;
+	private long io_timeout = 1000000; // microseconds
 	private boolean did_timeout;
 
 	private enum BYTE_SIZE {
@@ -77,14 +76,14 @@ public class VL53L0X extends I2CUpdatableAddress {
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
-	public final boolean init(boolean io_2v8) throws NACKException {
+	public final boolean init(boolean io_2v8) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		// Start by changing to new address. This is required after every power up.
-		setAddress(defaultAddress + deviceAddressOffset);
+		// setAddress(defaultAddress + deviceAddressOffset);
 		// sensor uses 1V8 mode for I/O by default; switch to 2V8 mode if necessary
 		if (io_2v8) {
 			write(VL53L0X_Constants.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV.value,
-					read(VL53L0X_Constants.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV.value).get() | 0x01); // set bit 0
+					readByteNoErr(VL53L0X_Constants.VHV_CONFIG_PAD_SCL_SDA__EXTSUP_HV.value) | 0x01); // set bit 0
 		}
 
 		// "Set I2C standard mode"
@@ -93,7 +92,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 		write(0x80, 0x01);
 		write(0xFF, 0x01);
 		write(0x00, 0x00);
-		stop_variable = read(0x91).get();
+		stop_variable = readByteNoErr(0x91);
 		write(0x00, 0x01);
 		write(0xFF, 0x00);
 		write(0x80, 0x00);
@@ -101,7 +100,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 		// disable SIGNAL_RATE_MSRC (bit 1) and SIGNAL_RATE_PRE_RANGE (bit 4) limit
 		// checks
 		write(VL53L0X_Constants.MSRC_CONFIG_CONTROL.value,
-				read(VL53L0X_Constants.MSRC_CONFIG_CONTROL.value).get() | 0x12);
+				readByteNoErr(VL53L0X_Constants.MSRC_CONFIG_CONTROL.value) | 0x12);
 
 		// set final range signal rate limit to 0.25 MCPS (million counts per second)
 		setSignalRateLimit(0.25f);
@@ -144,7 +143,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 
 		ByteBuffer ref_spad_map2 = ByteBuffer.allocateDirect(6);
 		ref_spad_map2.put(ref_spad_map_array);
-		writeBulk(VL53L0X_Constants.GLOBAL_CONFIG_SPAD_ENABLES_REF_0.value, ref_spad_map2, 6);
+		writeBulkAddress(VL53L0X_Constants.GLOBAL_CONFIG_SPAD_ENABLES_REF_0.value, ref_spad_map2, 6);
 
 		write(0xFF, 0x01);
 		write(0x00, 0x00);
@@ -241,8 +240,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 		write(0x80, 0x00);
 
 		write(VL53L0X_Constants.SYSTEM_INTERRUPT_CONFIG_GPIO.value, 0x04);
-		write(VL53L0X_Constants.GPIO_HV_MUX_ACTIVE_HIGH.value,
-				read(VL53L0X_Constants.GPIO_HV_MUX_ACTIVE_HIGH.value).get() & ~0x10); // active low
+		write(VL53L0X_Constants.GPIO_HV_MUX_ACTIVE_HIGH.value, readByteNoErr(VL53L0X_Constants.GPIO_HV_MUX_ACTIVE_HIGH.value) & ~0x10); // active low
 		write(VL53L0X_Constants.SYSTEM_INTERRUPT_CLEAR.value, 0x01);
 
 		// -- VL53L0X_SetGpioConfig() end
@@ -301,7 +299,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 	// Performs a single-shot range measurement and returns the reading in
 	// millimeters
 	// based on VL53L0X_PerformSingleRangingMeasurement()
-	public int readRangeSingleMillimeters() throws NACKException {
+	public int readRangeSingleMillimeters() {
 		write(0x80, 0x01);
 		write(0xFF, 0x01);
 		write(0x00, 0x00);
@@ -314,7 +312,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 
 		// "Wait until start bit has been cleared"
 		startTimeout();
-		while ((read(VL53L0X_Constants.SYSRANGE_START.value).get() & 0x01) == 0x01) {
+		while ((readByteNoErr(VL53L0X_Constants.SYSRANGE_START.value) & 0x01) == 0x01) {
 			if (checkTimeoutExpired()) {
 				did_timeout = true;
 				Robot.robotLogger.log(Logger.WARNING, this, "timeout reading single range");
@@ -328,10 +326,10 @@ public class VL53L0X extends I2CUpdatableAddress {
 	// Returns a range reading in millimeters when continuous mode is active
 	// (readRangeSingleMillimeters() also calls this function after starting a
 	// single-shot range measurement)
-	public int readRangeContinuousMillimeters() throws NACKException {
+	public int readRangeContinuousMillimeters() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		startTimeout();
-		while ((read(VL53L0X_Constants.RESULT_INTERRUPT_STATUS.value).get() & 0x07) == 0) {
+		while ((readByteNoErr(VL53L0X_Constants.RESULT_INTERRUPT_STATUS.value) & 0x07) == 0) {
 			if (checkTimeoutExpired()) {
 				did_timeout = true;
 				Robot.robotLogger.log(Logger.INFO, this, "timeout reading continuous range");
@@ -344,7 +342,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 		// ByteBuffer byte_buffer_range =
 		// read16(VL53L0X_Constants.RESULT_RANGE_STATUS.value + 10);
 
-		short range = read16(VL53L0X_Constants.RESULT_RANGE_STATUS.value + 10).getShort();
+		short range = readShortNoErr(VL53L0X_Constants.RESULT_RANGE_STATUS.value + 10);
 
 		write(VL53L0X_Constants.SYSTEM_INTERRUPT_CLEAR.value, 0x01);
 		// byte_buffer_range.clear();
@@ -352,76 +350,18 @@ public class VL53L0X extends I2CUpdatableAddress {
 		return range;
 	}
 
-	public final int setAddress(int new_address) throws NACKException {
-		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-		// NOTICE: CHANGING THE ADDRESS IS NOT STORED IN NON-VOLATILE MEMORY
-		// POWER CYCLING THE DEVICE REVERTS ADDRESS BACK TO 0x29
-		// Field field = I2C.class.getDeclaredField("m_deviceAddress");
-		// field.setAccessible(true);
-		//
-		// int deviceAddress = (int) field.get(this);
-
-		Robot.robotLogger.log(Logger.DEBUG, this, "setting address to 0x" + Integer.toHexString(new_address));
-
-		if (m_deviceAddress == new_address) {
-			Robot.robotLogger.log(Logger.DEBUG, this, "exit - no address change required");
-			return m_deviceAddress;
-		}
-		// Device addresses cannot go higher than 127
-		if (new_address > 127) {
-			Robot.robotLogger.log(Logger.ERROR, this, "address out of range");
-			return m_deviceAddress;
-		}
-
-		boolean success = write(VL53L0X_Constants.I2C_SLAVE_DEVICE_ADDRESS.value, new_address & 0x7F);
-		if (success) {
-			m_deviceAddress = new_address;
-		}
-		else
-			Robot.robotLogger.log(Logger.ERROR, this, "failed to change address");
-		
-		int val = getAddressFromDevice();
-		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
-		return val;
-	}
-
 	public final int getAddressFromDevice() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-		ByteBuffer deviceAddress = ByteBuffer.allocateDirect(BYTE_SIZE.SINGLE.value);
-		read(VL53L0X_Constants.I2C_SLAVE_DEVICE_ADDRESS.value, BYTE_SIZE.SINGLE.value, deviceAddress);
-
-		int val = deviceAddress.get();
+		int val = (int) readByteNoErr(VL53L0X_Constants.I2C_SLAVE_DEVICE_ADDRESS.value);
 		Robot.robotLogger.log(Logger.DEBUG, this, "current address is 0x" + Integer.toHexString(val));
-
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 		return val;
 	}
 
-	// Writing two bytes of data back-to-back is a special case of writeBulk
-	public synchronized boolean write16(int registerAddress, int data) {
-		ByteBuffer registerWithDataToSendBuffer = ByteBuffer.allocateDirect(3);
-		registerWithDataToSendBuffer.put((byte) registerAddress);
-		registerWithDataToSendBuffer.putShort(1, (short) data);
-		return writeBulk(registerWithDataToSendBuffer, 3);
-	}
-
-	public synchronized boolean writeBulk(int registerAddress, ByteBuffer data, int size) {
+	public synchronized boolean writeBulkAddress(int registerAddress, ByteBuffer data, int size) {
 		ByteBuffer registerWithDataToSendBuffer = ByteBuffer.allocateDirect(size + 1);
 		registerWithDataToSendBuffer.put(data);
 		return writeBulk(registerWithDataToSendBuffer, size + 1);
-	}
-
-	private ByteBuffer read(int registerAddress) {
-		ByteBuffer bufferResults = ByteBuffer.allocateDirect(BYTE_SIZE.SINGLE.value);
-		read(registerAddress, BYTE_SIZE.SINGLE.value, bufferResults);
-		return bufferResults;
-	}
-
-	// Reading two bytes of data back-to-back is a special, 2-byte case of read
-	private ByteBuffer read16(int registerAddress) {
-		ByteBuffer bufferResults = ByteBuffer.allocateDirect(BYTE_SIZE.DOUBLE.value);
-		read(registerAddress, BYTE_SIZE.DOUBLE.value, bufferResults);
-		return bufferResults;
 	}
 
 	// Set the return signal rate limit check value in units of MCPS (mega counts
@@ -436,14 +376,14 @@ public class VL53L0X extends I2CUpdatableAddress {
 		if (limit_Mcps < 0 || limit_Mcps > 511.99) {
 			return false;
 		}
-		write16(VL53L0X_Constants.FINAL_RANGE_CONFIG_MIN_COUNT_RATE_RTN_LIMIT.value, (int) (limit_Mcps * (1 << 7)));
+		writeShort(VL53L0X_Constants.FINAL_RANGE_CONFIG_MIN_COUNT_RATE_RTN_LIMIT.value, (int) (limit_Mcps * (1 << 7)));
 		return true;
 	}
 
 	// Get reference SPAD (single photon avalanche diode) count and type
 	// based on VL53L0X_get_info_from_device(),
 	// but only gets reference SPAD count and type
-	private boolean getSpadInfo(byte[] count, BooleanCarrier type_is_aperture) throws NACKException {
+	private boolean getSpadInfo(byte[] count, BooleanCarrier type_is_aperture) {
 		byte tmp_byte = 0x00; // ByteBuffer.allocateDirect(BYTE_SIZE.SINGLE.value);
 
 		write(0x80, 0x01);
@@ -451,7 +391,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 		write(0x00, 0x00);
 
 		write(0xFF, 0x06);
-		write(0x83, read(0x83).get() | 0x04);
+		write(0x83, readByteNoErr(0x83) | 0x04);
 		write(0xFF, 0x07);
 		write(0x81, 0x01);
 
@@ -460,13 +400,13 @@ public class VL53L0X extends I2CUpdatableAddress {
 		write(0x94, 0x6b);
 		write(0x83, 0x00);
 		startTimeout();
-		while (read(0x83).get() == 0x00) {
+		while (readByteNoErr(0x83) == 0x00) {
 			if (checkTimeoutExpired()) {
 				return false;
 			}
 		}
 		write(0x83, 0x01);
-		tmp_byte = read(0x92).get();
+		tmp_byte = readByteNoErr(0x92);
 
 		count[0] = (byte) (tmp_byte & 0x7f);
 		// count.put(0, count_byte);
@@ -475,7 +415,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 
 		write(0x81, 0x00);
 		write(0xFF, 0x06);
-		write(0x83, read(0x83 & ~0x04).get());
+		write(0x83, readByteNoErr(0x83 & ~0x04));
 		write(0xFF, 0x01);
 		write(0x00, 0x01);
 
@@ -488,7 +428,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 	// Get the measurement timing budget in microseconds
 	// based on VL53L0X_get_measurement_timing_budget_micro_seconds()
 	// in us
-	int getMeasurementTimingBudget() {
+	private int getMeasurementTimingBudget() {
 		SequenceStepEnables enables = new SequenceStepEnables();
 		SequenceStepTimeouts timeouts = new SequenceStepTimeouts();
 
@@ -602,7 +542,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 				final_range_timeout_mclks += timeouts.pre_range_mclks;
 			}
 
-			write16(VL53L0X_Constants.FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI.value,
+			writeShort(VL53L0X_Constants.FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI.value,
 					encodeTimeout(final_range_timeout_mclks));
 
 			// set_sequence_step_timeout() end
@@ -615,7 +555,7 @@ public class VL53L0X extends I2CUpdatableAddress {
 	// Get sequence step enables
 	// based on VL53L0X_GetSequenceStepEnables()
 	private void getSequenceStepEnables(SequenceStepEnables enables) {
-		byte sequence_config = read(VL53L0X_Constants.SYSTEM_SEQUENCE_CONFIG.value).get();
+		byte sequence_config = readByteNoErr(VL53L0X_Constants.SYSTEM_SEQUENCE_CONFIG.value);
 
 		enables.tcc = (byte) ((sequence_config >> 4) & 0x1);
 		enables.dss = (byte) ((sequence_config >> 3) & 0x1);
@@ -640,19 +580,19 @@ public class VL53L0X extends I2CUpdatableAddress {
 	private void getSequenceStepTimeouts(SequenceStepEnables enables, SequenceStepTimeouts timeouts) {
 		timeouts.pre_range_vcsel_period_pclks = getVcselPulsePeriod(vcselPeriodType.VcselPeriodPreRange);
 
-		timeouts.msrc_dss_tcc_mclks = (short) (read(VL53L0X_Constants.MSRC_CONFIG_TIMEOUT_MACROP.value).get() + 1);
+		timeouts.msrc_dss_tcc_mclks = (short) (readByteNoErr(VL53L0X_Constants.MSRC_CONFIG_TIMEOUT_MACROP.value) + 1);
 		timeouts.msrc_dss_tcc_us = timeoutMclksToMicroseconds(timeouts.msrc_dss_tcc_mclks,
 				timeouts.pre_range_vcsel_period_pclks);
 
-		ByteBuffer result = ByteBuffer.allocateDirect(2);
-		read(VL53L0X_Constants.PRE_RANGE_CONFIG_TIMEOUT_MACROP_HI.value, 2, result);
-		timeouts.pre_range_mclks = decodeTimeout(result.get());
+		short result;
+		result = readShortNoErr(VL53L0X_Constants.PRE_RANGE_CONFIG_TIMEOUT_MACROP_HI.value);
+		timeouts.pre_range_mclks = decodeTimeout(result);
 		timeouts.pre_range_us = timeoutMclksToMicroseconds(timeouts.pre_range_mclks,
 				timeouts.pre_range_vcsel_period_pclks);
 
 		timeouts.final_range_vcsel_period_pclks = getVcselPulsePeriod(vcselPeriodType.VcselPeriodFinalRange);
-		read(VL53L0X_Constants.FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI.value, 2, result);
-		timeouts.final_range_mclks = decodeTimeout(result.get());
+		result = readShortNoErr(VL53L0X_Constants.FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI.value);
+		timeouts.final_range_mclks = decodeTimeout(result);
 
 		if (enables.pre_range == 0x01) {
 			timeouts.final_range_mclks -= timeouts.pre_range_mclks;
@@ -683,14 +623,15 @@ public class VL53L0X extends I2CUpdatableAddress {
 	}
 
 	// Record the current time to check an upcoming timeout against
-	private int startTimeout() {
-		double now = HALUtil.getFPGATime() * 1000;
-		return (timeout_start_ms = (short) now);
+	private long startTimeout() {
+		long now  = RobotController.getFPGATime();
+		timeout_start_ms = now;
+		return (now);
 	}
 
 	// Check if timeout is enabled (set to nonzero value) and has expired
 	private boolean checkTimeoutExpired() {
-		double now = (HALUtil.getFPGATime() * 1000);
+		long now  = RobotController.getFPGATime();
 		return (io_timeout > 0 && (now - timeout_start_ms) > io_timeout);
 	}
 
@@ -698,9 +639,9 @@ public class VL53L0X extends I2CUpdatableAddress {
 	// based on VL53L0X_get_vcsel_pulse_period()
 	byte getVcselPulsePeriod(vcselPeriodType type) {
 		if (type == vcselPeriodType.VcselPeriodPreRange) {
-			return (byte) decodeVcselPeriod(read(VL53L0X_Constants.PRE_RANGE_CONFIG_VCSEL_PERIOD.value).get());
+			return (byte) decodeVcselPeriod(readByteNoErr(VL53L0X_Constants.PRE_RANGE_CONFIG_VCSEL_PERIOD.value));
 		} else if (type == vcselPeriodType.VcselPeriodFinalRange) {
-			return (byte) decodeVcselPeriod(read(VL53L0X_Constants.FINAL_RANGE_CONFIG_VCSEL_PERIOD.value).get());
+			return (byte) decodeVcselPeriod(readByteNoErr(VL53L0X_Constants.FINAL_RANGE_CONFIG_VCSEL_PERIOD.value));
 		} else {
 			return (byte) 255;
 		}
@@ -738,11 +679,11 @@ public class VL53L0X extends I2CUpdatableAddress {
 	}
 
 	// based on VL53L0X_perform_single_ref_calibration()
-	boolean performSingleRefCalibration(byte vhv_init_byte) throws NACKException {
+	boolean performSingleRefCalibration(byte vhv_init_byte) {
 		write(VL53L0X_Constants.SYSRANGE_START.value, 0x01 | vhv_init_byte); // VL53L0X_REG_SYSRANGE_MODE_START_STOP
 
 		startTimeout();
-		while ((read(VL53L0X_Constants.RESULT_INTERRUPT_STATUS.value).get() & 0x07) == 0) {
+		while ((readByteNoErr(VL53L0X_Constants.RESULT_INTERRUPT_STATUS.value) & 0x07) == 0) {
 			if (checkTimeoutExpired()) {
 				return false;
 			}
@@ -754,4 +695,19 @@ public class VL53L0X extends I2CUpdatableAddress {
 
 		return true;
 	}
+
+	// local private helper methods which ignore error handling
+	
+	public byte readByteNoErr(int registerAddress) {
+    	byte[] data = new byte[1];
+    	readByte(registerAddress, data);
+    	return data[0];
+    }
+	
+    public short readShortNoErr(int registerAddress) {
+    	short[] data = new short[1];
+    	readShort(registerAddress, data);
+    	return data[0];
+    }
+	
 }

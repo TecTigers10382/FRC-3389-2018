@@ -47,8 +47,7 @@ public class Robot extends TimedRobot {
 	public static final Lifter lifter= new Lifter();
 	public static final ExampleSubsystem kExampleSubsystem = new ExampleSubsystem();
 	public static OI m_oi;
-	Encoder leftEnc  = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
-	Encoder rightEnc = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
+	
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
 	
@@ -215,16 +214,5 @@ public class Robot extends TimedRobot {
 
 		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "exit");
 	}
-	public void encoderInit() {
-		leftEnc.setMaxPeriod(1);
-		leftEnc.setMinRate(10);
-		leftEnc.setDistancePerPulse(5);
-		leftEnc.setReverseDirection(true);
-		leftEnc.setSamplesToAverage(7);
-		rightEnc.setMaxPeriod(1);
-		rightEnc.setMinRate(10);
-		rightEnc.setDistancePerPulse(5);
-		rightEnc.setReverseDirection(true);
-		rightEnc.setSamplesToAverage(7);
-	}
+	
 }

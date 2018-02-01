@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class Drive extends Command {
 
 	Joystick driveStick;
+	
 
 	/**
 	 * Constructor gains control of the DriveTrain subsystem of the robot.

@@ -11,13 +11,13 @@ import org.usfirst.frc.team3389.robot.commands.ExampleCommand;
 import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team3389.robot.subsystems.ExampleSubsystem;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.OLEDDisplay;
-import org.usfirst.frc.team3389.robot.subsystems.ioDevices.QuadEncoder;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.TimeOfFlight;
 import org.usfirst.frc.team3389.robot.subsystems.manipulators.Intake;
 import org.usfirst.frc.team3389.robot.subsystems.manipulators.Lifter;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -45,14 +45,13 @@ public class Robot extends TimedRobot {
 	public static final DriveTrain driveTrain = new DriveTrain();
 	public static final Intake intake = new Intake();
 	public static final Lifter lifter= new Lifter();
-	public static final QuadEncoder leftEnc = new QuadEncoder();
-	public static final QuadEncoder rightEnc = new QuadEncoder();
 	public static final ExampleSubsystem kExampleSubsystem = new ExampleSubsystem();
 	public static OI m_oi;
-
+	Encoder leftEnc  = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
+	Encoder rightEnc = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
-
+	
 	/**
 	 * This function is run when the robot is first started up and should be used
 	 * for any initialization code.
@@ -61,6 +60,7 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
 		m_oi = new OI();
+		encoderInit();
 		if (!robotScreen.init())
 			robotLogger.log(Logger.ERROR, this, "failted to initialize OLED display");
 		m_chooser.addDefault("Default Auto", new ExampleCommand());
@@ -214,5 +214,17 @@ public class Robot extends TimedRobot {
 		// robotScreen.refresh();
 
 		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "exit");
+	}
+	public void encoderInit() {
+		leftEnc.setMaxPeriod(1);
+		leftEnc.setMinRate(10);
+		leftEnc.setDistancePerPulse(5);
+		leftEnc.setReverseDirection(true);
+		leftEnc.setSamplesToAverage(7);
+		rightEnc.setMaxPeriod(1);
+		rightEnc.setMinRate(10);
+		rightEnc.setDistancePerPulse(5);
+		rightEnc.setReverseDirection(true);
+		rightEnc.setSamplesToAverage(7);
 	}
 }

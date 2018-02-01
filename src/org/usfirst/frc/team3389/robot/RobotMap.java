@@ -31,8 +31,10 @@ public class RobotMap {
 	 * PWM IDs for intake motor controllers
 	 */
 	public final static int
-		INTAKE_LEFT=0,
-		INTAKE_RIGHT=1;
+		INTAKE_LEFT1=0,
+		INTAKE_LEFT2=1,
+		INTAKE_RIGHT1=2,
+		INTAKE_RIGHT2=3;
 	
 	
 	

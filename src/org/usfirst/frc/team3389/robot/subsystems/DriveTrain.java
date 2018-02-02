@@ -3,6 +3,7 @@ package org.usfirst.frc.team3389.robot.subsystems;
 import org.usfirst.frc.team3389.robot.Robot;
 import org.usfirst.frc.team3389.robot.RobotMap;
 import org.usfirst.frc.team3389.robot.commands.Drive;
+import org.usfirst.frc.team3389.robot.subsystems.ioDevices.QuadEncoder;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -10,7 +11,6 @@ import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.StickyFaults;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -26,8 +26,6 @@ public class DriveTrain extends Subsystem {
 	TalonSRX leftBack;
 	TalonSRX rightFront;
 	TalonSRX rightBack;
-	Encoder leftEnc  = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
-	Encoder rightEnc = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
 	StickyFaults LFsFaults = new StickyFaults();
 	StickyFaults RFsFaults = new StickyFaults();
 	StickyFaults LBsFaults = new StickyFaults();
@@ -42,12 +40,11 @@ public class DriveTrain extends Subsystem {
 	 */
 	public DriveTrain() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-
+		QuadEncoder.encoderInit();
 		leftFront = new TalonSRX(RobotMap.DRIVE_LEFTFRONT);
 		leftBack = new TalonSRX(RobotMap.DRIVE_LEFTBACK);
 		rightFront = new TalonSRX(RobotMap.DRIVE_RIGHTFRONT);
 		rightBack = new TalonSRX(RobotMap.DRIVE_RIGHTBACK);
-		encoderInit();
 		leftFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		leftBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
@@ -91,8 +88,8 @@ public class DriveTrain extends Subsystem {
 		rightBack.set(ControlMode.PercentOutput, rightPower);
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit" + leftFront.getMotorOutputPercent());
-		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + leftEnc.get());
-		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + rightEnc.get());
+		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + QuadEncoder.leftEnc.get());
+		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + QuadEncoder.rightEnc.get());
 	}
 
 	/**
@@ -165,19 +162,8 @@ public class DriveTrain extends Subsystem {
 		
 		clearStickyFaults();
 	}
-	public void encoderInit() {
-		leftEnc.setMaxPeriod(1);
-		leftEnc.setMinRate(10);
-		leftEnc.setDistancePerPulse(5);
-		leftEnc.setReverseDirection(true);
-		leftEnc.setSamplesToAverage(7);
-		rightEnc.setMaxPeriod(1);
-		rightEnc.setMinRate(10);
-		rightEnc.setDistancePerPulse(5);
-		rightEnc.setReverseDirection(true);
-		rightEnc.setSamplesToAverage(7);
-	}
-	private void clearStickyFaults() {
+
+		private void clearStickyFaults() {
 		leftFront.clearStickyFaults(0);
 		rightFront.clearStickyFaults(0);
 		leftBack.clearStickyFaults(0);

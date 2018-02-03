@@ -657,6 +657,7 @@ public class MPU9250 extends I2CUpdatableAddress {
 		// AFS_SEL 1 is +/- 4g with sensitivity factor of 8192
 		// AFS_SEL 2 is +/- 8g with sensitivity factor of 4096
 		// AFS_SEL 3 is +/- 16g with sensitivity factor of 2048
+		// NOTE: changing AFS_SEL to 1 caused more drift  not sure why
 		byte afsSel = 0;
 		accelLSBSensitivity = 16384.;
 		updateRegisterValue(MPU9250_REG_ADDR_ACCEL_CONFIG, afsSel);
@@ -857,7 +858,10 @@ public class MPU9250 extends I2CUpdatableAddress {
 		gyroAngleY += deltaGyroAngleY;
 		gyroAngleZ += deltaGyroAngleZ;
 
-		// Complementary Filter
+		// Low Pass Filter
+		// decreasing alpha will increase the filtering
+		// @see https://github.com/KalebKE/AccelerationExplorer/wiki/Signal-Noise-and-Noise-Filters
+		// tests should be performed once the MPU has been installed on the robot to determine the best value
 		double alpha = 0.96;
 		filteredAngleX = alpha * (filteredAngleX + deltaGyroAngleX) + (1. - alpha) * accelAngleX;
 		filteredAngleY = alpha * (filteredAngleY + deltaGyroAngleY) + (1. - alpha) * accelAngleY;

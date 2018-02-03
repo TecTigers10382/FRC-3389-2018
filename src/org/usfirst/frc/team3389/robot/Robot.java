@@ -12,6 +12,7 @@ import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team3389.robot.subsystems.ExampleSubsystem;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.MPU9250;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.OLEDDisplay;
+import org.usfirst.frc.team3389.robot.subsystems.ioDevices.QuadEncoder;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.TimeOfFlight;
 import org.usfirst.frc.team3389.robot.subsystems.manipulators.Intake;
 import org.usfirst.frc.team3389.robot.subsystems.manipulators.Lifter;
@@ -62,7 +63,7 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
 		m_oi = new OI();
-		driveTrain.encoderInit();
+		QuadEncoder.encoderInit();
 		// driveGyro.startUpdatingThread();
 		if (!robotScreen.init())
 			robotLogger.log(Logger.ERROR, this, "failted to initialize OLED display");

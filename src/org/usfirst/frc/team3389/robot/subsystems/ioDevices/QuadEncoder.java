@@ -1,12 +1,9 @@
 package org.usfirst.frc.team3389.robot.subsystems.ioDevices;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.command.Subsystem;
-public class QuadEncoder extends Subsystem{
-	public static Encoder leftEnc  = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
-	public static Encoder rightEnc = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
-	
-	
-public static void encoderInit() {
+public class QuadEncoder{
+	/*
+	Encoder leftEnc  = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
+	Encoder rightEnc = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
+public void encoderInit() {
 	leftEnc.setMaxPeriod(1);
 	leftEnc.setMinRate(10);
 	leftEnc.setDistancePerPulse(5);
@@ -23,6 +20,6 @@ public static void encoderInit() {
 @Override
 protected void initDefaultCommand() {
 	// TODO Auto-generated method stub
-	
 }
+*/
 }

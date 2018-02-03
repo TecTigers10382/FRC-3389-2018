@@ -3,7 +3,6 @@ package org.usfirst.frc.team3389.robot.subsystems;
 import org.usfirst.frc.team3389.robot.Robot;
 import org.usfirst.frc.team3389.robot.RobotMap;
 import org.usfirst.frc.team3389.robot.commands.Drive;
-import org.usfirst.frc.team3389.robot.subsystems.ioDevices.QuadEncoder;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -11,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.StickyFaults;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  *
  */
 public class DriveTrain extends Subsystem {
-
+	
 	TalonSRX leftFront;
 	TalonSRX leftBack;
 	TalonSRX rightFront;
@@ -34,13 +34,15 @@ public class DriveTrain extends Subsystem {
 	Faults RFFaults = new Faults();
 	Faults LBFaults = new Faults();
 	Faults RBFaults = new Faults();
+	Encoder leftEnc  = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
+	Encoder rightEnc = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
 
 	/**
 	 * Creates the Drive Train with 4 TalonSRX motor controllers over CAN.
 	 */
 	public DriveTrain() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-		QuadEncoder.encoderInit();
+		encoderInit();
 		leftFront = new TalonSRX(RobotMap.DRIVE_LEFTFRONT);
 		leftBack = new TalonSRX(RobotMap.DRIVE_LEFTBACK);
 		rightFront = new TalonSRX(RobotMap.DRIVE_RIGHTFRONT);
@@ -89,8 +91,8 @@ public class DriveTrain extends Subsystem {
 		rightBack.set(ControlMode.PercentOutput, rightPower);
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit" + leftFront.getMotorOutputPercent());
-		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + QuadEncoder.leftEnc.get());
-		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + QuadEncoder.rightEnc.get());
+		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + leftEnc.get());
+		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + rightEnc.get());
 	}
 
 	/**
@@ -170,4 +172,16 @@ public class DriveTrain extends Subsystem {
 		leftBack.clearStickyFaults(0);
 		rightBack.clearStickyFaults(0);
 	}
+		public void encoderInit() {
+			leftEnc.setMaxPeriod(1);
+			leftEnc.setMinRate(10);
+			leftEnc.setDistancePerPulse(5);
+			leftEnc.setReverseDirection(true);
+			leftEnc.setSamplesToAverage(7);
+			rightEnc.setMaxPeriod(1);
+			rightEnc.setMinRate(10);
+			rightEnc.setDistancePerPulse(5);
+			rightEnc.setReverseDirection(true);
+			rightEnc.setSamplesToAverage(7);
+		}
 }

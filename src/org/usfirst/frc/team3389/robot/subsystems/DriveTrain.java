@@ -50,6 +50,7 @@ public class DriveTrain extends Subsystem {
 		rightFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 
+		// TODO for PID example @see https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 
 		// Outputs Talon debug info

@@ -16,8 +16,10 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  * @see org.usfirst.frc.team3389.robot.commands.IntakeStick
  */
 public class Intake extends Subsystem {
-	Spark intakeLeft;
-	Spark intakeRight;
+	Spark intakeLeft1;
+	Spark intakeLeft2;
+	Spark intakeRight1;
+	Spark intakeRight2;
 
 	/**
 	 * Constructor. Initializes Sparks.
@@ -25,8 +27,10 @@ public class Intake extends Subsystem {
 	public Intake() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 
-		intakeLeft = new Spark(RobotMap.INTAKE_LEFT);
-		intakeRight = new Spark(RobotMap.INTAKE_RIGHT);
+		intakeLeft1 = new Spark(RobotMap.INTAKE_LEFT1);
+		intakeLeft2 = new Spark(RobotMap.INTAKE_LEFT2);
+		intakeRight1 = new Spark(RobotMap.INTAKE_RIGHT1);
+		intakeRight2 = new Spark(RobotMap.INTAKE_RIGHT2);
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 
@@ -41,8 +45,10 @@ public class Intake extends Subsystem {
 	public void driveBoth(double power) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:\t" + power);
 
-		intakeLeft.set(-power);
-		intakeRight.set(power);
+		intakeLeft1.set(-power);
+		intakeLeft2.set(-power);
+		intakeRight1.set(power);
+		intakeRight2.set(power);
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}

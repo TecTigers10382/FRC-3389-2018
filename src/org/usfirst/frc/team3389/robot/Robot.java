@@ -10,7 +10,9 @@ package org.usfirst.frc.team3389.robot;
 import org.usfirst.frc.team3389.robot.commands.ExampleCommand;
 import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team3389.robot.subsystems.ExampleSubsystem;
+import org.usfirst.frc.team3389.robot.subsystems.ioDevices.MPU9250;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.OLEDDisplay;
+import org.usfirst.frc.team3389.robot.subsystems.ioDevices.QuadEncoder;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.TimeOfFlight;
 import org.usfirst.frc.team3389.robot.subsystems.manipulators.Intake;
 import org.usfirst.frc.team3389.robot.subsystems.manipulators.Lifter;
@@ -23,8 +25,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-// TODO learn Command based programming - https://wpilib.screenstepslive.com/s/currentCS/m/java/c/88893
 
 /**
  * This class is expected by the Java Virtual Machine on the roboRIO and is run
@@ -40,11 +40,15 @@ public class Robot extends TimedRobot {
 
 	// Initialize all subsystems
 	public static final Logger robotLogger = new Logger(Logger.DEBUG);
+
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
-	public static final OLEDDisplay robotScreen = new OLEDDisplay();;
+	public static final OLEDDisplay robotScreen = new OLEDDisplay();
+	// public static final MPU9250 driveGyro = new MPU9250(); // this includes calibration which takes 8-12 seconds to complete
+	
 	public static final DriveTrain driveTrain = new DriveTrain();
 	public static final Intake intake = new Intake();
 	public static final Lifter lifter= new Lifter();
+	
 	public static final ExampleSubsystem kExampleSubsystem = new ExampleSubsystem();
 	public static OI m_oi;
 	
@@ -59,6 +63,9 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
 		m_oi = new OI();
+
+		driveTrain.encoderInit();
+
 		if (!robotScreen.init())
 			robotLogger.log(Logger.ERROR, this, "failted to initialize OLED display");
 		m_chooser.addDefault("Default Auto", new ExampleCommand());
@@ -211,6 +218,8 @@ public class Robot extends TimedRobot {
 		// System.out.println("range distance = " + timeOfFlight.getDistanceMillimeters() + "mm");
 		// robotScreen.drawTextLine("test message", 0);
 		// robotScreen.drawTextLine("range = " + timeOfFlight.getDistanceMillimeters() + "mm", 1);
+		// double angle = driveGyro.getFilteredYaw();
+		// robotScreen.drawTextLine(String.format("Heading: %+5.1f", angle), 1);
 		// robotScreen.refresh();
 
 		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "exit");

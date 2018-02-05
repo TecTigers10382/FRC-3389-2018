@@ -1,5 +1,7 @@
 package org.usfirst.frc.team3389.robot.commands;
 
-public class DriveForward {
+import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
+
+public class DriveForward extends DriveTrain{
 
 }

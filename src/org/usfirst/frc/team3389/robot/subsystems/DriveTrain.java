@@ -16,6 +16,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Subsystem for the drive train of the robot. Contains the 4 Talons neccessary
@@ -25,7 +26,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  *
  */
 public class DriveTrain extends Subsystem {
-	
+
 	TalonSRX leftFront;
 	TalonSRX leftBack;
 	TalonSRX rightFront;
@@ -38,7 +39,7 @@ public class DriveTrain extends Subsystem {
 	Faults RFFaults = new Faults();
 	Faults LBFaults = new Faults();
 	Faults RBFaults = new Faults();
-	Encoder leftEnc  = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
+	Encoder leftEnc = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
 	Encoder rightEnc = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
 	EncoderPIDSource leftPIDSource;
 	EncoderPIDSource rightPIDSource;
@@ -62,6 +63,7 @@ public class DriveTrain extends Subsystem {
 		leftBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
+<<<<<<< HEAD
 		
 		/*leftPIDSource = new EncoderPIDSource(leftEnc, 1); 
 		leftPID = new PIDController(0, 0, 0, leftPIDSource, RobotMap.leftDriveOutput);
@@ -70,6 +72,11 @@ public class DriveTrain extends Subsystem {
         leftPID.setAbsoluteTolerance(0.5);
         */
 		// TODO for PID example @see https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
+=======
+
+		// TODO for PID example @see
+		// https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
+>>>>>>> branch 'master' of https://github.com/booolean/3389FRC.git
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 		display.drawStringCentered("Hello World!", 25);
 		// Outputs Talon debug info
@@ -108,8 +115,13 @@ public class DriveTrain extends Subsystem {
 		rightBack.set(ControlMode.PercentOutput, rightPower);
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit" + leftFront.getMotorOutputPercent());
-		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + leftEnc.get());
-		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + rightEnc.get());
+
+		SmartDashboard.putNumber("encoder1", leftEnc.getDistance());
+		SmartDashboard.putNumber("encoder2", rightEnc.getDistance());
+
+		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + leftEnc.getDistance());
+		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + rightEnc.getDistance());
+
 	}
 
 	/**
@@ -179,17 +191,23 @@ public class DriveTrain extends Subsystem {
 		Robot.robotLogger.log(Logger.DEBUG, this, rightFront.getStickyFaults(RFsFaults).toString());
 		Robot.robotLogger.log(Logger.DEBUG, this, leftBack.getStickyFaults(LBsFaults).toString());
 		Robot.robotLogger.log(Logger.DEBUG, this, rightBack.getStickyFaults(RBsFaults).toString());
-		
+
 		clearStickyFaults();
 	}
 
-		private void clearStickyFaults() {
+	private void clearStickyFaults() {
 		leftFront.clearStickyFaults(0);
 		rightFront.clearStickyFaults(0);
 		leftBack.clearStickyFaults(0);
 		rightBack.clearStickyFaults(0);
 	}
-		public void encoderInit() {
+
+	public void resetEncoders() {
+		leftEnc.reset();
+		rightEnc.reset();
+	}
+
+	public void encoderInit() {
 			leftEnc.setMaxPeriod(1);
 			leftEnc.setMinRate(10);
 			leftEnc.setDistancePerPulse(5);

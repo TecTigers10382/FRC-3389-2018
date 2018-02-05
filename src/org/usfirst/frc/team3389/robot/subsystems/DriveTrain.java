@@ -3,7 +3,10 @@ package org.usfirst.frc.team3389.robot.subsystems;
 import org.usfirst.frc.team3389.robot.Robot;
 import org.usfirst.frc.team3389.robot.RobotMap;
 import org.usfirst.frc.team3389.robot.commands.Drive;
+import org.usfirst.frc.team3389.robot.subsystems.ioDevices.OLEDDisplay;
 import org.usfirst.frc.team3389.robot.utils.Logger;
+import org.usfirst.frc.team3389.robot.EncoderPIDSource;
+import org.usfirst.frc.team3389.robot.GyroPIDSource;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.Faults;
@@ -11,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.StickyFaults;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -37,6 +41,13 @@ public class DriveTrain extends Subsystem {
 	Faults RBFaults = new Faults();
 	Encoder leftEnc = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
 	Encoder rightEnc = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
+	EncoderPIDSource leftPIDSource;
+	EncoderPIDSource rightPIDSource;
+	GyroPIDSource gyroPIDSource;
+	PIDController leftPID;
+	PIDController rightPID;
+	PIDController gyroPID;
+	OLEDDisplay display = new OLEDDisplay();
 
 	/**
 	 * Creates the Drive Train with 4 TalonSRX motor controllers over CAN.
@@ -52,11 +63,17 @@ public class DriveTrain extends Subsystem {
 		leftBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
+		/*leftPIDSource = new EncoderPIDSource(leftEnc, 1); 
+		leftPID = new PIDController(0, 0, 0, leftPIDSource, RobotMap.leftDriveOutput);
+        leftPID.disable();
+        leftPID.setOutputRange(-1.0, 1.0);
+        leftPID.setAbsoluteTolerance(0.5);
+        */
+		// TODO for PID example @see https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
 
 		// TODO for PID example @see
-		// https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
-
+		display.drawStringCentered("Hello World!", 25);
 		// Outputs Talon debug info
 		Debug();
 

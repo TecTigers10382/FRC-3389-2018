@@ -63,9 +63,7 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
 		m_oi = new OI();
-
-		driveTrain.encoderInit();
-
+		// driveGyro.startUpdatingThread();
 		if (!robotScreen.init())
 			robotLogger.log(Logger.ERROR, this, "failted to initialize OLED display");
 		m_chooser.addDefault("Default Auto", new ExampleCommand());
@@ -182,9 +180,7 @@ public class Robot extends TimedRobot {
 			robotLogger.log(Logger.INFO, this, "teleop cancels autonomous");
 			m_autonomousCommand.cancel();
 		}
-		
-		driveTrain.resetEncoders();
-		
+
 		robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 

@@ -63,8 +63,6 @@ public class DriveTrain extends Subsystem {
 		leftBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
-<<<<<<< HEAD
-		
 		/*leftPIDSource = new EncoderPIDSource(leftEnc, 1); 
 		leftPID = new PIDController(0, 0, 0, leftPIDSource, RobotMap.leftDriveOutput);
         leftPID.disable();
@@ -72,11 +70,8 @@ public class DriveTrain extends Subsystem {
         leftPID.setAbsoluteTolerance(0.5);
         */
 		// TODO for PID example @see https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
-=======
 
 		// TODO for PID example @see
-		// https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
->>>>>>> branch 'master' of https://github.com/booolean/3389FRC.git
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 		display.drawStringCentered("Hello World!", 25);
 		// Outputs Talon debug info

@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Subsystem for the drive train of the robot. Contains the 4 Talons neccessary
@@ -93,6 +94,8 @@ public class DriveTrain extends Subsystem {
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit" + leftFront.getMotorOutputPercent());
 		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + leftEnc.get());
 		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + rightEnc.get());
+		SmartDashboard.putNumber("encoder1", leftEnc.getDistance());
+		SmartDashboard.putNumber("encoder2", rightEnc.getDistance());
 	}
 
 	/**
@@ -182,5 +185,10 @@ public class DriveTrain extends Subsystem {
 		rightFront.clearStickyFaults(0);
 		leftBack.clearStickyFaults(0);
 		rightBack.clearStickyFaults(0);
+	}
+
+	public void resetEncoders() {
+		leftEnc.reset();
+		rightEnc.reset();
 	}
 }

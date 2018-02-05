@@ -49,8 +49,7 @@ public class Robot extends TimedRobot {
 	public static final Intake intake = new Intake();
 	public static final Lifter lifter= new Lifter();
 	
-	OLEDDisplay display = new OLEDDisplay();
-	
+		
 	public static final ExampleSubsystem kExampleSubsystem = new ExampleSubsystem();
 	public static OI m_oi;
 	
@@ -64,11 +63,14 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
-		display.init();
+
+
+		driveGyro.startUpdatingThread();
+		if (!robotScreen.init())
+		robotLogger.log(Logger.ERROR, this, "failted to initialize OLED display");
+
 		m_oi = new OI();
 		// driveGyro.startUpdatingThread();
-		if (!robotScreen.init())
-			robotLogger.log(Logger.ERROR, this, "failted to initialize OLED display");
 		m_chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", m_chooser);
@@ -193,8 +195,8 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "enter");
-		display.drawString("Hello World!", 25, 25);
-		display.refresh();
+		robotScreen.drawString("Hello World!", 25, 25);
+		robotScreen.refresh();
 		// Display on SmartDashboard
 		//SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());
 

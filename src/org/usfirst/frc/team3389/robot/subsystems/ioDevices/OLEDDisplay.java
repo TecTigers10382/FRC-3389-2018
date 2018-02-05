@@ -178,7 +178,7 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     	writeByte(0x00,SSD1306_DISPLAYON);//--turn on oled panel
             
     	this.inited = true;;
-
+ 
 		refresh();
     	Robot.robotLogger.log(Logger.DEBUG, this, "exit");
     	return this.inited;
@@ -215,7 +215,12 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     }
 
     public synchronized void setPixelColor(int x, int y, boolean color) {
-        final int pos = x + (y / 8) * DISPLAY_WIDTH;
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
+
+    	final int pos = x + (y / 8) * DISPLAY_WIDTH;
         if (pos >= 0 && pos < MAX_INDEX) {
             if (color) {
                 this.imageBuffer[pos] |= (1 << (y & 0x07));
@@ -226,6 +231,10 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     }
     
     public synchronized void setPixel(int x, int y) {
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
     	this.setPixelColor(x, y, !(this.invert_display));
     }
 
@@ -235,11 +244,15 @@ public class OLEDDisplay extends I2CUpdatableAddress {
         this.maxLines = this.getHeight() / currentFont.getOuterHeight();
     }
     
-    public synchronized void drawChar(char c, int x, int y) {
+    private synchronized void drawChar(char c, int x, int y) {
         currentFont.drawChar(this, c, x, y);
     }
 
     public synchronized void drawString(String string, int x, int y) {
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
         int posX = x;
         int posY = y;
         for (char c : string.toCharArray()) {
@@ -258,12 +271,20 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     }
 
     public synchronized void drawStringCentered(String string, int y) {
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
         final int strSizeX = string.length() * currentFont.getOuterWidth();
         final int x = (this.getWidth() - strSizeX) / 2;
         drawString(string, x, y);
     }
 
     public synchronized void clearRect(int x, int y, int width, int height) {
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
         for (int posX = x; posX < x + width; ++posX) {
             for (int posY = y; posY < y + height; ++posY) {
                 setPixelColor(posX, posY, this.invert_display);
@@ -275,11 +296,15 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     // these methods use the current font dimensions as rows and columns
     // rather than pixel positioning in x and y in the previous methods
     
-    public synchronized void drawTextChar(char c, int row, int col) {
+    private synchronized void drawTextChar(char c, int row, int col) {
         drawChar(c, col * currentFont.getOuterWidth(), row * currentFont.getOuterHeight());
     }
 
     public synchronized void drawTextString(String string, int row, int col) {
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
         int posR = row;
         int posC = col;
         for (char c : string.toCharArray()) {
@@ -296,27 +321,47 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     }
 
     public synchronized void drawTextStringCentered(String string, int row) {
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
     	clearTextLine(row);
         final int col = (this.maxChars - string.length()) / 2;
         drawTextString(string, row, col);
     }
 
     public synchronized void drawTextLine(String string, int row) {
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
     	clearTextLine(row);
     	drawTextString(string, row, 0);
     }
 
     public synchronized void updateTextLine(String string, int row) {
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
     	clearTextLine(row);
     	drawTextString(string, row, 0);
     	refreshLine(row);
     }
 
     public synchronized void clearTextArea(int row, int col, int chars, int lines) {
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
     	clearRect(col * currentFont.getOuterWidth(), row * currentFont.getOuterHeight(), chars * currentFont.getOuterWidth(), lines * currentFont.getOuterHeight());
     }
     
     public synchronized void clearTextLine(int row) {
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
     	clearRect(0, row * currentFont.getOuterHeight(), this.getWidth(), currentFont.getOuterHeight());
     }
 
@@ -334,6 +379,10 @@ public class OLEDDisplay extends I2CUpdatableAddress {
      * @param y
      */
     public synchronized void drawImage(BufferedImage image, int x, int y) {
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
         BufferedImage tmpImage = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
         tmpImage.getGraphics().drawImage(image, x, y, null);
 
@@ -356,8 +405,10 @@ public class OLEDDisplay extends I2CUpdatableAddress {
      * @throws IOException
      */
     public synchronized void refresh() {
-    	if (!this.inited)
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
     		return;
+    	}
         writeByte(0x00,SSD1306_COLUMNADDR);
         writeByte(0x00,(byte) 0);   // Column start address (0 = reset)
         writeByte(0x00,(byte) (DISPLAY_WIDTH - 1)); // Column end address (127 = reset)
@@ -377,6 +428,10 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     }
 
     public synchronized void refreshLine(int row) {
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
     	// line level refreshes have a bug so we just do a full refresh until we fix it
     	refresh();
     	// TODO fix line level refresh

@@ -42,8 +42,8 @@ public class Robot extends TimedRobot {
 	public static final Logger robotLogger = new Logger(Logger.DEBUG);
 
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
-	public static final OLEDDisplay robotScreen = new OLEDDisplay();
-	public static final MPU9250 driveGyro = new MPU9250(); // this includes calibration which takes 8-12 seconds to complete
+	// public static final OLEDDisplay robotScreen = new OLEDDisplay();
+	// public static final MPU9250 driveGyro = new MPU9250(); // this includes calibration which takes 8-12 seconds to complete
 	
 	public static final DriveTrain driveTrain = new DriveTrain();
 	public static final Intake intake = new Intake();
@@ -62,10 +62,11 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
+		// driveGyro.startUpdatingThread();
+		// if (!robotScreen.init())
+		// 	robotLogger.log(Logger.ERROR, this, "failted to initialize OLED display");
 		m_oi = new OI();
 		// driveGyro.startUpdatingThread();
-		if (!robotScreen.init())
-			robotLogger.log(Logger.ERROR, this, "failted to initialize OLED display");
 		m_chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", m_chooser);

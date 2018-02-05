@@ -50,7 +50,7 @@ public class Lifter extends Subsystem{
 	}
 	
 	public void getHeight() {
-		height=radius*(enc.getVal()/360);
+		//height=radius*(enc.getVal()/360);
 	}
 	public void gotoHeight(int inches) {
 		getHeight();

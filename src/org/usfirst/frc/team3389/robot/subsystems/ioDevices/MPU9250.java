@@ -1,3 +1,118 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) FIRST 2008-2017. All Rights Reserved.                        */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
+
+/*
+ * This code was ported from the raspiod project.
+ * https://github.com/Raspoid/raspoid/blob/master/src/main/com/raspoid/additionalcomponents/MPU6050.java
+ * 
+ * It assumes there is sufficient similarity with the register definitions
+ * between the MPU6050 and the MPU6500 which is part of the MPU9250.
+*/
+
+/*******************************************************************************
+ * Copyright (c) 2016 Julien Louette & Gael Wittorski
+ * 
+ * Raspoid is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Raspoid is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Raspoid.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
+
+/**
+ * <b>Implementation of the MPU9250 component.</b>
+ * 
+ * <p><b>[datasheet - p.7]</b> Product Overview</p>
+ * 
+ * <p>The MPU-60X0 features three 16-bit analog-to-digital converters (ADCs) 
+ * for digitizing the gyroscope outputs and three 16-bit ADCs for digitizing
+ * the accelerometer outputs. For precision tracking of both fast and slow
+ * motions, the parts feature a user-programmable gyroscope full-scale range of 
+ * +/-250, +/-500, +/-1000, and +/-2000 deg/sec (dps) and a user-programmable accelerometer 
+ * full-scale range of +/-2g, +/-4g, +/-8g, and +/-16g.</p>
+ * 
+ * <p>Communication with all registers of the device is performed using I2C at 400kHz.</p>
+ * 
+ * <p><b>[datasheet - p.10-11]</b> Features
+ * <ul>
+ *  <li>Gyroscope features (triple-axis MEMS gyroscope)</li>
+ *      <ul>
+ *          <li>Digital-output X-, Y-, and Z-Axis angular rate sensors (gyroscopes) with a 
+ *          user-programmable fullscale range of +/-250, +/-500, +/-1000, and +/-2000 deg/sec</li>
+ *          <li>Integrated 16-bit ADCs enable simultaneous sampling of gyros</li>
+ *          <li>Enhanced bias and sensitivity temperature stability reduces the need 
+ *          for user calibration</li>
+ *          <li>Improved low-frequency noise performance</li>
+ *          <li>Digitally-programmable low-pass filter</li>
+ *          <li>Gyroscope operating current: 3.6mA</li>
+ *          <li>Standby current: 5 uA</li>
+ *          <li>Factory calibrated sensitivity scale factor</li>
+ *      </ul>
+ *  <li>Accelerometer features (triple-axis MEMS accelerometer)</li>
+ *      <ul>
+ *          <li>Digital-output triple-axis accelerometer with a programmable full scale 
+ *          range of +/-2g, +/-4g, +/-8g and +/-16g</li>
+ *          <li>Integrated 16-bit ADCs enable simultaneous sampling of accelerometers while 
+ *          requiring no external multiplexer</li>
+ *          <li>Accelerometer normal operating current: 500uA</li>
+ *          <li>Low power accelerometer mode current: 10uA at 1.25Hz, 20uA at 5Hz, 60uA 
+ *          at 20Hz, 110uA at 40Hz</li>
+ *          <li>Orientation detection and signaling</li>
+ *          <li>Tap detection</li>
+ *          <li>User-programmable interrupts</li>
+ *          <li>High-G interrupt</li>
+ *      </ul>
+ *  <li>Additional features</li>
+ *      <ul>
+ *          <li>9-Axis MotionFusion by the on-chip Digital Motion Processor (DMP)</li>
+ *          <li>Auxiliary master I2C bus for reading data from external sensors (e.g., magnetometer)</li>
+ *          <li>3.9mA operating current when all 6 motion sensing axes and the DMP are enabled</li>
+ *          <li>VDD supply voltage range of 2.375V-3.46V</li>
+ *          <li>1024 byte FIFO buffer reduces power consumption by allowing host processor 
+ *          to read the data in bursts and then go into a low-power mode as the MPU collects
+ *          more data</li>
+ *          <li>Digital-output temperature sensor</li>
+ *          <li>User-programmable digital filters for gyroscope, accelerometer, and temp sensor</li>
+ *          <li>10,000 g shock tolerant</li>
+ *          <li>400kHz Fast Mode I2C for communicating with all registers</li>
+ *      </ul>
+ *  <li>MotionProcessing</li>
+ *      <ul>
+ *          <li>Internal Digital Motion Processing (DMP) engine supports 3D MotionProcessing 
+ *          and gesture recognition algorithms</li>
+ *          <li>The MPU-60X0 collects gyroscope and accelerometer data while synchronizing data
+ *          sampling at a user defined rate. The total dataset obtained by the MPU-60X0 includes 
+ *          3-Axis gyroscope data, 3-Axis accelerometer data, and temperature data. 
+ *          The MPU's calculated output to the system processor can also include heading data 
+ *          from a digital 3-axis third party magnetometer.</li>
+ *          <li>The FIFO buffers the complete data set, reducing timing requirements on the system
+ *          processor by allowing the processor burst read the FIFO data. After burst reading
+ *          the FIFO data, the system processor can save power by entering a low-power sleep
+ *          mode while the MPU collects more data.</li>
+ *          <li>Programmable interrupt supports features such as gesture recognition, panning, 
+ *          zooming, scrolling, tap detection, and shake detection.</li>
+ *          <li>Digitally-programmable low-pass filters</li>
+ *          <li>Low-power pedometer functionality allows the host processor to sleep while the DMP
+ *          maintains the step count.</li>
+ *      </ul>
+ * </ul>
+ * </p>
+ * 
+ * <p>Programming Sheet: <a href="https://www.invensense.com/download-pdf/mpu-9250-register-map/">MPU9250 Register Map</a>
+ * 
+ */
+
 package org.usfirst.frc.team3389.robot.subsystems.ioDevices;
 
 import org.usfirst.frc.team3389.robot.Robot;
@@ -14,7 +129,7 @@ public class MPU9250 extends I2CUpdatableAddress {
 	/**
 	 * Default address of the MPU6050 device.
 	 */
-	public static final int DEFAULT_MPU6050_ADDRESS = 0x68;
+	public static final int DEFAULT_MPU9250_ADDRESS = 0x68;
 
 	/**
 	 * Default value for the digital low pass filter (DLPF) setting for both
@@ -50,7 +165,7 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * generate the Sample Rate for the MPU-60X0.
 	 * </p>
 	 */
-	public static final int MPU6050_REG_ADDR_SMPRT_DIV = 0x19; // 25
+	public static final int MPU9250_REG_ADDR_SMPRT_DIV = 0x19; // 25
 
 	/**
 	 * <b>[datasheet 2 - p.13]</b> Configuration
@@ -60,7 +175,7 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * gyroscopes and accelerometers.
 	 * </p>
 	 */
-	public static final int MPU6050_REG_ADDR_CONFIG = 0x1A; // 26
+	public static final int MPU9250_REG_ADDR_CONFIG = 0x1A; // 26
 
 	/**
 	 * <b>[datasheet 2 - p.14]</b> Gyroscope Configuration
@@ -69,7 +184,7 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * gyroscopes full scale range
 	 * </p>
 	 */
-	public static final int MPU6050_REG_ADDR_GYRO_CONFIG = 0x1B; // 27
+	public static final int MPU9250_REG_ADDR_GYRO_CONFIG = 0x1B; // 27
 
 	/**
 	 * <b>[datasheet 2 - p.15]</b> Accelerometer Configuration
@@ -79,7 +194,7 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * High Pass Filter (DHPF).
 	 * </p>
 	 */
-	public static final int MPU6050_REG_ADDR_ACCEL_CONFIG = 0x1C; // 28
+	public static final int MPU9250_REG_ADDR_ACCEL_CONFIG = 0x1C; // 28
 
 	/**
 	 * <b>[datasheet 2 - p.27]</b> Interrupt Enable
@@ -87,7 +202,7 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * This register enables interrupt generation by interrupt sources.
 	 * </p>
 	 */
-	public static final int MPU6050_REG_ADDR_INT_ENABLE = 0x1A; // 56
+	public static final int MPU9250_REG_ADDR_INT_ENABLE = 0x1A; // 56
 
 	/**
 	 * <b>[datasheet 2 - p.40]</b> Power Management 1
@@ -97,7 +212,7 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * disabling the temperature sensor.
 	 * </p>
 	 */
-	public static final int MPU6050_REG_ADDR_PWR_MGMT_1 = 0x6B; // 107
+	public static final int MPU9250_REG_ADDR_PWR_MGMT_1 = 0x6B; // 107
 
 	/**
 	 * <b>[datasheet 2 - p.42]</b> Power Management 2
@@ -107,7 +222,7 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * individual axes of the accelerometer and gyroscope into standby mode.
 	 * </p>
 	 */
-	public static final int MPU6050_REG_ADDR_PWR_MGMT_2 = 0x6C; // 108
+	public static final int MPU9250_REG_ADDR_PWR_MGMT_2 = 0x6C; // 108
 
 	/**
 	 * <b>[datasheet 2 - p.29]</b> Accelerometer Measurements
@@ -115,13 +230,13 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * These registers store the most recent accelerometer measurements.
 	 * </p>
 	 * 
-	 * @see #MPU6050_REG_ADDR_ACCEL_XOUT_L
-	 * @see #MPU6050_REG_ADDR_ACCEL_YOUT_H
-	 * @see #MPU6050_REG_ADDR_ACCEL_YOUT_L
-	 * @see #MPU6050_REG_ADDR_ACCEL_ZOUT_H
-	 * @see #MPU6050_REG_ADDR_ACCEL_ZOUT_L
+	 * @see #MPU9250_REG_ADDR_ACCEL_XOUT_L
+	 * @see #MPU9250_REG_ADDR_ACCEL_YOUT_H
+	 * @see #MPU9250_REG_ADDR_ACCEL_YOUT_L
+	 * @see #MPU9250_REG_ADDR_ACCEL_ZOUT_H
+	 * @see #MPU9250_REG_ADDR_ACCEL_ZOUT_L
 	 */
-	public static final int MPU6050_REG_ADDR_ACCEL_XOUT_H = 0x3B; // 59
+	public static final int MPU9250_REG_ADDR_ACCEL_XOUT_H = 0x3B; // 59
 
 	/**
 	 * <b>[datasheet 2 - p.29]</b> Accelerometer Measurements
@@ -129,13 +244,13 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * These registers store the most recent accelerometer measurements.
 	 * </p>
 	 * 
-	 * @see #MPU6050_REG_ADDR_ACCEL_XOUT_H
-	 * @see #MPU6050_REG_ADDR_ACCEL_YOUT_H
-	 * @see #MPU6050_REG_ADDR_ACCEL_YOUT_L
-	 * @see #MPU6050_REG_ADDR_ACCEL_ZOUT_H
-	 * @see #MPU6050_REG_ADDR_ACCEL_ZOUT_L
+	 * @see #MPU9250_REG_ADDR_ACCEL_XOUT_H
+	 * @see #MPU9250_REG_ADDR_ACCEL_YOUT_H
+	 * @see #MPU9250_REG_ADDR_ACCEL_YOUT_L
+	 * @see #MPU9250_REG_ADDR_ACCEL_ZOUT_H
+	 * @see #MPU9250_REG_ADDR_ACCEL_ZOUT_L
 	 */
-	public static final int MPU6050_REG_ADDR_ACCEL_XOUT_L = 0x3C; // 60
+	public static final int MPU9250_REG_ADDR_ACCEL_XOUT_L = 0x3C; // 60
 
 	/**
 	 * <b>[datasheet 2 - p.29]</b> Accelerometer Measurements
@@ -143,13 +258,13 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * These registers store the most recent accelerometer measurements.
 	 * </p>
 	 * 
-	 * @see #MPU6050_REG_ADDR_ACCEL_XOUT_H
-	 * @see #MPU6050_REG_ADDR_ACCEL_XOUT_L
-	 * @see #MPU6050_REG_ADDR_ACCEL_YOUT_L
-	 * @see #MPU6050_REG_ADDR_ACCEL_ZOUT_H
-	 * @see #MPU6050_REG_ADDR_ACCEL_ZOUT_L
+	 * @see #MPU9250_REG_ADDR_ACCEL_XOUT_H
+	 * @see #MPU9250_REG_ADDR_ACCEL_XOUT_L
+	 * @see #MPU9250_REG_ADDR_ACCEL_YOUT_L
+	 * @see #MPU9250_REG_ADDR_ACCEL_ZOUT_H
+	 * @see #MPU9250_REG_ADDR_ACCEL_ZOUT_L
 	 */
-	public static final int MPU6050_REG_ADDR_ACCEL_YOUT_H = 0x3D; // 61
+	public static final int MPU9250_REG_ADDR_ACCEL_YOUT_H = 0x3D; // 61
 
 	/**
 	 * <b>[datasheet 2 - p.29]</b> Accelerometer Measurements
@@ -157,13 +272,13 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * These registers store the most recent accelerometer measurements.
 	 * </p>
 	 * 
-	 * @see #MPU6050_REG_ADDR_ACCEL_XOUT_H
-	 * @see #MPU6050_REG_ADDR_ACCEL_XOUT_L
-	 * @see #MPU6050_REG_ADDR_ACCEL_YOUT_H
-	 * @see #MPU6050_REG_ADDR_ACCEL_ZOUT_H
-	 * @see #MPU6050_REG_ADDR_ACCEL_ZOUT_L
+	 * @see #MPU9250_REG_ADDR_ACCEL_XOUT_H
+	 * @see #MPU9250_REG_ADDR_ACCEL_XOUT_L
+	 * @see #MPU9250_REG_ADDR_ACCEL_YOUT_H
+	 * @see #MPU9250_REG_ADDR_ACCEL_ZOUT_H
+	 * @see #MPU9250_REG_ADDR_ACCEL_ZOUT_L
 	 */
-	public static final int MPU6050_REG_ADDR_ACCEL_YOUT_L = 0x3E; // 62
+	public static final int MPU9250_REG_ADDR_ACCEL_YOUT_L = 0x3E; // 62
 
 	/**
 	 * <b>[datasheet 2 - p.29]</b> Accelerometer Measurements
@@ -171,13 +286,13 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * These registers store the most recent accelerometer measurements.
 	 * </p>
 	 * 
-	 * @see #MPU6050_REG_ADDR_ACCEL_XOUT_H
-	 * @see #MPU6050_REG_ADDR_ACCEL_XOUT_L
-	 * @see #MPU6050_REG_ADDR_ACCEL_YOUT_H
-	 * @see #MPU6050_REG_ADDR_ACCEL_YOUT_L
-	 * @see #MPU6050_REG_ADDR_ACCEL_ZOUT_L
+	 * @see #MPU9250_REG_ADDR_ACCEL_XOUT_H
+	 * @see #MPU9250_REG_ADDR_ACCEL_XOUT_L
+	 * @see #MPU9250_REG_ADDR_ACCEL_YOUT_H
+	 * @see #MPU9250_REG_ADDR_ACCEL_YOUT_L
+	 * @see #MPU9250_REG_ADDR_ACCEL_ZOUT_L
 	 */
-	public static final int MPU6050_REG_ADDR_ACCEL_ZOUT_H = 0x3F; // 63
+	public static final int MPU9250_REG_ADDR_ACCEL_ZOUT_H = 0x3F; // 63
 
 	/**
 	 * <b>[datasheet 2 - p.29]</b> Accelerometer Measurements
@@ -185,13 +300,13 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * These registers store the most recent accelerometer measurements.
 	 * </p>
 	 * 
-	 * @see #MPU6050_REG_ADDR_ACCEL_XOUT_H
-	 * @see #MPU6050_REG_ADDR_ACCEL_XOUT_L
-	 * @see #MPU6050_REG_ADDR_ACCEL_YOUT_H
-	 * @see #MPU6050_REG_ADDR_ACCEL_YOUT_L
-	 * @see #MPU6050_REG_ADDR_ACCEL_ZOUT_H
+	 * @see #MPU9250_REG_ADDR_ACCEL_XOUT_H
+	 * @see #MPU9250_REG_ADDR_ACCEL_XOUT_L
+	 * @see #MPU9250_REG_ADDR_ACCEL_YOUT_H
+	 * @see #MPU9250_REG_ADDR_ACCEL_YOUT_L
+	 * @see #MPU9250_REG_ADDR_ACCEL_ZOUT_H
 	 */
-	public static final int MPU6050_REG_ADDR_ACCEL_ZOUT_L = 0x40; // 64
+	public static final int MPU9250_REG_ADDR_ACCEL_ZOUT_L = 0x40; // 64
 
 	/**
 	 * <b>[datasheet 2 - p.30]</b> Temperature Measurement
@@ -199,9 +314,9 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * These registers store the most recent temperature sensor measurement.
 	 * </p>
 	 * 
-	 * @see #MPU6050_REG_ADDR_TEMP_OUT_L
+	 * @see #MPU9250_REG_ADDR_TEMP_OUT_L
 	 */
-	public static final int MPU6050_REG_ADDR_TEMP_OUT_H = 0x41; // 65
+	public static final int MPU9250_REG_ADDR_TEMP_OUT_H = 0x41; // 65
 
 	/**
 	 * <b>[datasheet 2 - p.30]</b> Temperature Measurement
@@ -209,9 +324,9 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * These registers store the most recent temperature sensor measurement.
 	 * </p>
 	 * 
-	 * @see #MPU6050_REG_ADDR_TEMP_OUT_H
+	 * @see #MPU9250_REG_ADDR_TEMP_OUT_H
 	 */
-	public static final int MPU6050_REG_ADDR_TEMP_OUT_L = 0x42; // 66
+	public static final int MPU9250_REG_ADDR_TEMP_OUT_L = 0x42; // 66
 
 	/**
 	 * <b>[datasheet 2 - p.31]</b> Gyroscope Measurements
@@ -219,13 +334,13 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * These registers store the most recent gyroscope measurements.
 	 * </p>
 	 * 
-	 * @see #MPU6050_REG_ADDR_GYRO_XOUT_L
-	 * @see #MPU6050_REG_ADDR_GYRO_YOUT_H
-	 * @see #MPU6050_REG_ADDR_GYRO_YOUT_L
-	 * @see #MPU6050_REG_ADDR_GYRO_ZOUT_H
-	 * @see #MPU6050_REG_ADDR_GYRO_ZOUT_L
+	 * @see #MPU9250_REG_ADDR_GYRO_XOUT_L
+	 * @see #MPU9250_REG_ADDR_GYRO_YOUT_H
+	 * @see #MPU9250_REG_ADDR_GYRO_YOUT_L
+	 * @see #MPU9250_REG_ADDR_GYRO_ZOUT_H
+	 * @see #MPU9250_REG_ADDR_GYRO_ZOUT_L
 	 */
-	public static final int MPU6050_REG_ADDR_GYRO_XOUT_H = 0x43; // 67
+	public static final int MPU9250_REG_ADDR_GYRO_XOUT_H = 0x43; // 67
 
 	/**
 	 * <b>[datasheet 2 - p.31]</b> Gyroscope Measurements
@@ -233,13 +348,13 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * These registers store the most recent gyroscope measurements.
 	 * </p>
 	 * 
-	 * @see #MPU6050_REG_ADDR_GYRO_XOUT_H
-	 * @see #MPU6050_REG_ADDR_GYRO_YOUT_H
-	 * @see #MPU6050_REG_ADDR_GYRO_YOUT_L
-	 * @see #MPU6050_REG_ADDR_GYRO_ZOUT_H
-	 * @see #MPU6050_REG_ADDR_GYRO_ZOUT_L
+	 * @see #MPU9250_REG_ADDR_GYRO_XOUT_H
+	 * @see #MPU9250_REG_ADDR_GYRO_YOUT_H
+	 * @see #MPU9250_REG_ADDR_GYRO_YOUT_L
+	 * @see #MPU9250_REG_ADDR_GYRO_ZOUT_H
+	 * @see #MPU9250_REG_ADDR_GYRO_ZOUT_L
 	 */
-	public static final int MPU6050_REG_ADDR_GYRO_XOUT_L = 0x44; // 68
+	public static final int MPU9250_REG_ADDR_GYRO_XOUT_L = 0x44; // 68
 
 	/**
 	 * <b>[datasheet 2 - p.31]</b> Gyroscope Measurements
@@ -247,13 +362,13 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * These registers store the most recent gyroscope measurements.
 	 * </p>
 	 * 
-	 * @see #MPU6050_REG_ADDR_GYRO_XOUT_H
-	 * @see #MPU6050_REG_ADDR_GYRO_XOUT_L
-	 * @see #MPU6050_REG_ADDR_GYRO_YOUT_L
-	 * @see #MPU6050_REG_ADDR_GYRO_ZOUT_H
-	 * @see #MPU6050_REG_ADDR_GYRO_ZOUT_L
+	 * @see #MPU9250_REG_ADDR_GYRO_XOUT_H
+	 * @see #MPU9250_REG_ADDR_GYRO_XOUT_L
+	 * @see #MPU9250_REG_ADDR_GYRO_YOUT_L
+	 * @see #MPU9250_REG_ADDR_GYRO_ZOUT_H
+	 * @see #MPU9250_REG_ADDR_GYRO_ZOUT_L
 	 */
-	public static final int MPU6050_REG_ADDR_GYRO_YOUT_H = 0x45; // 69
+	public static final int MPU9250_REG_ADDR_GYRO_YOUT_H = 0x45; // 69
 
 	/**
 	 * <b>[datasheet 2 - p.31]</b> Gyroscope Measurements
@@ -261,13 +376,13 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * These registers store the most recent gyroscope measurements.
 	 * </p>
 	 * 
-	 * @see #MPU6050_REG_ADDR_GYRO_XOUT_H
-	 * @see #MPU6050_REG_ADDR_GYRO_XOUT_L
-	 * @see #MPU6050_REG_ADDR_GYRO_YOUT_H
-	 * @see #MPU6050_REG_ADDR_GYRO_ZOUT_H
-	 * @see #MPU6050_REG_ADDR_GYRO_ZOUT_L
+	 * @see #MPU9250_REG_ADDR_GYRO_XOUT_H
+	 * @see #MPU9250_REG_ADDR_GYRO_XOUT_L
+	 * @see #MPU9250_REG_ADDR_GYRO_YOUT_H
+	 * @see #MPU9250_REG_ADDR_GYRO_ZOUT_H
+	 * @see #MPU9250_REG_ADDR_GYRO_ZOUT_L
 	 */
-	public static final int MPU6050_REG_ADDR_GYRO_YOUT_L = 0x46; // 70
+	public static final int MPU9250_REG_ADDR_GYRO_YOUT_L = 0x46; // 70
 
 	/**
 	 * <b>[datasheet 2 - p.31]</b> Gyroscope Measurements
@@ -275,13 +390,13 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * These registers store the most recent gyroscope measurements.
 	 * </p>
 	 * 
-	 * @see #MPU6050_REG_ADDR_GYRO_XOUT_H
-	 * @see #MPU6050_REG_ADDR_GYRO_XOUT_L
-	 * @see #MPU6050_REG_ADDR_GYRO_YOUT_H
-	 * @see #MPU6050_REG_ADDR_GYRO_YOUT_L
-	 * @see #MPU6050_REG_ADDR_GYRO_ZOUT_L
+	 * @see #MPU9250_REG_ADDR_GYRO_XOUT_H
+	 * @see #MPU9250_REG_ADDR_GYRO_XOUT_L
+	 * @see #MPU9250_REG_ADDR_GYRO_YOUT_H
+	 * @see #MPU9250_REG_ADDR_GYRO_YOUT_L
+	 * @see #MPU9250_REG_ADDR_GYRO_ZOUT_L
 	 */
-	public static final int MPU6050_REG_ADDR_GYRO_ZOUT_H = 0x47; // 71
+	public static final int MPU9250_REG_ADDR_GYRO_ZOUT_H = 0x47; // 71
 
 	/**
 	 * <b>[datasheet 2 - p.31]</b> Gyroscope Measurements
@@ -289,13 +404,13 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * These registers store the most recent gyroscope measurements.
 	 * </p>
 	 * 
-	 * @see #MPU6050_REG_ADDR_GYRO_XOUT_H
-	 * @see #MPU6050_REG_ADDR_GYRO_XOUT_L
-	 * @see #MPU6050_REG_ADDR_GYRO_YOUT_H
-	 * @see #MPU6050_REG_ADDR_GYRO_YOUT_L
-	 * @see #MPU6050_REG_ADDR_GYRO_ZOUT_H
+	 * @see #MPU9250_REG_ADDR_GYRO_XOUT_H
+	 * @see #MPU9250_REG_ADDR_GYRO_XOUT_L
+	 * @see #MPU9250_REG_ADDR_GYRO_YOUT_H
+	 * @see #MPU9250_REG_ADDR_GYRO_YOUT_L
+	 * @see #MPU9250_REG_ADDR_GYRO_ZOUT_H
 	 */
-	public static final int MPU6050_REG_ADDR_GYRO_ZOUT_L = 0x48; // 72
+	public static final int MPU9250_REG_ADDR_GYRO_ZOUT_L = 0x48; // 72
 
 	/*
 	 * -----------------------------------------------------------------------
@@ -489,18 +604,18 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * Constructor for a new MPU6050 using the default i2c address and the default
 	 * value for the DLPF setting.
 	 * 
-	 * @see #DEFAULT_MPU6050_ADDRESS
+	 * @see #DEFAULT_MPU9250_ADDRESS
 	 * @see #DEFAULT_DLPF_CFG
 	 */
 	public MPU9250() {
-		this(DEFAULT_MPU6050_ADDRESS, DEFAULT_DLPF_CFG, DEFAULT_SMPLRT_DIV);
+		this(DEFAULT_MPU9250_ADDRESS, DEFAULT_DLPF_CFG, DEFAULT_SMPLRT_DIV);
 	}
 
 	/**
 	 * Constructor for a new MPU6050 using a specific i2c address and a specific
 	 * value for the DLPF setting.
 	 * 
-	 * @see #DEFAULT_MPU6050_ADDRESS
+	 * @see #DEFAULT_MPU9250_ADDRESS
 	 * @see #DEFAULT_DLPF_CFG
 	 * @param i2cAddress
 	 *            the i2c address of the MPU6050.
@@ -515,19 +630,16 @@ public class MPU9250 extends I2CUpdatableAddress {
 		this.smplrtDiv = smplrtDiv;
 
 		// 1. waking up the MPU6050 (0x00 = 0000 0000) as it starts in sleep mode.
-		updateRegisterValue(MPU6050_REG_ADDR_PWR_MGMT_1, 0x00);
+		updateRegisterValue(MPU9250_REG_ADDR_PWR_MGMT_1, 0x00);
 
 		// 2. sample rate divider
-		// The sensor register output, FIFO output, and DMP sampling are all based on
-		// the Sample Rate.
-		// The Sample Rate is generated by dividing the gyroscope output rate by
-		// SMPLRT_DIV:
-		// Sample Rate = Gyroscope Output Rate / (1 + SMPLRT_DIV)
-		// where Gyroscope Output Rate = 8kHz when the DLPF is disabled (DLPF_CFG = 0 or
-		// 7),
+		// The sensor register output, FIFO output, and DMP sampling are all based on the Sample Rate.
+		// The Sample Rate is generated by dividing the gyroscope output rate by SMPLRT_DIV:
+		//      Sample Rate = Gyroscope Output Rate / (1 + SMPLRT_DIV)
+		// where Gyroscope Output Rate = 8kHz when the DLPF is disabled (DLPF_CFG = 0 or 7),
 		// and 1kHz when the DLPF is enabled (see register 26).
 		// SMPLRT_DIV set the rate to the default value : Sample Rate = Gyroscope Rate.
-		updateRegisterValue(MPU6050_REG_ADDR_SMPRT_DIV, smplrtDiv);
+		updateRegisterValue(MPU9250_REG_ADDR_SMPRT_DIV, smplrtDiv);
 
 		// 3. This register configures the external Frame Synchronization (FSYNC)
 		// pin sampling and the Digital Low Pass Filter (DLPF) setting for both
@@ -538,18 +650,23 @@ public class MPU9250 extends I2CUpdatableAddress {
 		// FS_SEL selects the full scale range of the gyroscope outputs.
 		byte fsSel = 0 << 3; // FS_SEL +- 250 deg/s
 		gyroLSBSensitivity = 131.; // cfr [datasheet 2 - p.31]
-		updateRegisterValue(MPU6050_REG_ADDR_GYRO_CONFIG, fsSel);
+		updateRegisterValue(MPU9250_REG_ADDR_GYRO_CONFIG, fsSel);
 
 		// 5. Accelerometer configuration [datasheet 2 - p.29]
-		byte afsSel = 0; // AFS_SEL full scale range: + or - 2g. LSB sensitivity : 16384 LSB/g
-		accelLSBSensitivity = 16384.; // LSB Sensitivity corresponding to AFS_SEL 0
-		updateRegisterValue(MPU6050_REG_ADDR_ACCEL_CONFIG, afsSel);
+		// AFS_SEL 0 is +/- 2g with sensitivity factor of 16384
+		// AFS_SEL 1 is +/- 4g with sensitivity factor of 8192
+		// AFS_SEL 2 is +/- 8g with sensitivity factor of 4096
+		// AFS_SEL 3 is +/- 16g with sensitivity factor of 2048
+		// NOTE: changing AFS_SEL to 1 caused more drift  not sure why
+		byte afsSel = 0;
+		accelLSBSensitivity = 16384.;
+		updateRegisterValue(MPU9250_REG_ADDR_ACCEL_CONFIG, afsSel);
 
 		// 6. Disable interrupts
-		updateRegisterValue(MPU6050_REG_ADDR_INT_ENABLE, 0x00);
+		updateRegisterValue(MPU9250_REG_ADDR_INT_ENABLE, 0x00);
 
 		// 7. Disable standby mode
-		updateRegisterValue(MPU6050_REG_ADDR_PWR_MGMT_2, 0x00);
+		updateRegisterValue(MPU9250_REG_ADDR_PWR_MGMT_2, 0x00);
 
 		calibrateSensors();
 	}
@@ -598,7 +715,7 @@ public class MPU9250 extends I2CUpdatableAddress {
 		if (dlpfConfig > 7 || dlpfConfig < 0)
 			throw new IllegalArgumentException("The DLPF config must be in the 0..7 range.");
 		dlpfCfg = dlpfConfig;
-		updateRegisterValue(MPU6050_REG_ADDR_CONFIG, dlpfCfg);
+		updateRegisterValue(MPU9250_REG_ADDR_CONFIG, dlpfCfg);
 	}
 
 	/**
@@ -610,11 +727,11 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 *         z axis.
 	 */
 	public double[] readScaledAccelerometerValues() {
-		double accelX = readWord2C(MPU6050_REG_ADDR_ACCEL_XOUT_H);
+		double accelX = readWord2C(MPU9250_REG_ADDR_ACCEL_XOUT_H);
 		accelX /= accelLSBSensitivity;
-		double accelY = readWord2C(MPU6050_REG_ADDR_ACCEL_YOUT_H);
+		double accelY = readWord2C(MPU9250_REG_ADDR_ACCEL_YOUT_H);
 		accelY /= accelLSBSensitivity;
-		double accelZ = readWord2C(MPU6050_REG_ADDR_ACCEL_ZOUT_H);
+		double accelZ = readWord2C(MPU9250_REG_ADDR_ACCEL_ZOUT_H);
 		accelZ /= accelLSBSensitivity;
 
 		return new double[] { accelX, accelY, -accelZ };
@@ -629,11 +746,11 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 *         the x, y and z axis.
 	 */
 	public double[] readScaledGyroscopeValues() {
-		double gyroX = readWord2C(MPU6050_REG_ADDR_GYRO_XOUT_H);
+		double gyroX = readWord2C(MPU9250_REG_ADDR_GYRO_XOUT_H);
 		gyroX /= gyroLSBSensitivity;
-		double gyroY = readWord2C(MPU6050_REG_ADDR_GYRO_YOUT_H);
+		double gyroY = readWord2C(MPU9250_REG_ADDR_GYRO_YOUT_H);
 		gyroY /= gyroLSBSensitivity;
-		double gyroZ = readWord2C(MPU6050_REG_ADDR_GYRO_ZOUT_H);
+		double gyroZ = readWord2C(MPU9250_REG_ADDR_GYRO_ZOUT_H);
 		gyroZ /= gyroLSBSensitivity;
 
 		return new double[] { gyroX, gyroY, gyroZ };
@@ -643,9 +760,14 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 * Calibrate the accelerometer and gyroscope sensors.
 	 */
 	private void calibrateSensors() {
-		Robot.robotLogger.log(Logger.DEBUG, this, "Calibration starting in 5 seconds (don't move the sensor).");
-		pause(5000);
-		Robot.robotLogger.log(Logger.DEBUG, this, "Calibration started (~5s) (don't move the sensor)");
+		Robot.robotLogger.log(Logger.INFO,  this, "Calibration starting in 3 seconds (don't move the sensor)");
+		pause(3000);
+		Robot.robotLogger.log(Logger.INFO,  this, "Calibration will take aprox 5 seconds (don't move the sensor)");
+
+		// during calibration we take 50 readings, 100ms apart
+		// one all readings have been collected, they are averaged
+		// if calibration is taking longer than desired, the number of
+		// readings could be reduced with a corresponding margin of error
 		int nbReadings = 50;
 
 		// Gyroscope offsets
@@ -663,7 +785,7 @@ public class MPU9250 extends I2CUpdatableAddress {
 		gyroAngularSpeedOffsetY /= nbReadings;
 		gyroAngularSpeedOffsetZ /= nbReadings;
 
-		Robot.robotLogger.log(Logger.DEBUG, this, "Calibration ended");
+		Robot.robotLogger.log(Logger.INFO, this, "Calibration ended");
 	}
 
 	/**
@@ -680,7 +802,7 @@ public class MPU9250 extends I2CUpdatableAddress {
 			});
 			updatingThread.start();
 		} else {
-			Robot.robotLogger.log(Logger.DEBUG, this, "Updating thread of the MPU6050 is already started.");
+			Robot.robotLogger.log(Logger.INFO,  this, "Updating thread of the MPU9250 is already started.");
 		}
 	}
 
@@ -697,7 +819,7 @@ public class MPU9250 extends I2CUpdatableAddress {
 		try {
 			updatingThread.join();
 		} catch (InterruptedException e) {
-			Robot.robotLogger.log(Logger.DEBUG, this, "Exception when joining the updating thread.");
+			Robot.robotLogger.log(Logger.ERROR,  this, "Exception when joining the updating thread.");
 			throw e;
 		}
 		updatingThread = null;
@@ -736,7 +858,10 @@ public class MPU9250 extends I2CUpdatableAddress {
 		gyroAngleY += deltaGyroAngleY;
 		gyroAngleZ += deltaGyroAngleZ;
 
-		// Complementary Filter
+		// Low Pass Filter
+		// decreasing alpha will increase the filtering
+		// @see https://github.com/KalebKE/AccelerationExplorer/wiki/Signal-Noise-and-Noise-Filters
+		// tests should be performed once the MPU has been installed on the robot to determine the best value
 		double alpha = 0.96;
 		filteredAngleX = alpha * (filteredAngleX + deltaGyroAngleX) + (1. - alpha) * accelAngleX;
 		filteredAngleY = alpha * (filteredAngleY + deltaGyroAngleY) + (1. - alpha) * accelAngleY;
@@ -836,6 +961,36 @@ public class MPU9250 extends I2CUpdatableAddress {
 		return new double[] { filteredAngleX, filteredAngleY, filteredAngleZ };
 	}
 
+	/**
+	 * Last angle value, in deg, calculated from the accelerometer and the gyroscope, for the x axis aka Roll.
+	 * <p><i>(using the updating thread)</i></p>
+	 * 
+	 * @return the angle value, in deg, filtered with values from the accelerometer and the gyroscope.
+	 */
+	public double getFilteredRoll() {
+		return filteredAngleX;
+	}
+
+	/**
+	 * Last angle value, in deg, calculated from the accelerometer and the gyroscope, for the y axis aka Roll.
+	 * <p><i>(using the updating thread)</i></p>
+	 * 
+	 * @return the angle value, in deg, filtered with values from the accelerometer and the gyroscope.
+	 */
+	public double getFilteredPitch() {
+		return filteredAngleY;
+	}
+
+	/**
+	 * Last angle value, in deg, calculated from the accelerometer and the gyroscope, for the z axis aka Roll.
+	 * <p><i>(using the updating thread)</i></p>
+	 * 
+	 * @return the angle value, in deg, filtered with values from the accelerometer and the gyroscope.
+	 */
+	public double getFilteredYaw() {
+		return filteredAngleZ;
+	}
+
 	/*
 	 * ----------------------------------------------------------------------- UTILS
 	 * -----------------------------------------------------------------------
@@ -888,13 +1043,11 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 *         registers, with a two's complement representation.
 	 */
 	private int readWord2C(int registerAddress) {
-		int value = readRegisterValue(registerAddress);
-		value = value << 8;
-		value += readRegisterValue(registerAddress + 1);
-
-		if (value >= 0x8000)
-			value = -(65536 - value);
-		return value;
+		short[] data = new short[1];
+		boolean failed = readShort(registerAddress, data);
+		if (failed)
+			Robot.robotLogger.log(Logger.INFO, this, "read failed");
+		return (int)data[0];
 	}
 
 	/**

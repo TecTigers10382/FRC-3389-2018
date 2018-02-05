@@ -21,13 +21,11 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  *
  */
 public class DriveTrain extends Subsystem {
-
+	
 	TalonSRX leftFront;
 	TalonSRX leftBack;
 	TalonSRX rightFront;
 	TalonSRX rightBack;
-	Encoder leftEnc  = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
-	Encoder rightEnc = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
 	StickyFaults LFsFaults = new StickyFaults();
 	StickyFaults RFsFaults = new StickyFaults();
 	StickyFaults LBsFaults = new StickyFaults();
@@ -36,23 +34,25 @@ public class DriveTrain extends Subsystem {
 	Faults RFFaults = new Faults();
 	Faults LBFaults = new Faults();
 	Faults RBFaults = new Faults();
+	Encoder leftEnc  = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
+	Encoder rightEnc = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
 
 	/**
 	 * Creates the Drive Train with 4 TalonSRX motor controllers over CAN.
 	 */
 	public DriveTrain() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-
+		encoderInit();
 		leftFront = new TalonSRX(RobotMap.DRIVE_LEFTFRONT);
 		leftBack = new TalonSRX(RobotMap.DRIVE_LEFTBACK);
 		rightFront = new TalonSRX(RobotMap.DRIVE_RIGHTFRONT);
 		rightBack = new TalonSRX(RobotMap.DRIVE_RIGHTBACK);
-		encoderInit();
 		leftFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		leftBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 
+		// TODO for PID example @see https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 
 		// Outputs Talon debug info
@@ -165,22 +165,23 @@ public class DriveTrain extends Subsystem {
 		
 		clearStickyFaults();
 	}
-	public void encoderInit() {
-		leftEnc.setMaxPeriod(1);
-		leftEnc.setMinRate(10);
-		leftEnc.setDistancePerPulse(5);
-		leftEnc.setReverseDirection(true);
-		leftEnc.setSamplesToAverage(7);
-		rightEnc.setMaxPeriod(1);
-		rightEnc.setMinRate(10);
-		rightEnc.setDistancePerPulse(5);
-		rightEnc.setReverseDirection(true);
-		rightEnc.setSamplesToAverage(7);
-	}
-	private void clearStickyFaults() {
+
+		private void clearStickyFaults() {
 		leftFront.clearStickyFaults(0);
 		rightFront.clearStickyFaults(0);
 		leftBack.clearStickyFaults(0);
 		rightBack.clearStickyFaults(0);
 	}
+		public void encoderInit() {
+			leftEnc.setMaxPeriod(1);
+			leftEnc.setMinRate(10);
+			leftEnc.setDistancePerPulse(5);
+			leftEnc.setReverseDirection(true);
+			leftEnc.setSamplesToAverage(7);
+			rightEnc.setMaxPeriod(1);
+			rightEnc.setMinRate(10);
+			rightEnc.setDistancePerPulse(5);
+			rightEnc.setReverseDirection(true);
+			rightEnc.setSamplesToAverage(7);
+		}
 }

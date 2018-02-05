@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  *
  */
 public class DriveTrain extends Subsystem {
-	
+
 	TalonSRX leftFront;
 	TalonSRX leftBack;
 	TalonSRX rightFront;
@@ -35,7 +35,7 @@ public class DriveTrain extends Subsystem {
 	Faults RFFaults = new Faults();
 	Faults LBFaults = new Faults();
 	Faults RBFaults = new Faults();
-	Encoder leftEnc  = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
+	Encoder leftEnc = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
 	Encoder rightEnc = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
 
 	/**
@@ -53,7 +53,8 @@ public class DriveTrain extends Subsystem {
 		rightFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 
-		// TODO for PID example @see https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
+		// TODO for PID example @see
+		// https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 
 		// Outputs Talon debug info
@@ -168,25 +169,23 @@ public class DriveTrain extends Subsystem {
 		Robot.robotLogger.log(Logger.DEBUG, this, rightFront.getStickyFaults(RFsFaults).toString());
 		Robot.robotLogger.log(Logger.DEBUG, this, leftBack.getStickyFaults(LBsFaults).toString());
 		Robot.robotLogger.log(Logger.DEBUG, this, rightBack.getStickyFaults(RBsFaults).toString());
-		
+
 		clearStickyFaults();
 	}
 
-		private void clearStickyFaults() {
+	private void clearStickyFaults() {
 		leftFront.clearStickyFaults(0);
 		rightFront.clearStickyFaults(0);
 		leftBack.clearStickyFaults(0);
 		rightBack.clearStickyFaults(0);
 	}
-<<<<<<< HEAD
 
 	public void resetEncoders() {
 		leftEnc.reset();
 		rightEnc.reset();
 	}
-}
-=======
-		public void encoderInit() {
+
+	public void encoderInit() {
 			leftEnc.setMaxPeriod(1);
 			leftEnc.setMinRate(10);
 			leftEnc.setDistancePerPulse(5);
@@ -199,4 +198,3 @@ public class DriveTrain extends Subsystem {
 			rightEnc.setSamplesToAverage(7);
 		}
 }
->>>>>>> branch 'master' of http://www.github.com/booolean/3389FRC

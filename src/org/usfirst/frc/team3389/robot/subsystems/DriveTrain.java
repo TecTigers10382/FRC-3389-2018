@@ -47,7 +47,7 @@ public class DriveTrain extends Subsystem {
 	PIDController leftPID;
 	PIDController rightPID;
 	PIDController gyroPID;
-	OLEDDisplay display = new OLEDDisplay();
+	
 
 	/**
 	 * Creates the Drive Train with 4 TalonSRX motor controllers over CAN.
@@ -73,7 +73,6 @@ public class DriveTrain extends Subsystem {
 
 		// TODO for PID example @see
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
-		display.drawStringCentered("Hello World!", 25);
 		// Outputs Talon debug info
 		Debug();
 

@@ -49,6 +49,8 @@ public class Robot extends TimedRobot {
 	public static final Intake intake = new Intake();
 	public static final Lifter lifter= new Lifter();
 	
+	OLEDDisplay display = new OLEDDisplay();
+	
 	public static final ExampleSubsystem kExampleSubsystem = new ExampleSubsystem();
 	public static OI m_oi;
 	
@@ -62,6 +64,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
+		display.init();
 		m_oi = new OI();
 		// driveGyro.startUpdatingThread();
 		if (!robotScreen.init())
@@ -190,7 +193,8 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "enter");
-
+		display.drawString("Hello World!", 25, 25);
+		display.refresh();
 		// Display on SmartDashboard
 		//SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());
 

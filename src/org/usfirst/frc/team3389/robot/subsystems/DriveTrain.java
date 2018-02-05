@@ -91,8 +91,8 @@ public class DriveTrain extends Subsystem {
 		rightBack.set(ControlMode.PercentOutput, rightPower);
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit" + leftFront.getMotorOutputPercent());
-		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + leftEnc.get());
-		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + rightEnc.get());
+		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + leftEnc.getDistance());
+		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + rightEnc.getDistance());
 	}
 
 	/**

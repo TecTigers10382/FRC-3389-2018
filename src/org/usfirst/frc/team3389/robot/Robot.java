@@ -64,12 +64,12 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
 
-		driveGyro.startUpdatingThread();
 		if (!robotScreen.init())
-		robotLogger.log(Logger.ERROR, this, "failted to initialize OLED display");
+			robotLogger.log(Logger.ERROR, this, "failted to initialize OLED display");
 
 		m_oi = new OI();
 		driveGyro.startUpdatingThread();
+		
 		m_chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", m_chooser);
@@ -195,6 +195,8 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "enter");
 		robotScreen.drawString("Hello World!", 25, 25);
+		double angle = driveGyro.getFilteredYaw();
+		robotScreen.drawString(String.format("Heading: %+5.1f", angle), 25, 35);
 		robotScreen.refresh();
 		// Display on SmartDashboard
 		//SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());
@@ -219,8 +221,6 @@ public class Robot extends TimedRobot {
 		// System.out.println("range distance = " + timeOfFlight.getDistanceMillimeters() + "mm");
 		// robotScreen.drawTextLine("test message", 0);
 		// robotScreen.drawTextLine("range = " + timeOfFlight.getDistanceMillimeters() + "mm", 1);
-		// double angle = driveGyro.getFilteredYaw();
-		// robotScreen.drawTextLine(String.format("Heading: %+5.1f", angle), 1);
 		// robotScreen.refresh();
 
 		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "exit");

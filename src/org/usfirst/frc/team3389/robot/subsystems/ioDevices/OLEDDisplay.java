@@ -5,10 +5,14 @@
 * the project.
 */
 /*
- * Based on material from Florian Frankenberger and made available
- * under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
+ * Ported to the NI RoboRIO and extended.
+ * Using material from Florian Frankenberger under GNU LGPL2.1.
+ * Ported from Adafruit's BSD licensed SSD1306 library
+ * @see https://github.com/adafruit/Adafruit_SSD1306
+ * 
+ * @author FRC Team 3389
+ * @author Florian Frankenberger
+ * @author Limor Fried/Ladyada
  */
 
 package org.usfirst.frc.team3389.robot.subsystems.ioDevices;
@@ -20,40 +24,6 @@ import java.util.Arrays;
 import org.usfirst.frc.team3389.robot.Robot;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
-
-/**
- * A raspberry pi driver for the 128x64 pixel OLED display (i2c bus).
- * The supported kind of display uses the SSD1306 driver chip and
- * is connected to the raspberry's i2c bus (bus 1).
- * <p/>
- * Note that you need to enable i2c (using for example raspi-config).
- * Also note that you need to load the following kernel modules:
- * <pre>i2c-bcm2708</pre> and <pre>i2c_dev</pre>
- * <p/>
- * Also note that it is possible to speed up the refresh rate of the
- * display up to ~60fps by adding the following to the config.txt of
- * your raspberry: dtparam=i2c1_baudrate=1000000
- * <p/>
- * Sample usage:
- * <pre>
- * OLEDDisplay display = new OLEDDisplay();
- * display.drawStringCentered("Hello World!", 25, true);
- * display.update();
- * Thread.sleep(10000); //sleep some time, because the display
- *                      //is automatically cleared the moment
- *                      //the application terminates
- * </pre>
- * <p/>
- * This class is basically a rough port of Adafruit's BSD licensed
- * SSD1306 library (https://github.com/adafruit/Adafruit_SSD1306)
- * 
- * This implementation is quick port for the NI RoboRIO
- *
- * @author Florian Frankenberger
- * @author FRC Team 3389
- */
-
-// TODO - needs javadocs commenting
 
 public class OLEDDisplay extends I2CUpdatableAddress {
 
@@ -119,7 +89,7 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     private final byte[] imageBuffer = new byte[((DISPLAY_WIDTH * DISPLAY_HEIGHT) / 8)];
 
     /**
-     * creates an oled display object with default
+     * creates an OLED display object with default
      * i2c bus 1 and default display address of 0x3C
      * using the I2C port on the RoboRIO MXP
      */
@@ -368,7 +338,7 @@ public class OLEDDisplay extends I2CUpdatableAddress {
      * @param x int the left most pixel is the rectangular area
      * @param y int the top most pixel is the rectangular area
      * @param width int the width of the rectangular area
-     * @param height int the height of the retangular area
+     * @param height int the height of the rectangular area
      */
     public synchronized void clearRect(int x, int y, int width, int height) {
     	if (!inited) {

@@ -11,6 +11,7 @@ import org.usfirst.frc.team3389.robot.commands.ExampleCommand;
 import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team3389.robot.subsystems.ExampleSubsystem;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.MPU9250;
+import org.usfirst.frc.team3389.robot.subsystems.ioDevices.OLEDBitmap;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.OLEDDisplay;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.QuadEncoder;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.TimeOfFlight;
@@ -66,6 +67,10 @@ public class Robot extends TimedRobot {
 
 		if (!robotScreen.init())
 			robotLogger.log(Logger.ERROR, this, "failted to initialize OLED display");
+		else {
+			robotScreen.drawBitmap(OLEDBitmap.LOGO.getData(), OLEDBitmap.LOGO.getWidth(), OLEDBitmap.LOGO.getHeight(), 0, 0);
+			robotScreen.refresh();
+		}
 
 		m_oi = new OI();
 		driveGyro.startUpdatingThread();
@@ -185,6 +190,9 @@ public class Robot extends TimedRobot {
 			m_autonomousCommand.cancel();
 		}
 
+		robotScreen.clear();
+		robotScreen.refresh();
+		
 		robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
@@ -194,9 +202,10 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "enter");
-		robotScreen.drawString("Hello World!", 25, 25);
+		robotScreen.drawTextStringCentered("Hello World!", 0);
 		double angle = driveGyro.getFilteredYaw();
-		robotScreen.drawString(String.format("Heading: %+5.1f", angle), 25, 35);
+		// it's probably confusing to mix pixel positioning and character/line positioning
+		robotScreen.drawTextLine(String.format("Heading: %+5.1f", angle), 5);
 		robotScreen.refresh();
 		// Display on SmartDashboard
 		//SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());

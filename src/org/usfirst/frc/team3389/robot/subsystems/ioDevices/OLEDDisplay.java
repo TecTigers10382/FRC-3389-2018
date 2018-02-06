@@ -121,8 +121,7 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     /**
      * creates an oled display object with default
      * i2c bus 1 and default display address of 0x3C
-     *
-     * @throws NACKException
+     * using the I2C port on the RoboRIO MXP
      */
     public OLEDDisplay() {
 		super(Port.kMXP, defaultAddress);
@@ -130,22 +129,17 @@ public class OLEDDisplay extends I2CUpdatableAddress {
 
         clear();  // erase screen buffer
 
-        //add shutdown hook that clears the display
-        //and closes the bus correctly when the software
-        //if terminated.
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                shutdown();
-            }
-        });
         Robot.robotLogger.log(Logger.DEBUG, this, "exit");
     }
     
-    public void finalize() {
-        shutdown();
-    }
-
+    
+    /**
+     * initialize the OLED display using its I2C register commands
+     * 
+     * @see https://cdn-shop.adafruit.com/datasheets/SSD1306.pdf
+     * 
+     * @return boolean success
+     */
     public final boolean init() {
     	Robot.robotLogger.log(Logger.DEBUG, this, "enter");
     	invert_display = false;
@@ -184,13 +178,31 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     	return this.inited;
     }
 
+    
+    /**
+     * test to see if the OLED display was successfully initialized
+     * 
+     * @return boolean is initialized
+     */
     public boolean isReady() {
     	return this.inited;
     }
     
+    
+    /**
+     * method to invert the meaning of black vs white in future pixel and text write operations
+     * also effects clear() - eg, calling clear() when invert is true results in a completly white display
+     * @param invert boolean to set display operations to invert meaning of black and white
+     */
     public void invertColors(boolean invert) {
     	invert_display = invert;
     }
+    
+    
+    /**
+     * erase all content of the video buffer and set every pixel is black (or the inverse of black)
+     * the pixel colors are affected by the current setting from invertColors()
+     */
     public synchronized void clear() {
     	if (this.invert_display)
             Arrays.fill(imageBuffer, (byte) 0xFF);
@@ -198,22 +210,56 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     		Arrays.fill(imageBuffer, (byte) 0x00);
     }
 
+
+    /**
+     * get the OLED display available width
+     * 
+     * @return int the width of the display in pixels
+     */    
     public int getWidth() {
         return DISPLAY_WIDTH;
     }
 
+    
+    /**
+     * get the OLED display available height
+     * 
+     * @return int the height of the display in pixels
+     */
     public int getHeight() {
         return DISPLAY_HEIGHT;
     }
 
+    
+    /**
+     * get the OLED display available character width
+     * 
+     * @return int the width of the display in characters using the current font's fixed width size
+     */
     public int getMaxChars() {
         return maxChars;
     }
 
+    
+    /**
+     * get the OLED display available height
+     * 
+     * @return int the height of the display in characters using the current font's fixed height size
+     */
     public int getMaxLines() {
         return maxLines;
     }
 
+    
+    /**
+     * set an individual pixel black or white
+     * ignore's the current invertColors() setting
+     * positional values are zero-based
+     * 
+     * @param x int horizontal pixel position on the display starting from left
+     * @param y int vertical pixel position on the display starting from the top
+     * @param color boolean true for white and false for black
+     */
     public synchronized void setPixelColor(int x, int y, boolean color) {
     	if (!inited) {
     		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
@@ -230,6 +276,15 @@ public class OLEDDisplay extends I2CUpdatableAddress {
         }
     }
     
+    
+    /**
+     * set an individual pixel on
+     * uses the current invertColors() setting to determin if 'on' is white or black
+     * positional values are zero-based
+     * 
+     * @param x int horizontal pixel position on the display starting from left
+     * @param y int vertical pixel position on the display starting from the top
+     */
     public synchronized void setPixel(int x, int y) {
     	if (!inited) {
     		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
@@ -238,16 +293,29 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     	this.setPixelColor(x, y, !(this.invert_display));
     }
 
+
+    /**
+     * set the font to use for subsequent text operations
+     * also updates the character size used for subsequent text operations
+     * 
+     * @param font OLEDFont one of the provided fonts
+     */
     public void setFont(OLEDFont font) {
     	currentFont = font;
-    	this.maxChars = this.getWidth() / currentFont.getOuterWidth();
-        this.maxLines = this.getHeight() / currentFont.getOuterHeight();
+    	this.maxChars = (this.getWidth()  + (currentFont.getOuterWidth()  - 1)) / currentFont.getOuterWidth();
+        this.maxLines = (this.getHeight() + (currentFont.getOuterHeight() - 1)) / currentFont.getOuterHeight();
     }
     
-    private synchronized void drawChar(char c, int x, int y) {
-        currentFont.drawChar(this, c, x, y);
-    }
 
+    /**
+     * draw a string into the video buffer using the current font
+     * this method does not clear the pixels of the video buffer prior to rendering
+     * positional values are zero-based
+     * 
+     * @param string java String object with the text to render
+     * @param x int the left pixel position for the text
+     * @param y int the upper pixel position for the text
+     */
     public synchronized void drawString(String string, int x, int y) {
     	if (!inited) {
     		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
@@ -263,13 +331,23 @@ public class OLEDDisplay extends I2CUpdatableAddress {
                 if (posX >= 0 && posX + currentFont.getWidth() < this.getWidth()
                         && posY >= 0 && posY + currentFont.getHeight() < this.getHeight())
                 {
-                    drawChar(c, posX, posY);
+                    currentFont.drawChar(this, c, posX, posY);
                 }
                 posX += currentFont.getOuterWidth();
             }
         }
     }
 
+    
+    /**
+     * draw a string into the video buffer using the current font
+     * the string with be center horizontally on the display based on the fixed character width of the current font
+     * this method does not clear the pixels of the video buffer prior to rendering
+     * positional values are zero-based
+     * 
+     * @param string java String object with the text to render
+     * @param y int the upper pixel position for the text
+     */
     public synchronized void drawStringCentered(String string, int y) {
     	if (!inited) {
     		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
@@ -280,6 +358,18 @@ public class OLEDDisplay extends I2CUpdatableAddress {
         drawString(string, x, y);
     }
 
+    
+    /**
+     * erase a portion of the video buffer setting those pixels to black
+     * this methods observes the most recent call to inverteColors() to determine
+     * the definition of black
+     * positional values are zero-based
+     * 
+     * @param x int the left most pixel is the rectangular area
+     * @param y int the top most pixel is the rectangular area
+     * @param width int the width of the rectangular area
+     * @param height int the height of the retangular area
+     */
     public synchronized void clearRect(int x, int y, int width, int height) {
     	if (!inited) {
     		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
@@ -292,117 +382,198 @@ public class OLEDDisplay extends I2CUpdatableAddress {
         }
     }
     
-    // added fixed width font based operations for easy of use
-    // these methods use the current font dimensions as rows and columns
-    // rather than pixel positioning in x and y in the previous methods
-    
-    private synchronized void drawTextChar(char c, int row, int col) {
-        drawChar(c, col * currentFont.getOuterWidth(), row * currentFont.getOuterHeight());
-    }
+    /*
+     * the methods containing the word 'Text' operate on a XY layout of the display
+     * based on the fixed width and fixed height size of the current font
+     * 
+     * currently, all text operations assume a fixed pitch font
+     */
 
-    public synchronized void drawTextString(String string, int row, int col) {
+    
+    /**
+     * draw a string into the video buffer using the current font
+     * if the string contains newlines, then line breaks are added
+     * and the rendered text will proceed on the next line using the start column 
+     * this method does not clear the pixels of the video buffer prior to rendering
+     * positional values are zero-based
+     * 
+     * @param string java String object with the text to render
+     * @param col int the left character position for the text on the screen
+     * @param line int the line position for the text on the screen
+     */
+    public synchronized void drawTextString(String string, int col, int line) {
     	if (!inited) {
     		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
     		return;
     	}
-        int posR = row;
-        int posC = col;
+        int currentCol = col;
         for (char c : string.toCharArray()) {
             if (c == '\n') {
-                posR += 1;
-                posC = col;
+                line += 1;
+                currentCol = col;
             } else {
-                if (posC >= 0 && posC+1 < this.maxChars && posR >= 0 && posR+1 < this.maxLines) {
-                    drawTextChar(c, posR, posC);
-                }
-                posC += 1;
+            	currentFont.drawChar(this, c, currentCol * currentFont.getOuterWidth(), line * currentFont.getOuterHeight());
+                currentCol += 1;
             }
         }
     }
 
-    public synchronized void drawTextStringCentered(String string, int row) {
+
+    /**
+     * draw a string into the video buffer using the current font
+     * the string with be center horizontally on the display based on the fixed character width of the current font
+     * if the string contains newlines, then unexpected results will occur
+     * this method does not clear the pixels of the video buffer prior to rendering
+     * positional values are zero-based
+     * 
+     * @param string java String object with the text to render
+     * @param line int the line position for the text on the screen
+     */
+    public synchronized void drawTextStringCentered(String string, int line) {
     	if (!inited) {
     		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
     		return;
     	}
-    	clearTextLine(row);
         final int col = (this.maxChars - string.length()) / 2;
-        drawTextString(string, row, col);
+        drawTextString(string, col, line);
     }
 
-    public synchronized void drawTextLine(String string, int row) {
-    	if (!inited) {
-    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
-    		return;
-    	}
-    	clearTextLine(row);
-    	drawTextString(string, row, 0);
-    }
-
-    public synchronized void updateTextLine(String string, int row) {
-    	if (!inited) {
-    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
-    		return;
-    	}
-    	clearTextLine(row);
-    	drawTextString(string, row, 0);
-    	refreshLine(row);
-    }
-
-    public synchronized void clearTextArea(int row, int col, int chars, int lines) {
-    	if (!inited) {
-    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
-    		return;
-    	}
-    	clearRect(col * currentFont.getOuterWidth(), row * currentFont.getOuterHeight(), chars * currentFont.getOuterWidth(), lines * currentFont.getOuterHeight());
-    }
     
-    public synchronized void clearTextLine(int row) {
+    /**
+     * draw a string into the video buffer using the current font
+     * the entire line is replaces with the new string
+     * this method clears the pixels of the video buffer corresponding to the line of text prior to rendering
+     * if the string contains newlines, then unexpected results will occur
+     * positional values are zero-based
+     * 
+     * @param string java String object with the text to render
+     * @param line int the line position for the text on the screen
+     */
+    public synchronized void drawTextLine(String string, int line) {
     	if (!inited) {
     		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
     		return;
     	}
-    	clearRect(0, row * currentFont.getOuterHeight(), this.getWidth(), currentFont.getOuterHeight());
+    	clearTextLine(line);
+    	drawTextString(string, 0, line);
+    }
+
+    
+    /**
+     * draw a string into the video buffer using the current font and refresh the display
+     * the entire line is replaces with the new string
+     * if the string contains newlines, then unexpected results will occur
+     * this method clears the pixels of the video buffer corresponding to the line of text prior to rendering
+     * positional values are zero-based
+     * 
+     * @param string java String object with the text to render
+     * @param line int the line position for the text on the screen
+     */
+    public synchronized void updateTextLine(String string, int line) {
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
+    	clearTextLine(line);
+    	drawTextString(string, 0, line);
+    	refreshLine(line);
     }
 
     /**
-     * draws the given image over the current image buffer. The image
-     * is automatically converted to a binary image (if it not already
-     * is).
-     * <p/>
-     * Note that the current buffer is not cleared before, so if you
-     * want the image to completely overwrite the current display
-     * content you need to call clear() before.
-     *
-     * @param image
-     * @param x
-     * @param y
+     * erase a portion of the video buffer setting those character locations to black
+     * this methods observes the most recent call to inverteColors() to determine
+     * the definition of black
+     * positional values are zero-based
+     * 
+     * @param col int the left most character column to erase 
+     * @param line int the first line to erase
+     * @param chars int the number of characters across to erase
+     * @param lines int the number of lines to erase
      */
-    public synchronized void drawImage(BufferedImage image, int x, int y) {
+    public synchronized void clearTextArea(int col, int line, int chars, int lines) {
     	if (!inited) {
     		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
     		return;
     	}
-        BufferedImage tmpImage = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_BYTE_BINARY);
-        tmpImage.getGraphics().drawImage(image, x, y, null);
+    	clearRect(col * currentFont.getOuterWidth(), line * currentFont.getOuterHeight(), chars * currentFont.getOuterWidth(), lines * currentFont.getOuterHeight());
+    }
+
+    
+    /**
+     * erase a single line of the video buffer setting those character locations to black
+     * this methods observes the most recent call to inverteColors() to determine
+     * the definition of black
+     * positional values are zero-based
+     * 
+     * @param line int the character line to erase
+     */
+    public synchronized void clearTextLine(int line) {
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
+    	clearRect(0, line * currentFont.getOuterHeight(), this.getWidth(), currentFont.getOuterHeight());
+    }
+
+    /**
+     * draws the given bitmap over the current image buffer.
+     * this methods observes the most recent invertColors() setting
+     * to determine if a set pixel is black or white and non-set pixels are the other
+
+     * @param bitmap byte[] binary bitmap image data 
+     * @param width the pixel width of the bitmap image
+     * @param height the pixel height of the bitmap image
+     * @param x int the left most pixel position of the image
+     * @param y int the top most pixel position of the image 
+     */
+    public synchronized void drawBitmap(byte[] bitmap, int width, int height, int x, int y) {
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
 
         int index = 0;
         int pixelval;
-        final byte[] pixels = ((DataBufferByte) tmpImage.getRaster().getDataBuffer()).getData();
-        for (int posY = 0; posY < DISPLAY_HEIGHT; posY++) {
-            for (int posX = 0; posX < DISPLAY_WIDTH / 8; posX++) {
+
+        for (int posY = 0; posY < height; posY++) {
+            for (int posX = 0; posX < (width / 8); posX++) {
                 for (int bit = 0; bit < 8; bit++) {
-                    pixelval = (byte) ((pixels[index/8] >>  (8 - bit)) & 0x01);
-                    setPixelColor(posX * 8 + bit, posY, pixelval > 0);
+                    pixelval = (byte) ((bitmap[index/8] >>  (8 - bit)) & 0x01);
+                    setPixelColor(x + ((posX * 8) + bit), y + posY, pixelval > 0);
                     index++;
                 }
             }
         }
     }
 
+    
     /**
-     * sends the current buffer to the display
-     * @throws IOException
+     * draws the given image over the current image buffer. The image
+     * is automatically converted to a binary image (one bit per pixel)
+     * this methods observes the most recent invertColors() setting
+     * to determine if a set pixel is black or white and non-set pixels are the other
+     * positional values are zero-based
+     * 
+     * @param image BufferedImage 
+     * @param x int the left most pixel position of the image
+     * @param y int the top most pixel position of the image 
+     */
+    public synchronized void drawImage(BufferedImage image, int x, int y) {
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
+    	int width = Math.max(image.getWidth(), this.getWidth());
+    	int height = Math.max(image.getHeight(), this.getHeight());
+        BufferedImage tmpImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_BINARY);
+        tmpImage.getGraphics().drawImage(image, 0, 0, null);
+
+        drawBitmap (((DataBufferByte) tmpImage.getRaster().getDataBuffer()).getData(), width, height, x, y);
+    }
+
+    
+    /**
+     * update actual display with contents of video buffer
      */
     public synchronized void refresh() {
     	if (!inited) {
@@ -427,39 +598,55 @@ public class OLEDDisplay extends I2CUpdatableAddress {
         }
     }
 
-    public synchronized void refreshLine(int row) {
+    
+    /**
+     * update a portion of the actual display with the contents of the video buffer
+     * since the video buffer is broken into pages with each page representing 8 pixel lines
+     * a single character row may refresh additional buffer lines before/after the text line
+     * positional values are zero-based
+     * 
+     * @param line int a single line of text on the display based on the current font
+     */
+    public synchronized void refreshLine(int line) {
     	if (!inited) {
     		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
     		return;
     	}
-    	// line level refreshes have a bug so we just do a full refresh until we fix it
+
+    	// line level refreshes had a bug so we just do a full refresh until we fix it
     	refresh();
-    	// TODO fix line level refresh
+
+    	// TODO test if this new code actually works
     	/*
+    	int firstX = line * currentFont.getOuterHeight();
+    	int lastX = Math.max((line+1) * currentFont.getOuterHeight(), getHeight());
+    	// the display buffer is broken into 'pages' of 8 lines each; the display is made up of page0 .. page7
+    	int firstPage = firstX / 8;
+    	int lastPage = (lastX + 7) / 8;
+    	
+        byte[] buffer = new byte[16 + 1];
+        buffer[0] = SSD1306_SETSTARTLINE;
+
+        // refresh entire line
         writeByte(0x00, SSD1306_COLUMNADDR);
         writeByte(0x00, (byte) 0);   // Column start address (0 = reset)
         writeByte(0x00, (byte) (DISPLAY_WIDTH - 1)); // Column end address (127 = reset)
 
+        // refresh all affected pages
         writeByte(0x00, SSD1306_PAGEADDR);
-        writeByte(0x00, (byte) 0); // Page start address (0 = reset)
-        writeByte(0x00, (byte) 7); // Page end address
-
-        byte[] buffer = new byte[16 + 1];
-        buffer[0] = SSD1306_SETSTARTLINE;
+        writeByte(0x00, (byte) firstPage); // Page start address (0 = reset)
+        writeByte(0x00, (byte) lastPage); // Page end address
 
         // the display buffer is loaded in 16 byte chucks
         // for a monochrome display, this is 64 pixels
         // on a 128x64 display, this is one pixel line
 
-        if ((row >= 0) && (row < this.maxLines)) {
-        	int pixelHeight= currentFont.getOuterHeight();
-            for (int i = (row * pixelHeight); i < ((row+1) * pixelHeight); i++) {
-                // send a bunch of data in one transmission
-        		System.arraycopy(imageBuffer, i*16, buffer, 1, 16);
-            	writeBulk(buffer);
-            }
+        for (int i = (firstPage * 8); i < (lastPage * 8); i++) {
+        	// send a bunch of data in one transmission
+        	System.arraycopy(imageBuffer, i*16, buffer, 1, 16);
+        	writeBulk(buffer);
         }
-    	 */
+        */
     }
 
     // the I2C OLED Display supports hardware horizontal scrolling
@@ -472,11 +659,5 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     	int lines = font.getOuterWidth() * chars;
     	scrollVerticalLine (lines);
     }
-    
-    
-    private synchronized void shutdown() {
-    	//before we shut down we clear the display
-    	clear();
-    	refresh();
-    }
+
 }

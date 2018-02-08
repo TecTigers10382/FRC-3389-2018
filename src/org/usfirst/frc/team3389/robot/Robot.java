@@ -64,12 +64,11 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
-<<<<<<< HEAD
+
 		m_oi = new OI();
 
 		driveTrain.encoderInit();
-=======
->>>>>>> branch 'master' of https://github.com/booolean/3389FRC.git
+
 
 		if (!robotScreen.init())
 			robotLogger.log(Logger.ERROR, this, "failted to initialize OLED display");
@@ -195,14 +194,11 @@ public class Robot extends TimedRobot {
 			robotLogger.log(Logger.INFO, this, "teleop cancels autonomous");
 			m_autonomousCommand.cancel();
 		}
-<<<<<<< HEAD
 		
 		driveTrain.resetEncoders();
-=======
 
 		robotScreen.clear();
 		robotScreen.refresh();
->>>>>>> branch 'master' of https://github.com/booolean/3389FRC.git
 		
 		robotLogger.log(Logger.DEBUG, this, "exit");
 	}
@@ -216,8 +212,9 @@ public class Robot extends TimedRobot {
 		robotScreen.drawTextStringCentered("Hello World!", 0);
 		double angle = driveGyro.getFilteredYaw();
 		// it's probably confusing to mix pixel positioning and character/line positioning
-		robotScreen.drawTextLine(String.format("Heading: %+5.1f", angle), 5);
-		robotScreen.refresh();
+		//robotScreen.drawTextLine(String.format("Heading: %+5.1f", angle), 5);
+		SmartDashboard.putNumber("Heading: ", angle);
+		//robotScreen.refresh();
 		// Display on SmartDashboard
 		//SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());
 

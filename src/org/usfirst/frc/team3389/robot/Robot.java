@@ -11,6 +11,7 @@ import org.usfirst.frc.team3389.robot.commands.ExampleCommand;
 import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team3389.robot.subsystems.ExampleSubsystem;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.MPU9250;
+import org.usfirst.frc.team3389.robot.subsystems.ioDevices.OLEDBitmap;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.OLEDDisplay;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.QuadEncoder;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.TimeOfFlight;
@@ -43,12 +44,13 @@ public class Robot extends TimedRobot {
 
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
 	public static final OLEDDisplay robotScreen = new OLEDDisplay();
-	// public static final MPU9250 driveGyro = new MPU9250(); // this includes calibration which takes 8-12 seconds to complete
+	public static final MPU9250 driveGyro = new MPU9250(); // this includes calibration which takes 8-12 seconds to complete
 	
 	public static final DriveTrain driveTrain = new DriveTrain();
 	public static final Intake intake = new Intake();
 	public static final Lifter lifter= new Lifter();
 	
+		
 	public static final ExampleSubsystem kExampleSubsystem = new ExampleSubsystem();
 	public static OI m_oi;
 	
@@ -62,12 +64,23 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
+<<<<<<< HEAD
 		m_oi = new OI();
 
 		driveTrain.encoderInit();
+=======
+>>>>>>> branch 'master' of https://github.com/booolean/3389FRC.git
 
 		if (!robotScreen.init())
 			robotLogger.log(Logger.ERROR, this, "failted to initialize OLED display");
+		else {
+			robotScreen.drawBitmap(OLEDBitmap.LOGO.getData(), OLEDBitmap.LOGO.getWidth(), OLEDBitmap.LOGO.getHeight(), 0, 0);
+			robotScreen.refresh();
+		}
+
+		m_oi = new OI();
+		driveGyro.startUpdatingThread();
+		
 		m_chooser.addDefault("Default Auto", new ExampleCommand());
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", m_chooser);
@@ -182,8 +195,14 @@ public class Robot extends TimedRobot {
 			robotLogger.log(Logger.INFO, this, "teleop cancels autonomous");
 			m_autonomousCommand.cancel();
 		}
+<<<<<<< HEAD
 		
 		driveTrain.resetEncoders();
+=======
+
+		robotScreen.clear();
+		robotScreen.refresh();
+>>>>>>> branch 'master' of https://github.com/booolean/3389FRC.git
 		
 		robotLogger.log(Logger.DEBUG, this, "exit");
 	}
@@ -194,7 +213,11 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "enter");
-
+		robotScreen.drawTextStringCentered("Hello World!", 0);
+		double angle = driveGyro.getFilteredYaw();
+		// it's probably confusing to mix pixel positioning and character/line positioning
+		robotScreen.drawTextLine(String.format("Heading: %+5.1f", angle), 5);
+		robotScreen.refresh();
 		// Display on SmartDashboard
 		//SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());
 
@@ -218,8 +241,6 @@ public class Robot extends TimedRobot {
 		// System.out.println("range distance = " + timeOfFlight.getDistanceMillimeters() + "mm");
 		// robotScreen.drawTextLine("test message", 0);
 		// robotScreen.drawTextLine("range = " + timeOfFlight.getDistanceMillimeters() + "mm", 1);
-		// double angle = driveGyro.getFilteredYaw();
-		// robotScreen.drawTextLine(String.format("Heading: %+5.1f", angle), 1);
 		// robotScreen.refresh();
 
 		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "exit");

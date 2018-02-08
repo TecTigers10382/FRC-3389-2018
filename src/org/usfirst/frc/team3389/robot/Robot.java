@@ -205,8 +205,9 @@ public class Robot extends TimedRobot {
 		robotScreen.drawTextStringCentered("Hello World!", 0);
 		double angle = driveGyro.getFilteredYaw();
 		// it's probably confusing to mix pixel positioning and character/line positioning
-		robotScreen.drawTextLine(String.format("Heading: %+5.1f", angle), 5);
-		robotScreen.refresh();
+		//robotScreen.drawTextLine(String.format("Heading: %+5.1f", angle), 5);
+		SmartDashboard.putNumber("Heading: ", angle);
+		//robotScreen.refresh();
 		// Display on SmartDashboard
 		//SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());
 

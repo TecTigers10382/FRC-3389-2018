@@ -60,11 +60,18 @@ public class DriveTrain extends Subsystem {
 		leftBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
+		
+		//PID Code
 		leftPIDSource = new EncoderPIDSource(leftEnc, 1); 
 		leftPID = new PIDController(0, 0, 0, leftPIDSource, RobotMap.leftDriveOutput);
         leftPID.disable();
         leftPID.setOutputRange(-1.0, 1.0);
         leftPID.setAbsoluteTolerance(0.5);
+        rightPIDSource = new EncoderPIDSource(rightEnc, 1); 
+		rightPID = new PIDController(0, 0, 0, rightPIDSource, RobotMap.rightDriveOutput);
+        rightPID.disable();
+        rightPID.setOutputRange(-1.0, 1.0);
+        rightPID.setAbsoluteTolerance(0.5);
         
 		// TODO for PID example @see https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
 
@@ -210,4 +217,12 @@ public class DriveTrain extends Subsystem {
 			rightEnc.setReverseDirection(true);
 			rightEnc.setSamplesToAverage(7);
 		}
+	public void setDistance(double distance) {
+    	rightPID.setSetpoint(distance);
+    	leftPID.setSetpoint(distance);
+    }
+	public void setDistance(double leftDistance, double rightDistance) {
+    	rightPID.setSetpoint(rightDistance);
+    	leftPID.setSetpoint(leftDistance);
+    }
 }

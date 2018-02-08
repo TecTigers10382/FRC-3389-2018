@@ -79,6 +79,9 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     private static final byte  SSD1306_VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL = (byte) 0x29;
     private static final byte  SSD1306_VERTICAL_AND_LEFT_HORIZONTAL_SCROLL = (byte) 0x2A;
 
+    public static final boolean BLACK = false;
+    public static final boolean WHITE = true;
+
     private boolean inited = false;
     private OLEDFont currentFont;
     private int maxChars;
@@ -96,6 +99,7 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     public OLEDDisplay() {
 		super(Port.kMXP, defaultAddress);
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
+		
 		invert_display= true;
         clear();  // erase screen buffer
 
@@ -112,7 +116,7 @@ public class OLEDDisplay extends I2CUpdatableAddress {
      */
     public final boolean init() {
     	Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-    	invert_display = false;
+    	invert_display = true;
     	setFont(OLEDFont.FONT_5X8);
             
     	writeByte(0x00,SSD1306_DISPLAYOFF);                    // 0xAE
@@ -254,12 +258,12 @@ public class OLEDDisplay extends I2CUpdatableAddress {
      * @param x int horizontal pixel position on the display starting from left
      * @param y int vertical pixel position on the display starting from the top
      */
-    public synchronized void setPixel(int x, int y) {
+    public synchronized void setPixel(int x, int y, boolean val) {
     	if (!inited) {
     		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
     		return;
     	}
-    	this.setPixelColor(x, y, !(this.invert_display));
+    	this.setPixelColor(x, y, (this.invert_display ? !(val) : val));
     }
 
 
@@ -346,7 +350,7 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     	}
         for (int posX = x; posX < x + width; ++posX) {
             for (int posY = y; posY < y + height; ++posY) {
-                setPixelColor(posX, posY, this.invert_display);
+                setPixel(posX, posY, BLACK);
             }
         }
     }
@@ -508,7 +512,8 @@ public class OLEDDisplay extends I2CUpdatableAddress {
             for (int posX = 0; posX < (width / 8); posX++) {
                 for (int bit = 0; bit < 8; bit++) {
                     pixelval = (byte) ((bitmap[index/8] >>  (8 - bit)) & 0x01);
-                    setPixelColor(x + ((posX * 8) + bit), y + posY, pixelval > 0);
+                    // support invert display
+                    setPixel(x + ((posX * 8) + bit), y + posY, (pixelval>0)?WHITE:BLACK);
                     index++;
                 }
             }

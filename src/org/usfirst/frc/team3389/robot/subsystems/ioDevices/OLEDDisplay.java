@@ -96,7 +96,7 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     public OLEDDisplay() {
 		super(Port.kMXP, defaultAddress);
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-
+		invert_display= true;
         clear();  // erase screen buffer
 
         Robot.robotLogger.log(Logger.DEBUG, this, "exit");
@@ -147,7 +147,6 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     	Robot.robotLogger.log(Logger.DEBUG, this, "exit");
     	return this.inited;
     }
-
     
     /**
      * test to see if the OLED display was successfully initialized
@@ -565,8 +564,8 @@ public class OLEDDisplay extends I2CUpdatableAddress {
             // send a bunch of data in one transmission
     		System.arraycopy(imageBuffer, i*16, buffer, 1, 16);
         	writeBulk(buffer);
-        }
-    }
+        } 
+    } 
 
     
     /**

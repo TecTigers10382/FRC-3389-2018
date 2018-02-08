@@ -30,7 +30,6 @@ public class RobotMap {
 	public static Talon DRIVE_LEFTBACK = new Talon(1);
 	public static Talon DRIVE_RIGHTFRONT = new Talon(3);
 	public static Talon DRIVE_RIGHTBACK = new Talon(2);
-	public static Talon rightDrivepodSpeedController = new Talon(1);
 	
 	public final static int
 		LIFT = 4;

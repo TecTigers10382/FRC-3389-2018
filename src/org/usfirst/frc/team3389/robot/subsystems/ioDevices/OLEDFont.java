@@ -391,9 +391,8 @@ public enum OLEDFont {
             int line = data[(c * width) + i];
 
             for (int j = 0; j < height; ++j) {
-                if ((line & 0x01) > 0) {
-                    display.setPixel(x + i, y + j);
-                }
+            	// support invert text
+            	display.setPixel(x + i, y + j, ((line & 0x01)>0)?display.WHITE:display.BLACK);
                 line >>= 1;
             }
         }

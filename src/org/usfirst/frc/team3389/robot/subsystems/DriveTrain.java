@@ -55,20 +55,17 @@ public class DriveTrain extends Subsystem {
 	public DriveTrain() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		encoderInit();
-		leftFront = new TalonSRX(RobotMap.DRIVE_LEFTFRONT);
-		leftBack = new TalonSRX(RobotMap.DRIVE_LEFTBACK);
-		rightFront = new TalonSRX(RobotMap.DRIVE_RIGHTFRONT);
-		rightBack = new TalonSRX(RobotMap.DRIVE_RIGHTBACK);
+		
 		leftFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		leftBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
-		/*leftPIDSource = new EncoderPIDSource(leftEnc, 1); 
+		leftPIDSource = new EncoderPIDSource(leftEnc, 1); 
 		leftPID = new PIDController(0, 0, 0, leftPIDSource, RobotMap.leftDriveOutput);
         leftPID.disable();
         leftPID.setOutputRange(-1.0, 1.0);
         leftPID.setAbsoluteTolerance(0.5);
-        */
+        
 		// TODO for PID example @see https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
 
 		// TODO for PID example @see

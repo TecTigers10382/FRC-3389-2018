@@ -64,12 +64,11 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
-<<<<<<< HEAD
+
 		m_oi = new OI();
 
 		driveTrain.encoderInit();
-=======
->>>>>>> branch 'master' of https://github.com/booolean/3389FRC.git
+
 
 		if (!robotScreen.init())
 			robotLogger.log(Logger.ERROR, this, "failted to initialize OLED display");
@@ -195,14 +194,11 @@ public class Robot extends TimedRobot {
 			robotLogger.log(Logger.INFO, this, "teleop cancels autonomous");
 			m_autonomousCommand.cancel();
 		}
-<<<<<<< HEAD
 		
 		driveTrain.resetEncoders();
-=======
 
 		robotScreen.clear();
 		robotScreen.refresh();
->>>>>>> branch 'master' of https://github.com/booolean/3389FRC.git
 		
 		robotLogger.log(Logger.DEBUG, this, "exit");
 	}

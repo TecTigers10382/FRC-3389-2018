@@ -7,6 +7,8 @@
 
 package org.usfirst.frc.team3389.robot;
 
+import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
+
 import edu.wpi.first.wpilibj.Talon;
 
 /**
@@ -20,16 +22,16 @@ public class RobotMap {
 	/**
 	 * CAN IDs of all Talon SRXs used for drive train
 	 */
-	//public final static int
-	//	DRIVE_LEFTFRONT = 0,
-	//	DRIVE_LEFTBACK = 1,
-	//	DRIVE_RIGHTFRONT = 3,
-	//	DRIVE_RIGHTBACK = 2;
+	public final static int
+		DRIVE_LEFTFRONT = 0,
+		DRIVE_LEFTBACK = 1,
+		DRIVE_RIGHTFRONT = 3,
+		DRIVE_RIGHTBACK = 2;
 	
-	public static Talon DRIVE_LEFTFRONT = new Talon(0);
-	public static Talon DRIVE_LEFTBACK = new Talon(1);
-	public static Talon DRIVE_RIGHTFRONT = new Talon(3);
-	public static Talon DRIVE_RIGHTBACK = new Talon(2);
+//	public static Talon DRIVE_LEFTFRONT = new Talon(0);
+//	public static Talon DRIVE_LEFTBACK = new Talon(1);
+//	public static Talon DRIVE_RIGHTFRONT = new Talon(3);
+//	public static Talon DRIVE_RIGHTBACK = new Talon(2);
 	
 	public final static int
 		LIFT = 4;
@@ -43,8 +45,8 @@ public class RobotMap {
 		INTAKE_RIGHT1=2,
 		INTAKE_RIGHT2=3;
 	
-	public static DrivePIDOutput leftDriveOutput = new DrivePIDOutput(DRIVE_LEFTFRONT);	
-	public static DrivePIDOutput rightDriveOutput = new DrivePIDOutput(DRIVE_RIGHTFRONT);
+	//public static DrivePIDOutput leftDriveOutput = new DrivePIDOutput(DriveTrain.leftFront);	
+	//public static DrivePIDOutput rightDriveOutput = new DrivePIDOutput(DriveTrain.rightFront);
 	
 	
 	

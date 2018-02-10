@@ -1,12 +1,11 @@
 package org.usfirst.frc.team3389.robot.subsystems;
 
+import org.usfirst.frc.team3389.robot.EncoderPIDSource;
+import org.usfirst.frc.team3389.robot.GyroPIDSource;
 import org.usfirst.frc.team3389.robot.Robot;
 import org.usfirst.frc.team3389.robot.RobotMap;
 import org.usfirst.frc.team3389.robot.commands.Drive;
-import org.usfirst.frc.team3389.robot.subsystems.ioDevices.OLEDDisplay;
 import org.usfirst.frc.team3389.robot.utils.Logger;
-import org.usfirst.frc.team3389.robot.EncoderPIDSource;
-import org.usfirst.frc.team3389.robot.GyroPIDSource;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.Faults;
@@ -27,10 +26,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class DriveTrain extends Subsystem {
 
-	TalonSRX leftFront;
-	TalonSRX leftBack;
-	TalonSRX rightFront;
-	TalonSRX rightBack;
+	public static TalonSRX leftFront;
+	public static TalonSRX leftBack;
+	public static TalonSRX rightFront;
+	public static TalonSRX rightBack;
 	StickyFaults LFsFaults = new StickyFaults();
 	StickyFaults RFsFaults = new StickyFaults();
 	StickyFaults LBsFaults = new StickyFaults();
@@ -54,6 +53,10 @@ public class DriveTrain extends Subsystem {
 	 */
 	public DriveTrain() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
+		leftFront = new TalonSRX(RobotMap.DRIVE_LEFTFRONT);
+		leftBack = new TalonSRX(RobotMap.DRIVE_LEFTBACK);
+		rightFront = new TalonSRX(RobotMap.DRIVE_RIGHTFRONT);
+		rightBack = new TalonSRX(RobotMap.DRIVE_RIGHTBACK);
 		encoderInit();
 		
 		leftFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);

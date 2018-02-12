@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Lifter extends Subsystem{
 	TalonSRX lift;
@@ -32,6 +33,8 @@ public class Lifter extends Subsystem{
 		limitTwo= new DigitalInput(7);
 		Robot.robotLogger.log(Logger.DEBUG, this, "limOneStatus: "+limitOne.get());
 		Robot.robotLogger.log(Logger.DEBUG, this, "limTwoStatus: "+limitTwo.get());
+		SmartDashboard.putBoolean("Limit One", limitOne.get());
+		SmartDashboard.putBoolean("Limit Two", limitTwo.get());
 		lift = new TalonSRX(RobotMap.LIFT);
 		lift.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		Debug();

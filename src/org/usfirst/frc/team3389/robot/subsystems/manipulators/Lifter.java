@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.StickyFaults;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -19,14 +20,16 @@ public class Lifter extends Subsystem{
 	StickyFaults liftSFaults = new StickyFaults();
 	Faults LiftFaults = new Faults();
 	Encoder enc = new Encoder(4, 5, false, Encoder.EncodingType.k4X);
+	DigitalInput limitOne;
+	DigitalInput limitTwo;
 	
-
 	private double height;
 	private double radius;
 	
 	public Lifter() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-		
+		limitOne= new DigitalInput(6);
+		limitTwo= new DigitalInput(7);
 		lift = new TalonSRX(RobotMap.LIFT);
 		lift.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		Debug();

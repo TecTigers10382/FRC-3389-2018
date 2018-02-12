@@ -80,9 +80,9 @@ public class DriveTrain extends Subsystem {
 		// TODO for PID example @see https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
 
 		// TODO for PID example @see
+		Debug();
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 		// Outputs Talon debug info
-		Debug();
 
 	}
 

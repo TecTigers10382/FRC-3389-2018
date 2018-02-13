@@ -3,7 +3,6 @@ package org.usfirst.frc.team3389.robot.subsystems.manipulators;
 import org.usfirst.frc.team3389.robot.Robot;
 import org.usfirst.frc.team3389.robot.RobotMap;
 import org.usfirst.frc.team3389.robot.commands.LiftStick;
-import org.usfirst.frc.team3389.robot.subsystems.ioDevices.QuadEncoder;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -21,16 +20,12 @@ public class Lifter extends Subsystem{
 	StickyFaults liftSFaults = new StickyFaults();
 	Faults LiftFaults = new Faults();
 	Encoder enc = new Encoder(4, 5, false, Encoder.EncodingType.k4X);
-	DigitalInput limitOne;
-	DigitalInput limitTwo;
 	
 	private double height;
 	private double radius;
 	
 	public Lifter() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-		limitOne= new DigitalInput(6);
-		limitTwo= new DigitalInput(7);
 		lift = new TalonSRX(RobotMap.LIFT);
 		lift.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		Debug();
@@ -41,20 +36,16 @@ public class Lifter extends Subsystem{
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:\t" + power);
 		
 		lift.set(ControlMode.PercentOutput, power);
-		Robot.robotLogger.log(Logger.DEBUG, this, "limOneStatus: "+limitOne.get());
-		Robot.robotLogger.log(Logger.DEBUG, this, "limTwoStatus: "+limitTwo.get());
-		SmartDashboard.putBoolean("Limit One", limitOne.get());
-		SmartDashboard.putBoolean("Limit Two", limitTwo.get());
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");	
 	}
-	
+
 	protected void initDefaultCommand() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		
 		setDefaultCommand(new LiftStick());
 		
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
-	}	
+	}
 	
 	public void stop() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");

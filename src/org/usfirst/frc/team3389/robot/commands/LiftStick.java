@@ -66,10 +66,12 @@ public class LiftStick extends Command {
 
 		double power = liftStick.getRawAxis(5);
 
-		Robot.lifter.driveLift(power);
-
-		if (Math.abs(power) < .1)
+			if (Math.abs(power) < .1)
 			power = 0;
+			
+			Robot.lifter.driveLift(power);
+
+	
 		
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 

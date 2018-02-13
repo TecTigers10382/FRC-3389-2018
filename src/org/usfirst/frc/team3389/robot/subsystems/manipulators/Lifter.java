@@ -31,10 +31,6 @@ public class Lifter extends Subsystem{
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		limitOne= new DigitalInput(6);
 		limitTwo= new DigitalInput(7);
-		Robot.robotLogger.log(Logger.DEBUG, this, "limOneStatus: "+limitOne.get());
-		Robot.robotLogger.log(Logger.DEBUG, this, "limTwoStatus: "+limitTwo.get());
-		SmartDashboard.putBoolean("Limit One", limitOne.get());
-		SmartDashboard.putBoolean("Limit Two", limitTwo.get());
 		lift = new TalonSRX(RobotMap.LIFT);
 		lift.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		Debug();
@@ -45,7 +41,10 @@ public class Lifter extends Subsystem{
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:\t" + power);
 		
 		lift.set(ControlMode.PercentOutput, power);
-		
+		Robot.robotLogger.log(Logger.DEBUG, this, "limOneStatus: "+limitOne.get());
+		Robot.robotLogger.log(Logger.DEBUG, this, "limTwoStatus: "+limitTwo.get());
+		SmartDashboard.putBoolean("Limit One", limitOne.get());
+		SmartDashboard.putBoolean("Limit Two", limitTwo.get());
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");	
 	}
 	

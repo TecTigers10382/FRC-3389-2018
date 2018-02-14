@@ -13,14 +13,12 @@ import org.usfirst.frc.team3389.robot.subsystems.ExampleSubsystem;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.MPU9250;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.OLEDBitmap;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.OLEDDisplay;
-import org.usfirst.frc.team3389.robot.subsystems.ioDevices.QuadEncoder;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.TimeOfFlight;
 import org.usfirst.frc.team3389.robot.subsystems.manipulators.Intake;
 import org.usfirst.frc.team3389.robot.subsystems.manipulators.Lifter;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -40,7 +38,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
 
 	// Initialize all subsystems
-	public static final Logger robotLogger = new Logger(Logger.DEBUG);
+	public static final Logger robotLogger = new Logger(Logger.NONE);
 
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
 	public static final OLEDDisplay robotScreen = new OLEDDisplay();
@@ -214,6 +212,9 @@ public class Robot extends TimedRobot {
 		// it's probably confusing to mix pixel positioning and character/line positioning
 		//robotScreen.drawTextLine(String.format("Heading: %+5.1f", angle), 5);
 		SmartDashboard.putNumber("Heading: ", angle);
+		
+		SmartDashboard.putBoolean("Up switch", lifter.getUp());
+		SmartDashboard.putBoolean("Down Switch", lifter.getDown()); 
 		//robotScreen.refresh();
 		// Display on SmartDashboard
 		//SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());

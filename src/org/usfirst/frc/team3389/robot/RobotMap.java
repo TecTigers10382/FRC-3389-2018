@@ -7,10 +7,6 @@
 
 package org.usfirst.frc.team3389.robot;
 
-import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
-
-import edu.wpi.first.wpilibj.Talon;
-
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
  * to a variable name. This provides flexibility changing wiring, makes checking
@@ -44,6 +40,10 @@ public class RobotMap {
 		INTAKE_LEFT2=1,
 		INTAKE_RIGHT1=2,
 		INTAKE_RIGHT2=3;
+	
+	public final static int
+		UP_SWITCH_PIN = 6,
+		DOWN_SWITCH_PIN = 7;
 	
 	//public static DrivePIDOutput leftDriveOutput = new DrivePIDOutput(DriveTrain.leftFront);	
 	//public static DrivePIDOutput rightDriveOutput = new DrivePIDOutput(DriveTrain.rightFront);

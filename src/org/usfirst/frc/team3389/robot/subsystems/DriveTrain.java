@@ -41,8 +41,6 @@ public class DriveTrain extends Subsystem {
 	Faults RBFaults = new Faults();
 	Encoder leftEnc = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
 	Encoder rightEnc = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
-	DigitalInput limitOne;	
-	DigitalInput limitTwo;
 	EncoderPIDSource leftPIDSource;
 	EncoderPIDSource rightPIDSource;
 	GyroPIDSource gyroPIDSource;
@@ -61,8 +59,6 @@ public class DriveTrain extends Subsystem {
 		rightFront = new TalonSRX(RobotMap.DRIVE_RIGHTFRONT);
 		rightBack = new TalonSRX(RobotMap.DRIVE_RIGHTBACK);
 		encoderInit();
-		limitOne= new DigitalInput(6);
-		limitTwo= new DigitalInput(7);
 		leftFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		leftBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
@@ -121,13 +117,8 @@ public class DriveTrain extends Subsystem {
 		rightBack.set(ControlMode.PercentOutput, rightPower);
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit" + leftFront.getMotorOutputPercent());
-		Robot.robotLogger.log(Logger.DEBUG, this, "limOneStatus: "+limitOne.get());
-		Robot.robotLogger.log(Logger.DEBUG, this, "limTwoStatus: "+limitTwo.get());
-
 		SmartDashboard.putNumber("encoder1", leftEnc.getDistance());
 		SmartDashboard.putNumber("encoder2", rightEnc.getDistance());
-		SmartDashboard.putBoolean("Limit One", limitOne.get());
-		SmartDashboard.putBoolean("Limit Two", limitTwo.get());
 
 		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + leftEnc.getDistance());
 		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + rightEnc.getDistance());

@@ -1,5 +1,6 @@
 package org.usfirst.frc.team3389.robot.subsystems;
 
+import org.usfirst.frc.team3389.robot.DrivePIDOutput;
 import org.usfirst.frc.team3389.robot.EncoderPIDSource;
 import org.usfirst.frc.team3389.robot.GyroPIDSource;
 import org.usfirst.frc.team3389.robot.Robot;
@@ -15,6 +16,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -47,6 +49,9 @@ public class DriveTrain extends Subsystem {
 	PIDController leftPID;
 	PIDController rightPID;
 	PIDController gyroPID;
+	public static DrivePIDOutput leftDriveOutput  = new DrivePIDOutput((SpeedController) leftFront);	
+	public static DrivePIDOutput rightDriveOutput = new DrivePIDOutput((SpeedController) rightFront);
+		
 	
 
 	/**
@@ -65,18 +70,18 @@ public class DriveTrain extends Subsystem {
 		rightBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		
 		
-//		//PID Code
-//		leftPIDSource = new EncoderPIDSource(leftEnc, 1); 
-//		leftPID = new PIDController(0, 0, 0, leftPIDSource, RobotMap.leftDriveOutput);
-//        leftPID.disable();
-//        leftPID.setOutputRange(-1.0, 1.0);
-//        leftPID.setAbsoluteTolerance(0.5);
-//        rightPIDSource = new EncoderPIDSource(rightEnc, 1); 
-//		rightPID = new PIDController(0, 0, 0, rightPIDSource, RobotMap.rightDriveOutput);
-//        rightPID.disable();
-//        rightPID.setOutputRange(-1.0, 1.0);
-//        rightPID.setAbsoluteTolerance(0.5);
-//        
+		//PID Code
+		leftPIDSource = new EncoderPIDSource(leftEnc, 1); 
+		leftPID = new PIDController(0, 0, 0, leftPIDSource, leftDriveOutput);
+        leftPID.disable();
+        leftPID.setOutputRange(-1.0, 1.0);
+        leftPID.setAbsoluteTolerance(0.5);
+        rightPIDSource = new EncoderPIDSource(rightEnc, 1); 
+		rightPID = new PIDController(0, 0, 0, rightPIDSource, rightDriveOutput);
+        rightPID.disable();
+        rightPID.setOutputRange(-1.0, 1.0);
+        rightPID.setAbsoluteTolerance(0.5);
+        
 		// TODO for PID example @see https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
 
 		// TODO for PID example @see

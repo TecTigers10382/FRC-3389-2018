@@ -40,13 +40,13 @@ public class Lifter extends Subsystem {
 	public void driveLift(double power) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:\t" + power);
 
-//		if (power > 0 && getUp() == true) {
-//			power = 0;
-//		}
-//
-//		if (power < 0 && getDown() == true) {
-//			power = 0;
-//		}
+		if (power > 0 && getUp() == true) {
+			power = 0;
+		}
+
+		if (power < 0 && getDown() == true) {
+			power = 0;
+		}
 
 		lift.set(ControlMode.PercentOutput, power);
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");

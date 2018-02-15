@@ -7,6 +7,7 @@
 
 package org.usfirst.frc.team3389.robot;
 
+import org.usfirst.frc.team3389.robot.commands.AutoTest;
 import org.usfirst.frc.team3389.robot.commands.ExampleCommand;
 import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team3389.robot.subsystems.ExampleSubsystem;
@@ -78,8 +79,8 @@ public class Robot extends TimedRobot {
 		m_oi = new OI();
 		driveGyro.startUpdatingThread();
 		
-		m_chooser.addDefault("Default Auto", new ExampleCommand());
-		// chooser.addObject("My Auto", new MyAutoCommand());
+		//m_chooser.addDefault("Default Auto", new ExampleCommand());
+		m_chooser.addDefault("Test Auto", new org.usfirst.frc.team3389.robot.commands.AutoTest());
 		SmartDashboard.putData("Auto mode", m_chooser);
 
 		robotLogger.log(Logger.DEBUG, this, "exit");

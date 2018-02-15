@@ -46,9 +46,9 @@ public class DriveTrain extends Subsystem {
 	EncoderPIDSource leftPIDSource;
 	EncoderPIDSource rightPIDSource;
 	GyroPIDSource gyroPIDSource;
-	PIDController leftPID;
-	PIDController rightPID;
-	PIDController gyroPID;
+	public static PIDController leftPID;
+	public static PIDController rightPID;
+	public static PIDController gyroPID;
 	public static DrivePIDOutput leftDriveOutput  = new DrivePIDOutput((SpeedController) leftFront);	
 	public static DrivePIDOutput rightDriveOutput = new DrivePIDOutput((SpeedController) rightFront);
 		
@@ -229,7 +229,7 @@ public class DriveTrain extends Subsystem {
     	rightPID.setSetpoint(distance);
     	leftPID.setSetpoint(distance);
     }
-	public void setDistance(double leftDistance, double rightDistance) {
+	public static void setDistance(double leftDistance, double rightDistance) {
     	rightPID.setSetpoint(rightDistance);
     	leftPID.setSetpoint(leftDistance);
     }

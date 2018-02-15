@@ -81,6 +81,12 @@ public class Robot extends TimedRobot {
 		
 		//m_chooser.addDefault("Default Auto", new ExampleCommand());
 		m_chooser.addDefault("Test Auto", new org.usfirst.frc.team3389.robot.commands.AutoTest());
+		m_chooser.addObject("Red Left", new org.usfirst.frc.team3389.robot.commands.AutoRedLeft());
+		m_chooser.addObject("Red Middle", new org.usfirst.frc.team3389.robot.commands.AutoRedMiddle());
+		m_chooser.addObject("Red Right", new org.usfirst.frc.team3389.robot.commands.AutoRedRight());
+		m_chooser.addObject("Blue Left", new org.usfirst.frc.team3389.robot.commands.AutoBlueLeft());
+		m_chooser.addObject("Blue Middle", new org.usfirst.frc.team3389.robot.commands.AutoBlueMiddle());
+		m_chooser.addObject("Blue Right", new org.usfirst.frc.team3389.robot.commands.AutoBlueRight());
 		SmartDashboard.putData("Auto mode", m_chooser);
 
 		robotLogger.log(Logger.DEBUG, this, "exit");

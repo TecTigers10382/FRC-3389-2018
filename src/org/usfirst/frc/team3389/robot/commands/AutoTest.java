@@ -25,7 +25,7 @@ public class AutoTest extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-		DriveTrain.setDistance(1,2);
+		DriveTrain.drivePosition(100,100);
 	}
 
 	// Called repeatedly when this Command is scheduled to run

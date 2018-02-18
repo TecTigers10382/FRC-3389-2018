@@ -236,16 +236,16 @@ public class DriveTrain extends Subsystem {
 		rightBack.config_kP(0, 0.05, 0);		
 	}
 	
-	public void driveVelocity(int leftVelocity, int rightVelocity){
+	public static void driveVelocity(int leftVelocity, int rightVelocity){
 		
 		rightFront.set(ControlMode.Velocity, rightVelocity);
-		rightBack.set(ControlMode.Velocity, rightVelocity);
+		rightBack.set(ControlMode.Follower, RobotMap.DRIVE_RIGHTFRONT);
 		leftFront.set(ControlMode.Velocity, leftVelocity);
-		leftBack.set(ControlMode.Velocity, leftVelocity);
+		leftBack.set(ControlMode.Velocity, RobotMap.DRIVE_LEFTFRONT);
 		
 	}
 	
-	public void drivePosition(int leftPosition, int rightPosition){
+	public static void drivePosition(int leftPosition, int rightPosition){
 		final double convRatio = 1; //The constant which maps the distance in inches needed to ticks.
 		double rightTicks; //The number of ticks the motor must travel
 		double leftTicks; //The number of ticks the motor must travel

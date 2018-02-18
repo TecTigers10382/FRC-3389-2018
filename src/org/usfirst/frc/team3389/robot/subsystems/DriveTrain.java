@@ -10,6 +10,7 @@ import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.Faults;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StickyFaults;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -223,6 +224,11 @@ public class DriveTrain extends Subsystem {
     }
 	
 	private void pidInit() {
+		leftFront.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /* PIDLoop=0,timeoutMs=0 */
+		leftBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /* PIDLoop=0,timeoutMs=0 */
+		rightFront.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /* PIDLoop=0,timeoutMs=0 */
+		rightBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /* PIDLoop=0,timeoutMs=0 */
+		
 		leftFront.config_kD(0, 0.05, 0);
 		leftFront.config_kF(0, 0.05, 0);
 		leftFront.config_kI(0, 0.05, 0);
@@ -242,5 +248,28 @@ public class DriveTrain extends Subsystem {
 		rightBack.config_kF(0, 0.05, 0);
 		rightBack.config_kI(0, 0.05, 0);
 		rightBack.config_kP(0, 0.05, 0);		
+	}
+	
+	public void driveVelocity(int leftVelocity, int rightVelocity){
+		
+		rightFront.set(ControlMode.Velocity, rightVelocity);
+		rightBack.set(ControlMode.Velocity, rightVelocity);
+		leftFront.set(ControlMode.Velocity, leftVelocity);
+		leftBack.set(ControlMode.Velocity, leftVelocity);
+		
+	}
+	
+	public void drivePosition(int leftPosition, int rightPosition){
+		final double convRatio = 1; //The constant which maps the distance in inches needed to ticks.
+		double rightTicks; //The number of ticks the motor must travel
+		double leftTicks; //The number of ticks the motor must travel
+		
+		rightTicks=convRatio*rightPosition;
+		leftTicks=convRatio*rightPosition;
+		
+		rightFront.set(ControlMode.Position, rightTicks);
+		rightBack.set(ControlMode.Follower, RobotMap.DRIVE_RIGHTFRONT);
+		leftFront.set(ControlMode.Position, leftTicks);
+		leftBack.set(ControlMode.Follower, RobotMap.DRIVE_LEFTFRONT);
 	}
 }

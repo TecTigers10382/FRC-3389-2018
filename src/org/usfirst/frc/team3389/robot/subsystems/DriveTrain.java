@@ -49,10 +49,8 @@ public class DriveTrain extends Subsystem {
 	public static PIDController leftPID;
 	public static PIDController rightPID;
 	public static PIDController gyroPID;
-	public static DrivePIDOutput leftDriveOutput  = new DrivePIDOutput((SpeedController) leftFront);	
-	public static DrivePIDOutput rightDriveOutput = new DrivePIDOutput((SpeedController) rightFront);
 		
-	
+
 
 	/**
 	 * Creates the Drive Train with 4 TalonSRX motor controllers over CAN.
@@ -64,23 +62,13 @@ public class DriveTrain extends Subsystem {
 		rightFront = new TalonSRX(RobotMap.DRIVE_RIGHTFRONT);
 		rightBack = new TalonSRX(RobotMap.DRIVE_RIGHTBACK);
 		encoderInit();
+		pidInit();
+		
 		leftFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		leftBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		
-		
-		//PID Code
-		leftPIDSource = new EncoderPIDSource(leftEnc, 1); 
-		leftPID = new PIDController(0, 0, 0, leftPIDSource, leftDriveOutput);
-        leftPID.disable();
-        leftPID.setOutputRange(-1.0, 1.0);
-        leftPID.setAbsoluteTolerance(0.5);
-        rightPIDSource = new EncoderPIDSource(rightEnc, 1); 
-		rightPID = new PIDController(0, 0, 0, rightPIDSource, rightDriveOutput);
-        rightPID.disable();
-        rightPID.setOutputRange(-1.0, 1.0);
-        rightPID.setAbsoluteTolerance(0.5);
         
 		// TODO for PID example @see https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
 
@@ -233,4 +221,26 @@ public class DriveTrain extends Subsystem {
     	rightPID.setSetpoint(rightDistance);
     	leftPID.setSetpoint(leftDistance);
     }
+	
+	private void pidInit() {
+		leftFront.config_kD(0, 0.05, 0);
+		leftFront.config_kF(0, 0.05, 0);
+		leftFront.config_kI(0, 0.05, 0);
+		leftFront.config_kP(0, 0.05, 0);
+		
+		leftBack.config_kD(0, 0.05, 0);
+		leftBack.config_kF(0, 0.05, 0);
+		leftBack.config_kI(0, 0.05, 0);
+		leftBack.config_kP(0, 0.05, 0);
+		
+		rightFront.config_kD(0, 0.05, 0);
+		rightFront.config_kF(0, 0.05, 0);
+		rightFront.config_kI(0, 0.05, 0);
+		rightFront.config_kP(0, 0.05, 0);
+		
+		rightBack.config_kD(0, 0.05, 0);
+		rightBack.config_kF(0, 0.05, 0);
+		rightBack.config_kI(0, 0.05, 0);
+		rightBack.config_kP(0, 0.05, 0);		
+	}
 }

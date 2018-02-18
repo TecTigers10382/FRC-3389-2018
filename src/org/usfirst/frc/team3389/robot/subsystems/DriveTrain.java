@@ -252,7 +252,8 @@ public class DriveTrain extends Subsystem {
 		
 		rightTicks=convRatio*rightPosition;
 		leftTicks=convRatio*rightPosition;
-		
+		SmartDashboard.putNumber("LeftPIDTickVal", leftTicks);
+		SmartDashboard.putNumber("RightPIDTickVal", rightTicks);
 		rightFront.set(ControlMode.Position, rightTicks);
 		rightBack.set(ControlMode.Follower, RobotMap.DRIVE_RIGHTFRONT);
 		leftFront.set(ControlMode.Position, leftTicks);

@@ -5,6 +5,9 @@ import org.usfirst.frc.team3389.robot.RobotMap;
 import org.usfirst.frc.team3389.robot.commands.IntakeStick;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -16,10 +19,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  * @see org.usfirst.frc.team3389.robot.commands.IntakeStick
  */
 public class Intake extends Subsystem {
-	Spark intakeLeft1;
-	Spark intakeLeft2;
-	Spark intakeRight1;
-	Spark intakeRight2;
+	TalonSRX intakeLeft;
+	TalonSRX intakeRight;
 
 	/**
 	 * Constructor. Initializes Sparks.
@@ -27,10 +28,8 @@ public class Intake extends Subsystem {
 	public Intake() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 
-		intakeLeft1 = new Spark(RobotMap.INTAKE_LEFT1);
-		intakeLeft2 = new Spark(RobotMap.INTAKE_LEFT2);
-		intakeRight1 = new Spark(RobotMap.INTAKE_RIGHT1);
-		intakeRight2 = new Spark(RobotMap.INTAKE_RIGHT2);
+		intakeLeft = new TalonSRX(RobotMap.INTAKE_LEFT);
+		intakeRight = new TalonSRX(RobotMap.INTAKE_RIGHT);
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 
@@ -45,10 +44,9 @@ public class Intake extends Subsystem {
 	public void driveBoth(double power) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:\t" + power);
 
-		intakeLeft1.set(-power);
-		intakeLeft2.set(-power);
-		intakeRight1.set(power);
-		intakeRight2.set(power);
+		intakeLeft.set(ControlMode.PercentOutput,power);
+		intakeRight.set(ControlMode.PercentOutput,power);
+		
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}

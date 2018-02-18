@@ -44,12 +44,6 @@ public class DriveTrain extends Subsystem {
 	Faults RBFaults = new Faults();
 	Encoder leftEnc = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
 	Encoder rightEnc = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
-	EncoderPIDSource leftPIDSource;
-	EncoderPIDSource rightPIDSource;
-	GyroPIDSource gyroPIDSource;
-	public static PIDController leftPID;
-	public static PIDController rightPID;
-	public static PIDController gyroPID;
 		
 
 
@@ -214,14 +208,6 @@ public class DriveTrain extends Subsystem {
 			rightEnc.setReverseDirection(true);
 			rightEnc.setSamplesToAverage(7);
 		}
-	public void setDistance(double distance) {
-    	rightPID.setSetpoint(distance);
-    	leftPID.setSetpoint(distance);
-    }
-	public static void setDistance(double leftDistance, double rightDistance) {
-    	rightPID.setSetpoint(rightDistance);
-    	leftPID.setSetpoint(leftDistance);
-    }
 	
 	private void pidInit() {
 		leftFront.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /* PIDLoop=0,timeoutMs=0 */

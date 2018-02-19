@@ -19,6 +19,8 @@ import org.usfirst.frc.team3389.robot.subsystems.manipulators.Intake;
 import org.usfirst.frc.team3389.robot.subsystems.manipulators.Lifter;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -66,7 +68,7 @@ public class Robot extends TimedRobot {
 
 		m_oi = new OI();
 
-		driveTrain.encoderInit();
+//		driveTrain.encoderInit();
 
 
 		if (!robotScreen.init())
@@ -131,6 +133,8 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
 
+		driveTrain.resetEncoders();
+		
 		m_autonomousCommand = m_chooser.getSelected();
 		robotLogger.log(Logger.INFO, this,
 				"autonomous mode = " + m_chooser.getName() + "::" + m_autonomousCommand.getName());
@@ -183,7 +187,6 @@ public class Robot extends TimedRobot {
 		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "enter");
 
 		Scheduler.getInstance().run();
-
 		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
@@ -200,7 +203,7 @@ public class Robot extends TimedRobot {
 			m_autonomousCommand.cancel();
 		}
 		
-		driveTrain.resetEncoders();
+//		driveTrain.resetEncoders();
 
 		robotScreen.clear();
 		robotScreen.refresh();
@@ -222,6 +225,11 @@ public class Robot extends TimedRobot {
 		
 		SmartDashboard.putBoolean("Up switch", lifter.getUp());
 		SmartDashboard.putBoolean("Down Switch", lifter.getDown()); 
+		SmartDashboard.putNumber("encoder", driveTrain.leftMaster.getSelectedSensorPosition(0));
+		SmartDashboard.putNumber("ejfdlkfs", driveTrain.leftMaster.getSelectedSensorVelocity(0));
+		SmartDashboard.putNumber("otherencoder", driveTrain.rightMaster.getSelectedSensorPosition(0));
+		SmartDashboard.putNumber("otherejfdlkfs", driveTrain.rightMaster.getSelectedSensorVelocity(0));
+		
 		//robotScreen.refresh();
 		// Display on SmartDashboard
 		//SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());

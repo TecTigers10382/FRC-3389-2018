@@ -19,10 +19,10 @@ public class RobotMap {
 	 * CAN IDs of all Talon SRXs used for drive train
 	 */
 	public final static int
-		DRIVE_LEFTFRONT = 0,
-		DRIVE_LEFTBACK = 1,
-		DRIVE_RIGHTFRONT = 3,
-		DRIVE_RIGHTBACK = 2;
+		DRIVE_LEFTMASTER = 0,
+		DRIVE_LEFTSLAVE = 1,
+		DRIVE_RIGHTSLAVE = 3,
+		DRIVE_RIGHTMASTER = 2;
 	
 //	public static Talon DRIVE_LEFTFRONT = new Talon(0);
 //	public static Talon DRIVE_LEFTBACK = new Talon(1);

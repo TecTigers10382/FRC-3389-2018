@@ -14,7 +14,6 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.StickyFaults;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.SpeedController;
@@ -30,10 +29,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class DriveTrain extends Subsystem {
 
-	public static TalonSRX leftFront;
-	public static TalonSRX leftBack;
-	public static TalonSRX rightFront;
-	public static TalonSRX rightBack;
+	public static TalonSRX leftMaster;
+	public static TalonSRX leftSlave;
+	public static TalonSRX rightSlave;
+	public static TalonSRX rightMaster;
 	StickyFaults LFsFaults = new StickyFaults();
 	StickyFaults RFsFaults = new StickyFaults();
 	StickyFaults LBsFaults = new StickyFaults();
@@ -42,30 +41,31 @@ public class DriveTrain extends Subsystem {
 	Faults RFFaults = new Faults();
 	Faults LBFaults = new Faults();
 	Faults RBFaults = new Faults();
-	Encoder leftEnc = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
-	Encoder rightEnc = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
-		
 
+	static double rightTicks; // The number of ticks the motor must travel
+	static double leftTicks; // The number of ticks the motor must travel
+	// Encoder leftEnc = new Encoder(0, 1, false, Encoder.EncodingType.k4X);
+	// Encoder rightEnc = new Encoder(2, 3, false, Encoder.EncodingType.k4X);
 
 	/**
 	 * Creates the Drive Train with 4 TalonSRX motor controllers over CAN.
 	 */
 	public DriveTrain() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-		leftFront = new TalonSRX(RobotMap.DRIVE_LEFTFRONT);
-		leftBack = new TalonSRX(RobotMap.DRIVE_LEFTBACK);
-		rightFront = new TalonSRX(RobotMap.DRIVE_RIGHTFRONT);
-		rightBack = new TalonSRX(RobotMap.DRIVE_RIGHTBACK);
-		encoderInit();
+		leftMaster = new TalonSRX(RobotMap.DRIVE_LEFTMASTER);
+		leftSlave = new TalonSRX(RobotMap.DRIVE_LEFTSLAVE);
+		rightSlave = new TalonSRX(RobotMap.DRIVE_RIGHTSLAVE);
+		rightMaster = new TalonSRX(RobotMap.DRIVE_RIGHTMASTER);
+		// encoderInit();
 		pidInit();
-		
-		leftFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
-		leftBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
-		rightFront.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
-		rightBack.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
-		
-        
-		// TODO for PID example @see https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
+
+		leftMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
+		leftSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
+		rightSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
+		rightMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
+
+		// TODO for PID example @see
+		// https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
 
 		// TODO for PID example @see
 		Debug();
@@ -99,17 +99,19 @@ public class DriveTrain extends Subsystem {
 	private void rawDrive(double leftPower, double rightPower) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:" + leftPower + ", " + rightPower);
 
-		leftFront.set(ControlMode.PercentOutput, leftPower);
-		leftBack.set(ControlMode.PercentOutput, leftPower);
-		rightFront.set(ControlMode.PercentOutput, rightPower);
-		rightBack.set(ControlMode.PercentOutput, rightPower);
+		leftMaster.set(ControlMode.PercentOutput, leftPower);
+		leftSlave.set(ControlMode.PercentOutput, leftPower);
+		rightSlave.set(ControlMode.PercentOutput, rightPower);
+		rightMaster.set(ControlMode.PercentOutput, rightPower);
 
-		Robot.robotLogger.log(Logger.DEBUG, this, "exit" + leftFront.getMotorOutputPercent());
-		SmartDashboard.putNumber("encoder1", leftEnc.getDistance());
-		SmartDashboard.putNumber("encoder2", rightEnc.getDistance());
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit" + leftMaster.getMotorOutputPercent());
+		// SmartDashboard.putNumber("encoder1", leftEnc.getDistance());
+		// SmartDashboard.putNumber("encoder2", rightEnc.getDistance());
 
-		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + leftEnc.getDistance());
-		Robot.robotLogger.log(Logger.INFO, this, "encoderVal" + rightEnc.getDistance());
+		// Robot.robotLogger.log(Logger.INFO, this, "encoderVal" +
+		// leftEnc.getDistance());
+		// Robot.robotLogger.log(Logger.INFO, this, "encoderVal" +
+		// rightEnc.getDistance());
 
 	}
 
@@ -146,117 +148,128 @@ public class DriveTrain extends Subsystem {
 	private void Debug() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "TALON DEBUG\n==================================");
 		Robot.robotLogger.log(Logger.DEBUG, this, "Output Current");
-		Robot.robotLogger.log(Logger.DEBUG, this, "leftFront : " + leftFront.getOutputCurrent());
-		Robot.robotLogger.log(Logger.DEBUG, this, "rightFront: " + rightFront.getOutputCurrent());
-		Robot.robotLogger.log(Logger.DEBUG, this, "leftBack  : " + leftBack.getOutputCurrent());
-		Robot.robotLogger.log(Logger.DEBUG, this, "rightBack : " + rightBack.getOutputCurrent());
+		Robot.robotLogger.log(Logger.DEBUG, this, "leftFront : " + leftMaster.getOutputCurrent());
+		Robot.robotLogger.log(Logger.DEBUG, this, "rightFront: " + rightSlave.getOutputCurrent());
+		Robot.robotLogger.log(Logger.DEBUG, this, "leftBack  : " + leftSlave.getOutputCurrent());
+		Robot.robotLogger.log(Logger.DEBUG, this, "rightBack : " + rightMaster.getOutputCurrent());
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "Output Voltage");
-		Robot.robotLogger.log(Logger.DEBUG, this, "leftFront : " + leftFront.getMotorOutputVoltage());
-		Robot.robotLogger.log(Logger.DEBUG, this, "rightFront: " + rightFront.getMotorOutputVoltage());
-		Robot.robotLogger.log(Logger.DEBUG, this, "leftBack  : " + leftBack.getMotorOutputVoltage());
-		Robot.robotLogger.log(Logger.DEBUG, this, "rightBack : " + rightBack.getMotorOutputVoltage());
+		Robot.robotLogger.log(Logger.DEBUG, this, "leftFront : " + leftMaster.getMotorOutputVoltage());
+		Robot.robotLogger.log(Logger.DEBUG, this, "rightFront: " + rightSlave.getMotorOutputVoltage());
+		Robot.robotLogger.log(Logger.DEBUG, this, "leftBack  : " + leftSlave.getMotorOutputVoltage());
+		Robot.robotLogger.log(Logger.DEBUG, this, "rightBack : " + rightMaster.getMotorOutputVoltage());
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "Bus Voltage");
-		Robot.robotLogger.log(Logger.DEBUG, this, "leftFront : " + leftFront.getBusVoltage());
-		Robot.robotLogger.log(Logger.DEBUG, this, "rightFront: " + rightFront.getBusVoltage());
-		Robot.robotLogger.log(Logger.DEBUG, this, "leftBack  : " + leftBack.getBusVoltage());
-		Robot.robotLogger.log(Logger.DEBUG, this, "rightBack : " + rightBack.getBusVoltage());
+		Robot.robotLogger.log(Logger.DEBUG, this, "leftFront : " + leftMaster.getBusVoltage());
+		Robot.robotLogger.log(Logger.DEBUG, this, "rightFront: " + rightSlave.getBusVoltage());
+		Robot.robotLogger.log(Logger.DEBUG, this, "leftBack  : " + leftSlave.getBusVoltage());
+		Robot.robotLogger.log(Logger.DEBUG, this, "rightBack : " + rightMaster.getBusVoltage());
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "Output Percent");
-		Robot.robotLogger.log(Logger.DEBUG, this, "leftFront : " + leftFront.getMotorOutputPercent());
-		Robot.robotLogger.log(Logger.DEBUG, this, "rightFront: " + rightFront.getMotorOutputPercent());
-		Robot.robotLogger.log(Logger.DEBUG, this, "leftBack  : " + leftBack.getMotorOutputPercent());
-		Robot.robotLogger.log(Logger.DEBUG, this, "rightBack : " + rightBack.getMotorOutputPercent());
+		Robot.robotLogger.log(Logger.DEBUG, this, "leftFront : " + leftMaster.getMotorOutputPercent());
+		Robot.robotLogger.log(Logger.DEBUG, this, "rightFront: " + rightSlave.getMotorOutputPercent());
+		Robot.robotLogger.log(Logger.DEBUG, this, "leftBack  : " + leftSlave.getMotorOutputPercent());
+		Robot.robotLogger.log(Logger.DEBUG, this, "rightBack : " + rightMaster.getMotorOutputPercent());
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 
 		// Talon Faults
-		Robot.robotLogger.log(Logger.DEBUG, this, leftFront.getFaults(LFFaults).toString());
-		Robot.robotLogger.log(Logger.DEBUG, this, rightFront.getFaults(RFFaults).toString());
-		Robot.robotLogger.log(Logger.DEBUG, this, leftBack.getFaults(LBFaults).toString());
-		Robot.robotLogger.log(Logger.DEBUG, this, rightBack.getFaults(RBFaults).toString());
+		Robot.robotLogger.log(Logger.DEBUG, this, leftMaster.getFaults(LFFaults).toString());
+		Robot.robotLogger.log(Logger.DEBUG, this, rightSlave.getFaults(RFFaults).toString());
+		Robot.robotLogger.log(Logger.DEBUG, this, leftSlave.getFaults(LBFaults).toString());
+		Robot.robotLogger.log(Logger.DEBUG, this, rightMaster.getFaults(RBFaults).toString());
 		// Talon Stick Faults
-		Robot.robotLogger.log(Logger.DEBUG, this, leftFront.getStickyFaults(LFsFaults).toString());
-		Robot.robotLogger.log(Logger.DEBUG, this, rightFront.getStickyFaults(RFsFaults).toString());
-		Robot.robotLogger.log(Logger.DEBUG, this, leftBack.getStickyFaults(LBsFaults).toString());
-		Robot.robotLogger.log(Logger.DEBUG, this, rightBack.getStickyFaults(RBsFaults).toString());
+		Robot.robotLogger.log(Logger.DEBUG, this, leftMaster.getStickyFaults(LFsFaults).toString());
+		Robot.robotLogger.log(Logger.DEBUG, this, rightSlave.getStickyFaults(RFsFaults).toString());
+		Robot.robotLogger.log(Logger.DEBUG, this, leftSlave.getStickyFaults(LBsFaults).toString());
+		Robot.robotLogger.log(Logger.DEBUG, this, rightMaster.getStickyFaults(RBsFaults).toString());
 
 		clearStickyFaults();
 	}
 
 	private void clearStickyFaults() {
-		leftFront.clearStickyFaults(0);
-		rightFront.clearStickyFaults(0);
-		leftBack.clearStickyFaults(0);
-		rightBack.clearStickyFaults(0);
+		leftMaster.clearStickyFaults(0);
+		rightSlave.clearStickyFaults(0);
+		leftSlave.clearStickyFaults(0);
+		rightMaster.clearStickyFaults(0);
 	}
 
 	public void resetEncoders() {
-		leftEnc.reset();
-		rightEnc.reset();
+		leftMaster.setSelectedSensorPosition(0, 0, 0);
+		rightMaster.setSelectedSensorPosition(0, 0, 0);
+	}
+	//
+	// public void encoderInit() {
+	// leftEnc.setMaxPeriod(1);
+	// leftEnc.setMinRate(10);
+	// leftEnc.setDistancePerPulse(5);
+	// leftEnc.setReverseDirection(true);
+	// leftEnc.setSamplesToAverage(7);
+	// rightEnc.setMaxPeriod(1);
+	// rightEnc.setMinRate(10);
+	// rightEnc.setDistancePerPulse(5);
+	// rightEnc.setReverseDirection(true);
+	// rightEnc.setSamplesToAverage(7);
+	// }
+
+	private void pidInit() {
+
+		rightSlave.set(ControlMode.Follower, RobotMap.DRIVE_RIGHTMASTER);
+		leftSlave.set(ControlMode.Follower, RobotMap.DRIVE_LEFTMASTER);
+
+		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /* PIDLoop=0,timeoutMs=0 */
+		// leftBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /*
+		// PIDLoop=0,timeoutMs=0 */
+		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /* PIDLoop=0,timeoutMs=0 */
+		// rightBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /*
+		// PIDLoop=0,timeoutMs=0 */
+
+		// leftFront.config_kD(0, 0.05, 0);
+		// leftFront.config_kF(0, 0.05, 0);
+		// leftFront.config_kI(0, 0.05, 0);
+		// leftFront.config_kP(0, 0.05, 0);
+		//
+		// leftBack.config_kD(0, 0.05, 0);
+		// leftBack.config_kF(0, 0.05, 0);
+		// leftBack.config_kI(0, 0.05, 0);
+		// leftBack.config_kP(0, 0.05, 0);
+		//
+		// rightFront.config_kD(0, 0.05, 0);
+		// rightFront.config_kF(0, 0.05, 0);
+		// rightFront.config_kI(0, 0.05, 0);
+		// rightFront.config_kP(0, 0.05, 0);
+		//
+		// rightBack.config_kD(0, 0.05, 0);
+		// rightBack.config_kF(0, 0.05, 0);
+		// rightBack.config_kI(0, 0.05, 0);
+		// rightBack.config_kP(0, 0.05, 0);
 	}
 
-	public void encoderInit() {
-			leftEnc.setMaxPeriod(1);
-			leftEnc.setMinRate(10);
-			leftEnc.setDistancePerPulse(5);
-			leftEnc.setReverseDirection(true);
-			leftEnc.setSamplesToAverage(7);
-			rightEnc.setMaxPeriod(1);
-			rightEnc.setMinRate(10);
-			rightEnc.setDistancePerPulse(5);
-			rightEnc.setReverseDirection(true);
-			rightEnc.setSamplesToAverage(7);
-		}
-	
-	private void pidInit() {
-		leftFront.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /* PIDLoop=0,timeoutMs=0 */
-		leftBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /* PIDLoop=0,timeoutMs=0 */
-		rightFront.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /* PIDLoop=0,timeoutMs=0 */
-		rightBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /* PIDLoop=0,timeoutMs=0 */
-		
-		leftFront.config_kD(0, 0.05, 0);
-		leftFront.config_kF(0, 0.05, 0);
-		leftFront.config_kI(0, 0.05, 0);
-		leftFront.config_kP(0, 0.05, 0);
-		
-		leftBack.config_kD(0, 0.05, 0);
-		leftBack.config_kF(0, 0.05, 0);
-		leftBack.config_kI(0, 0.05, 0);
-		leftBack.config_kP(0, 0.05, 0);
-		
-		rightFront.config_kD(0, 0.05, 0);
-		rightFront.config_kF(0, 0.05, 0);
-		rightFront.config_kI(0, 0.05, 0);
-		rightFront.config_kP(0, 0.05, 0);
-		
-		rightBack.config_kD(0, 0.05, 0);
-		rightBack.config_kF(0, 0.05, 0);
-		rightBack.config_kI(0, 0.05, 0);
-		rightBack.config_kP(0, 0.05, 0);		
+	public static void driveVelocity(double leftVelocity, double rightVelocity) {
+		rightMaster.set(ControlMode.Velocity, rightVelocity);
+		rightSlave.set(ControlMode.Follower, RobotMap.DRIVE_RIGHTMASTER);
+		leftMaster.set(ControlMode.Velocity, leftVelocity);
+		leftSlave.set(ControlMode.Follower, RobotMap.DRIVE_LEFTMASTER);
+
 	}
-	
-	public static void driveVelocity(int leftVelocity, int rightVelocity){
-		
-		rightFront.set(ControlMode.Velocity, rightVelocity);
-		rightBack.set(ControlMode.Follower, RobotMap.DRIVE_RIGHTFRONT);
-		leftFront.set(ControlMode.Velocity, leftVelocity);
-		leftBack.set(ControlMode.Velocity, RobotMap.DRIVE_LEFTFRONT);
-		
+
+	public static void drivePosition(int leftPosition, int rightPosition) {
+
+		final double convRatio = 1; // The constant which maps the distance in inches needed to ticks.
+
+		rightTicks = convRatio * rightPosition;
+		leftTicks = convRatio * leftPosition;
+		SmartDashboard.putNumber("LeftPosition", leftMaster.getSelectedSensorPosition(0));
+		SmartDashboard.putNumber("RightPosition", rightMaster.getSelectedSensorPosition(0));
+		rightMaster.set(ControlMode.Position, rightTicks);
+		leftMaster.set(ControlMode.Position, leftTicks);
 	}
-	
-	public static void drivePosition(int leftPosition, int rightPosition){
-		final double convRatio = 1; //The constant which maps the distance in inches needed to ticks.
-		double rightTicks; //The number of ticks the motor must travel
-		double leftTicks; //The number of ticks the motor must travel
-		
-		rightTicks=convRatio*rightPosition;
-		leftTicks=convRatio*rightPosition;
-		SmartDashboard.putNumber("LeftPIDTickVal", leftTicks);
-		SmartDashboard.putNumber("RightPIDTickVal", rightTicks);
-		rightFront.set(ControlMode.Position, rightTicks);
-		rightBack.set(ControlMode.Follower, RobotMap.DRIVE_RIGHTFRONT);
-		leftFront.set(ControlMode.Position, leftTicks);
-		leftBack.set(ControlMode.Follower, RobotMap.DRIVE_LEFTFRONT);
+
+	public static double getLeftTicks() {
+		return leftTicks;
+
+	}
+
+	public static double getRightTicks() {
+		return rightTicks;
 	}
 }

@@ -11,6 +11,7 @@ import org.usfirst.frc.team3389.robot.Robot;
 import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * An example command. You can replace me with your own command.
@@ -25,14 +26,18 @@ public class AutoTest extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-		DriveTrain.drivePosition(-1,1);
+		DriveTrain.drivePosition(100,-100);
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
+	
+	double left = DriveTrain.getLeftTicks();
+	double right = DriveTrain.getRightTicks();
+	SmartDashboard.putNumber("LeftPIDTickVal",left);
+	SmartDashboard.putNumber("RightPIDTickVal", right);
 	}
-
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {

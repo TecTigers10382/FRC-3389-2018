@@ -7,8 +7,13 @@
 
 package org.usfirst.frc.team3389.robot;
 
+import org.usfirst.frc.team3389.robot.commands.AutoBlueLeft;
+import org.usfirst.frc.team3389.robot.commands.AutoBlueMiddle;
+import org.usfirst.frc.team3389.robot.commands.AutoBlueRight;
+import org.usfirst.frc.team3389.robot.commands.AutoRedLeft;
+import org.usfirst.frc.team3389.robot.commands.AutoRedMiddle;
+import org.usfirst.frc.team3389.robot.commands.AutoRedRight;
 import org.usfirst.frc.team3389.robot.commands.AutoTest;
-import org.usfirst.frc.team3389.robot.commands.ExampleCommand;
 import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team3389.robot.subsystems.ExampleSubsystem;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.MPU9250;
@@ -80,13 +85,13 @@ public class Robot extends TimedRobot {
 		driveGyro.startUpdatingThread();
 		
 		//m_chooser.addDefault("Default Auto", new ExampleCommand());
-		m_chooser.addDefault("Test Auto", new org.usfirst.frc.team3389.robot.commands.AutoTest());
-		m_chooser.addObject("Red Left", new org.usfirst.frc.team3389.robot.commands.AutoRedLeft());
-		m_chooser.addObject("Red Middle", new org.usfirst.frc.team3389.robot.commands.AutoRedMiddle());
-		m_chooser.addObject("Red Right", new org.usfirst.frc.team3389.robot.commands.AutoRedRight());
-		m_chooser.addObject("Blue Left", new org.usfirst.frc.team3389.robot.commands.AutoBlueLeft());
-		m_chooser.addObject("Blue Middle", new org.usfirst.frc.team3389.robot.commands.AutoBlueMiddle());
-		m_chooser.addObject("Blue Right", new org.usfirst.frc.team3389.robot.commands.AutoBlueRight());
+		m_chooser.addDefault("Test Auto", new AutoTest());
+		m_chooser.addObject("Red Left", new AutoRedLeft());
+		m_chooser.addObject("Red Middle", new AutoRedMiddle());
+		m_chooser.addObject("Red Right", new AutoRedRight());
+		m_chooser.addObject("Blue Left", new AutoBlueLeft());
+		m_chooser.addObject("Blue Middle", new AutoBlueMiddle());
+		m_chooser.addObject("Blue Right", new AutoBlueRight());
 		SmartDashboard.putData("Auto mode", m_chooser);
 
 		robotLogger.log(Logger.DEBUG, this, "exit");

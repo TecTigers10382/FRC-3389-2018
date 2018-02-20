@@ -7,10 +7,14 @@
 
 package org.usfirst.frc.team3389.robot;
 
+import org.usfirst.frc.team3389.robot.commands.AutoBlueLeft;
+import org.usfirst.frc.team3389.robot.commands.AutoBlueMiddle;
+import org.usfirst.frc.team3389.robot.commands.AutoBlueRight;
+import org.usfirst.frc.team3389.robot.commands.AutoRedLeft;
+import org.usfirst.frc.team3389.robot.commands.AutoRedMiddle;
+import org.usfirst.frc.team3389.robot.commands.AutoRedRight;
 import org.usfirst.frc.team3389.robot.commands.AutoTest;
-import org.usfirst.frc.team3389.robot.commands.ExampleCommand;
 import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
-import org.usfirst.frc.team3389.robot.subsystems.ExampleSubsystem;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.MPU9250;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.OLEDBitmap;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.OLEDDisplay;
@@ -18,8 +22,6 @@ import org.usfirst.frc.team3389.robot.subsystems.ioDevices.TimeOfFlight;
 import org.usfirst.frc.team3389.robot.subsystems.manipulators.Intake;
 import org.usfirst.frc.team3389.robot.subsystems.manipulators.Lifter;
 import org.usfirst.frc.team3389.robot.utils.Logger;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -45,19 +47,22 @@ public class Robot extends TimedRobot {
 
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
 	public static final OLEDDisplay robotScreen = new OLEDDisplay();
-	public static final MPU9250 driveGyro = new MPU9250(); // this includes calibration which takes 8-12 seconds to complete
-	
+	public static final MPU9250 driveGyro = new MPU9250(); // this includes calibration which takes 8-12 seconds to
+															// complete
+
 	public static final DriveTrain driveTrain = new DriveTrain();
 	public static final Intake intake = new Intake();
-	public static final Lifter lifter= new Lifter();
+	public static final Lifter lifter = new Lifter();
+
+	public static DriverStation driverStation;
 	
-		
-	public static final ExampleSubsystem kExampleSubsystem = new ExampleSubsystem();
+	// public static final ExampleSubsystem kExampleSubsystem = new
+	// ExampleSubsystem();
 	public static OI m_oi;
-	
+
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
-	
+
 	/**
 	 * This function is run when the robot is first started up and should be used
 	 * for any initialization code.
@@ -70,27 +75,29 @@ public class Robot extends TimedRobot {
 
 //		driveTrain.encoderInit();
 
-
 		if (!robotScreen.init())
 			robotLogger.log(Logger.ERROR, this, "failed to initialize OLED display");
 		else {
-			robotScreen.drawBitmap(OLEDBitmap.LOGO.getData(), OLEDBitmap.LOGO.getWidth(), OLEDBitmap.LOGO.getHeight(), 0, 0);
+			robotScreen.drawBitmap(OLEDBitmap.LOGO.getData(), OLEDBitmap.LOGO.getWidth(), OLEDBitmap.LOGO.getHeight(),
+					0, 0);
 			robotScreen.refresh();
 		}
 
 		m_oi = new OI();
 		driveGyro.startUpdatingThread();
-		
-		//m_chooser.addDefault("Default Auto", new ExampleCommand());
-		m_chooser.addDefault("Test Auto", new org.usfirst.frc.team3389.robot.commands.AutoTest());
-		m_chooser.addObject("Red Left", new org.usfirst.frc.team3389.robot.commands.AutoRedLeft());
-		m_chooser.addObject("Red Middle", new org.usfirst.frc.team3389.robot.commands.AutoRedMiddle());
-		m_chooser.addObject("Red Right", new org.usfirst.frc.team3389.robot.commands.AutoRedRight());
-		m_chooser.addObject("Blue Left", new org.usfirst.frc.team3389.robot.commands.AutoBlueLeft());
-		m_chooser.addObject("Blue Middle", new org.usfirst.frc.team3389.robot.commands.AutoBlueMiddle());
-		m_chooser.addObject("Blue Right", new org.usfirst.frc.team3389.robot.commands.AutoBlueRight());
+
+		// m_chooser.addDefault("Default Auto", new ExampleCommand());
+		m_chooser.addDefault("Test Auto", new AutoTest());
+		m_chooser.addObject("Red Left", new AutoRedLeft());
+		m_chooser.addObject("Red Middle", new AutoRedMiddle());
+		m_chooser.addObject("Red Right", new AutoRedRight());
+		m_chooser.addObject("Blue Left", new AutoBlueLeft());
+		m_chooser.addObject("Blue Middle", new AutoBlueMiddle());
+		m_chooser.addObject("Blue Right", new AutoBlueRight());
 		SmartDashboard.putData("Auto mode", m_chooser);
 
+		driverStation = DriverStation.getInstance();
+		
 		robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
@@ -110,11 +117,13 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledPeriodic() {
-		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "enter");
+		// given this is called in a loop its too noisy to be of use for debugging //
+		// robotLogger.log(Logger.DEBUG, this, "enter");
 
 		Scheduler.getInstance().run();
 
-		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "exit");
+		// given this is called in a loop its too noisy to be of use for debugging //
+		// robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
 	/**
@@ -184,10 +193,10 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "enter");
+		// given this is called in a loop its too noisy to be of use for debugging //
+		// robotLogger.log(Logger.DEBUG, this, "enter");
 
 		Scheduler.getInstance().run();
-		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
 	@Override
@@ -207,7 +216,7 @@ public class Robot extends TimedRobot {
 
 		robotScreen.clear();
 		robotScreen.refresh();
-		
+
 		robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
@@ -216,27 +225,33 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "enter");
+		// given this is called in a loop its too noisy to be of use for debugging //
+		// robotLogger.log(Logger.DEBUG, this, "enter");
 		robotScreen.drawTextStringCentered("Hello World!", 0);
 		double angle = driveGyro.getFilteredYaw();
-		// it's probably confusing to mix pixel positioning and character/line positioning
-		//robotScreen.drawTextLine(String.format("Heading: %+5.1f", angle), 5);
+		// it's probably confusing to mix pixel positioning and character/line
+		// positioning
+		// robotScreen.drawTextLine(String.format("Heading: %+5.1f", angle), 5);
 		SmartDashboard.putNumber("Heading: ", angle);
-		
+
 		SmartDashboard.putBoolean("Up switch", lifter.getUp());
+
 		SmartDashboard.putBoolean("Down Switch", lifter.getDown()); 
 		SmartDashboard.putNumber("encoder", driveTrain.leftMaster.getSelectedSensorPosition(0));
 		SmartDashboard.putNumber("ejfdlkfs", driveTrain.leftMaster.getSelectedSensorVelocity(0));
 		SmartDashboard.putNumber("otherencoder", driveTrain.rightMaster.getSelectedSensorPosition(0));
 		SmartDashboard.putNumber("otherejfdlkfs", driveTrain.rightMaster.getSelectedSensorVelocity(0));
 		
-		//robotScreen.refresh();
+
+		SmartDashboard.putBoolean("Down Switch", lifter.getDown());
+		// robotScreen.refresh();
 		// Display on SmartDashboard
-		//SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());
+		// SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());
 
 		Scheduler.getInstance().run();
 
-		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "exit");
+		// given this is called in a loop its too noisy to be of use for debugging //
+		// robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
 	/**
@@ -244,19 +259,23 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void testPeriodic() {
-		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "enter");
+		// given this is called in a loop its too noisy to be of use for debugging //
+		// robotLogger.log(Logger.DEBUG, this, "enter");
 		// any code goes between the 'enter' and the 'exit' log messages
 
 		// quick test of drive train
 		// driveTrain.tankDrive(0.5, 0.5);
 
 		// quick test of time-of-flight sensor
-		// System.out.println("range distance = " + timeOfFlight.getDistanceMillimeters() + "mm");
+		// System.out.println("range distance = " +
+		// timeOfFlight.getDistanceMillimeters() + "mm");
 		// robotScreen.drawTextLine("test message", 0);
-		// robotScreen.drawTextLine("range = " + timeOfFlight.getDistanceMillimeters() + "mm", 1);
+		// robotScreen.drawTextLine("range = " + timeOfFlight.getDistanceMillimeters() +
+		// "mm", 1);
 		// robotScreen.refresh();
 
-		// given this is called in a loop its too noisy to be of use for debugging // robotLogger.log(Logger.DEBUG, this, "exit");
+		// given this is called in a loop its too noisy to be of use for debugging //
+		// robotLogger.log(Logger.DEBUG, this, "exit");
 	}
-	
+
 }

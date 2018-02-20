@@ -1,8 +1,5 @@
 package org.usfirst.frc.team3389.robot.subsystems;
 
-import org.usfirst.frc.team3389.robot.DrivePIDOutput;
-import org.usfirst.frc.team3389.robot.EncoderPIDSource;
-import org.usfirst.frc.team3389.robot.GyroPIDSource;
 import org.usfirst.frc.team3389.robot.Robot;
 import org.usfirst.frc.team3389.robot.RobotMap;
 import org.usfirst.frc.team3389.robot.commands.Drive;
@@ -15,8 +12,6 @@ import com.ctre.phoenix.motorcontrol.StickyFaults;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 

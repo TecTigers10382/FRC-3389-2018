@@ -64,7 +64,7 @@ public class LiftStick extends Command {
 	protected void execute() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 
-		double power = -liftStick.getRawAxis(5);
+		double power = liftStick.getRawAxis(5);
 
 			if (Math.abs(power) < .1)
 			power = 0;

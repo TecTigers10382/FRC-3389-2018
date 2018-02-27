@@ -33,10 +33,10 @@ public class AutoTest extends Command {
 	@Override
 	protected void execute() {
 	
-	double left = DriveTrain.getLeftTicks();
-	double right = DriveTrain.getRightTicks();
-	SmartDashboard.putNumber("LeftPIDTickVal",left);
-	SmartDashboard.putNumber("RightPIDTickVal", right);
+//	double left = DriveTrain.getLeftTicks();
+//	double right = DriveTrain.getRightTicks();
+//	SmartDashboard.putNumber("LeftPIDTickVal",left);
+//	SmartDashboard.putNumber("RightPIDTickVal", right);
 	}
 	// Make this return true when this Command no longer needs to run execute()
 	@Override

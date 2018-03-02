@@ -299,8 +299,8 @@ public class DriveTrain extends Subsystem {
 		leftTicks = convRatio * leftPosition;
 		SmartDashboard.putNumber("LeftPosition", leftMaster.getSelectedSensorPosition(0));
 		SmartDashboard.putNumber("RightPosition", rightMaster.getSelectedSensorPosition(0));
-		rightMaster.set(ControlMode.Position, rightTicks);
-		leftMaster.set(ControlMode.Position, leftTicks);
+		rightMaster.set(ControlMode.MotionMagic, rightPosition);
+		leftMaster.set(ControlMode.MotionMagic, leftPosition);
 	}
 
 	public static double getLeftTicks() {

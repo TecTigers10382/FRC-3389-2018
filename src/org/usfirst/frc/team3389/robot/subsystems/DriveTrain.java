@@ -96,8 +96,6 @@ public class DriveTrain extends Subsystem {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:" + leftPower + ", " + rightPower);
 
 		leftMaster.set(ControlMode.PercentOutput, leftPower);
-		leftSlave.set(ControlMode.PercentOutput, leftPower);
-		rightSlave.set(ControlMode.PercentOutput, rightPower);
 		rightMaster.set(ControlMode.PercentOutput, rightPower);
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit" + leftMaster.getMotorOutputPercent());

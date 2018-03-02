@@ -7,6 +7,9 @@
 
 package org.usfirst.frc.team3389.robot.commands;
 
+import org.usfirst.frc.team3389.robot.Robot;
+import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
+
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
@@ -16,11 +19,13 @@ public class PIDTuning extends Command {
 	public PIDTuning() {
 		// Use requires() here to declare subsystem dependencies
 		//requires(Robot.kExampleSubsystem);
+		requires(Robot.driveTrain);
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
+	DriveTrain.drivePercent(100, 100);
 	}
 
 	// Called repeatedly when this Command is scheduled to run

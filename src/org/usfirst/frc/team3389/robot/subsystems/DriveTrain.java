@@ -8,6 +8,7 @@ import org.usfirst.frc.team3389.robot.utils.Logger;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.StickyFaults;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
@@ -51,12 +52,12 @@ public class DriveTrain extends Subsystem {
 		leftSlave = new TalonSRX(RobotMap.DRIVE_LEFTSLAVE);
 		rightSlave = new TalonSRX(RobotMap.DRIVE_RIGHTSLAVE);
 		rightMaster = new TalonSRX(RobotMap.DRIVE_RIGHTMASTER);
+		rightSlave.set(ControlMode.Follower, RobotMap.DRIVE_RIGHTMASTER);
+		leftSlave.set(ControlMode.Follower, RobotMap.DRIVE_LEFTMASTER);
 		// encoderInit();
 		pidInit();
 
 		leftMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
-		leftSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
-		rightSlave.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 
 		// TODO for PID example @see
@@ -208,16 +209,62 @@ public class DriveTrain extends Subsystem {
 
 	private void pidInit() {
 
-		rightSlave.set(ControlMode.Follower, RobotMap.DRIVE_RIGHTMASTER);
-		leftSlave.set(ControlMode.Follower, RobotMap.DRIVE_LEFTMASTER);
 
 		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /* PIDLoop=0,timeoutMs=0 */
 		// leftBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /*
 		// PIDLoop=0,timeoutMs=0 */
-		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /* PIDLoop=0,timeoutMs=0 */
+		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 1, 0); /* PIDLoop=0,timeoutMs=0 */
 		// rightBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /*
 		// PIDLoop=0,timeoutMs=0 */
 
+		leftMaster.setSensorPhase(true);
+		rightMaster.setSensorPhase(true);
+		leftMaster.setInverted(false);
+		rightMaster.setInverted(false);
+		
+		leftMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10,
+				RobotMap.lTimeoutMs);
+		leftMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10,
+				RobotMap.lTimeoutMs);
+
+		rightMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10,
+				RobotMap.rTimeoutMs);
+		rightMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10,
+				RobotMap.rTimeoutMs);
+
+		leftMaster.configNominalOutputForward(0, RobotMap.lTimeoutMs);
+		leftMaster.configNominalOutputReverse(0, RobotMap.lTimeoutMs);
+		leftMaster.configPeakOutputForward(1, RobotMap.lTimeoutMs);
+		leftMaster.configPeakOutputReverse(-1, RobotMap.lTimeoutMs);
+		
+		rightMaster.configNominalOutputForward(0, RobotMap.rTimeoutMs);
+		rightMaster.configNominalOutputReverse(0, RobotMap.rTimeoutMs);
+		rightMaster.configPeakOutputForward(1, RobotMap.rTimeoutMs);
+		rightMaster.configPeakOutputReverse(-1, RobotMap.rTimeoutMs);
+		
+		
+		leftMaster.selectProfileSlot(RobotMap.lSlotIdx, RobotMap.lPIDLoopIdx);
+		leftMaster.config_kF(0, 0.2, RobotMap.lTimeoutMs);
+		leftMaster.config_kP(0, 0.2, RobotMap.lTimeoutMs);
+		leftMaster.config_kI(0, 0, RobotMap.lTimeoutMs);
+		leftMaster.config_kD(0, 0, RobotMap.lTimeoutMs);
+		
+		rightMaster.selectProfileSlot(RobotMap.rSlotIdx, RobotMap.rPIDLoopIdx);
+		rightMaster.config_kF(0, 0.2, RobotMap.rTimeoutMs);
+		rightMaster.config_kP(0, 0.2, RobotMap.rTimeoutMs);
+		rightMaster.config_kI(0, 0, RobotMap.rTimeoutMs);
+		rightMaster.config_kD(0, 0, RobotMap.rTimeoutMs);
+		
+		leftMaster.configMotionCruiseVelocity(15000, RobotMap.lTimeoutMs);
+		leftMaster.configMotionAcceleration(6000, RobotMap.lTimeoutMs);
+		
+		rightMaster.configMotionCruiseVelocity(15000, RobotMap.rTimeoutMs);
+		rightMaster.configMotionAcceleration(6000, RobotMap.rTimeoutMs);
+		
+		leftMaster.setSelectedSensorPosition(0, RobotMap.lPIDLoopIdx, RobotMap.lTimeoutMs);
+		rightMaster.setSelectedSensorPosition(0, RobotMap.rPIDLoopIdx, RobotMap.rTimeoutMs);
+
+		
 		// leftFront.config_kD(0, 0.05, 0);
 		// leftFront.config_kF(0, 0.05, 0);
 		// leftFront.config_kI(0, 0.05, 0);
@@ -241,10 +288,7 @@ public class DriveTrain extends Subsystem {
 
 	public static void driveVelocity(double leftVelocity, double rightVelocity) {
 		rightMaster.set(ControlMode.Velocity, rightVelocity);
-		rightSlave.set(ControlMode.Follower, RobotMap.DRIVE_RIGHTMASTER);
 		leftMaster.set(ControlMode.Velocity, leftVelocity);
-		leftSlave.set(ControlMode.Follower, RobotMap.DRIVE_LEFTMASTER);
-
 	}
 
 	public static void drivePosition(int leftPosition, int rightPosition) {
@@ -266,5 +310,9 @@ public class DriveTrain extends Subsystem {
 
 	public static double getRightTicks() {
 		return rightTicks;
+	}
+	public static void drivePercent(int leftPercent,int rightPercent) {
+		leftMaster.set(ControlMode.PercentOutput, leftPercent);
+		rightMaster.set(ControlMode.PercentOutput, rightPercent);
 	}
 }

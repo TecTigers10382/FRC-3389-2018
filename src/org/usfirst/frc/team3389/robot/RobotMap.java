@@ -43,6 +43,14 @@ public class RobotMap {
 		UP_SWITCH_PIN = 6,
 		DOWN_SWITCH_PIN = 7;
 	
+	public final static int
+		lTimeoutMs = 0,
+		rTimeoutMs = 0,
+		lSlotIdx   = 0,
+		rSlotIdx   = 1,
+		lPIDLoopIdx= 0,
+		rPIDLoopIdx= 1;
+	
 	//public static DrivePIDOutput leftDriveOutput = new DrivePIDOutput(DriveTrain.leftFront);	
 	//public static DrivePIDOutput rightDriveOutput = new DrivePIDOutput(DriveTrain.rightFront);
 	

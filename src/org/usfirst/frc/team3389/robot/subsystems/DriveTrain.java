@@ -210,10 +210,10 @@ public class DriveTrain extends Subsystem {
 	private void pidInit() {
 
 
-		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /* PIDLoop=0,timeoutMs=0 */
+		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.lPIDLoopIdx, RobotMap.rTimeoutMs); /* PIDLoop=0,timeoutMs=0 */
 		// leftBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /*
 		// PIDLoop=0,timeoutMs=0 */
-		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 1, 0); /* PIDLoop=0,timeoutMs=0 */
+		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.rPIDLoopIdx, RobotMap.rTimeoutMs); /* PIDLoop=0,timeoutMs=0 */
 		// rightBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /*
 		// PIDLoop=0,timeoutMs=0 */
 

@@ -52,8 +52,8 @@ public class DriveTrain extends Subsystem {
 		leftSlave = new TalonSRX(RobotMap.DRIVE_LEFTSLAVE);
 		rightSlave = new TalonSRX(RobotMap.DRIVE_RIGHTSLAVE);
 		rightMaster = new TalonSRX(RobotMap.DRIVE_RIGHTMASTER);
-		rightSlave.set(ControlMode.Follower, RobotMap.DRIVE_RIGHTMASTER);
-		leftSlave.set(ControlMode.Follower, RobotMap.DRIVE_LEFTMASTER);
+		rightSlave.follow(rightMaster);
+		leftSlave.follow(leftMaster);
 		// encoderInit();
 		pidInit();
 

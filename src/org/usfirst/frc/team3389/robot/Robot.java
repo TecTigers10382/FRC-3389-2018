@@ -198,8 +198,10 @@ public class Robot extends TimedRobot {
 	public void autonomousPeriodic() {
 		// given this is called in a loop its too noisy to be of use for debugging //
 		// robotLogger.log(Logger.DEBUG, this, "enter");
-
+		
 		Scheduler.getInstance().run();
+		SmartDashboard.putNumber("LeftPosition", driveTrain.leftMaster.getSelectedSensorPosition(0));
+		SmartDashboard.putNumber("RightPosition", driveTrain.rightMaster.getSelectedSensorPosition(0));
 	}
 
 	@Override
@@ -268,7 +270,6 @@ public class Robot extends TimedRobot {
 
 		// quick test of drive train
 		// driveTrain.tankDrive(0.5, 0.5);
-
 		// quick test of time-of-flight sensor
 		// System.out.println("range distance = " +
 		// timeOfFlight.getDistanceMillimeters() + "mm");

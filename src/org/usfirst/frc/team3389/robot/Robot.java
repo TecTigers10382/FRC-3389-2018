@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
 
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
 	public static final OLEDDisplay robotScreen = new OLEDDisplay();
-	public static final MPU9250 driveGyro = new MPU9250(); // this includes calibration which takes 8-12 seconds to
+	 // this includes calibration which takes 8-12 seconds to
 															// complete
 
 	public static final DriveTrain driveTrain = new DriveTrain();
@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
 		}
 
 		m_oi = new OI();
-		driveGyro.startUpdatingThread();
+		
 
 		// m_chooser.addDefault("Default Auto", new ExampleCommand());
 		m_chooser.addDefault("Test Auto", new AutoTest());
@@ -231,11 +231,11 @@ public class Robot extends TimedRobot {
 		// given this is called in a loop its too noisy to be of use for debugging //
 		// robotLogger.log(Logger.DEBUG, this, "enter");
 		robotScreen.drawTextStringCentered("Hello World!", 0);
-		double angle = driveGyro.getFilteredYaw();
+	
 		// it's probably confusing to mix pixel positioning and character/line
 		// positioning
 		// robotScreen.drawTextLine(String.format("Heading: %+5.1f", angle), 5);
-		SmartDashboard.putNumber("Heading: ", angle);
+		//SmartDashboard.putNumber("Heading: ", angle);
 
 		SmartDashboard.putBoolean("Up switch", lifter.getUp());
 

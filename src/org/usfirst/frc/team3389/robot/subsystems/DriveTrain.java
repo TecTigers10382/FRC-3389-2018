@@ -3,6 +3,7 @@ package org.usfirst.frc.team3389.robot.subsystems;
 import org.usfirst.frc.team3389.robot.Robot;
 import org.usfirst.frc.team3389.robot.RobotMap;
 import org.usfirst.frc.team3389.robot.commands.Drive;
+import org.usfirst.frc.team3389.robot.subsystems.ioDevices.MPU9250;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -24,7 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  *
  */
 public class DriveTrain extends Subsystem {
-
+	public static MPU9250 driveGyro;
 	public static TalonSRX leftMaster;
 	public static TalonSRX leftSlave;
 	public static TalonSRX rightSlave;
@@ -56,6 +57,8 @@ public class DriveTrain extends Subsystem {
 		leftSlave.follow(leftMaster);
 		// encoderInit();
 		pidInit();
+		driveGyro = new MPU9250(); 
+		driveGyro.startUpdatingThread();
 
 		leftMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
@@ -107,6 +110,44 @@ public class DriveTrain extends Subsystem {
 		// Robot.robotLogger.log(Logger.INFO, this, "encoderVal" +
 		// rightEnc.getDistance());
 
+	}
+	
+	public void turnDrive(double speed, double heading) {
+		//get initial heading
+		double initial=driveGyro.getFilteredYaw();	
+		double current= driveGyro.getFilteredYaw();
+		double direction= 1.0;
+		double pivot = initial + 180;
+		double P, I, D = 1;
+		double integral, previous_error, setpoint = 0;
+		
+		if(initial >180) {
+			pivot= initial;
+			initial = initial - 180;
+			direction = -(direction);
+		}
+		
+	       /* double error = heading- driveGyro.getFilteredYaw(); // Error = Target - Actual
+	        double integral += (error*.02); // Integral is increased by the error*time (which is .02 seconds using normal IterativeRobot)
+	        derivative = (error - this.previous_error) / .02;
+	        this.rcw = P*error + I*this.integral + D*derivative;
+	        */
+		while(current < heading) {
+			double error= (heading - current)/(heading - initial);
+			
+			if((heading>initial)&&(heading<=pivot)) {
+				driveVelocity((direction*speed),-(direction*speed));
+			}
+			else {
+				driveVelocity(-(direction*speed),(direction*speed));
+			}
+			current= driveGyro.getFilteredYaw();
+		}
+		
+		//loop until current heading= initial +heading
+			//driveVelocity left and right
+			//get current heading
+		
 	}
 
 	/**

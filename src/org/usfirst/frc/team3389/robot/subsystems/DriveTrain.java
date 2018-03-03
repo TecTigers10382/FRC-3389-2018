@@ -253,8 +253,8 @@ public class DriveTrain extends Subsystem {
 		rightMaster.config_kI(0, 0, RobotMap.rTimeoutMs);
 		rightMaster.config_kD(0, 0, RobotMap.rTimeoutMs);
 		
-		leftMaster.configMotionCruiseVelocity(15000, RobotMap.lTimeoutMs);
-		leftMaster.configMotionAcceleration(6000, RobotMap.lTimeoutMs);
+		leftMaster.configMotionCruiseVelocity(RobotMap.cruiseVelocity, RobotMap.lTimeoutMs);
+		leftMaster.configMotionAcceleration(RobotMap.accel, RobotMap.lTimeoutMs);
 		
 		rightMaster.configMotionCruiseVelocity(15000, RobotMap.rTimeoutMs);
 		rightMaster.configMotionAcceleration(6000, RobotMap.rTimeoutMs);
@@ -262,27 +262,7 @@ public class DriveTrain extends Subsystem {
 		leftMaster.setSelectedSensorPosition(0, RobotMap.lPIDLoopIdx, RobotMap.lTimeoutMs);
 		rightMaster.setSelectedSensorPosition(0, RobotMap.rPIDLoopIdx, RobotMap.rTimeoutMs);
 
-		
-		// leftFront.config_kD(0, 0.05, 0);
-		// leftFront.config_kF(0, 0.05, 0);
-		// leftFront.config_kI(0, 0.05, 0);
-		// leftFront.config_kP(0, 0.05, 0);
-		//
-		// leftBack.config_kD(0, 0.05, 0);
-		// leftBack.config_kF(0, 0.05, 0);
-		// leftBack.config_kI(0, 0.05, 0);
-		// leftBack.config_kP(0, 0.05, 0);
-		//
-		// rightFront.config_kD(0, 0.05, 0);
-		// rightFront.config_kF(0, 0.05, 0);
-		// rightFront.config_kI(0, 0.05, 0);
-		// rightFront.config_kP(0, 0.05, 0);
-		//
-		// rightBack.config_kD(0, 0.05, 0);
-		// rightBack.config_kF(0, 0.05, 0);
-		// rightBack.config_kI(0, 0.05, 0);
-		// rightBack.config_kP(0, 0.05, 0);
-	}
+			}
 
 	public static void driveVelocity(double leftVelocity, double rightVelocity) {
 		rightMaster.set(ControlMode.Velocity, rightVelocity);
@@ -291,14 +271,12 @@ public class DriveTrain extends Subsystem {
 
 	public static void drivePosition(int leftPosition, int rightPosition) {
 
-		final double convRatio = 1; // The constant which maps the distance in inches needed to ticks.
-
-		rightTicks = convRatio * rightPosition;
-		leftTicks = convRatio * leftPosition;
+		rightTicks = RobotMap.convRatio * rightPosition;
+		leftTicks = RobotMap.convRatio * leftPosition;
 		SmartDashboard.putNumber("LeftPosition", leftMaster.getSelectedSensorPosition(0));
 		SmartDashboard.putNumber("RightPosition", rightMaster.getSelectedSensorPosition(0));
-		rightMaster.set(ControlMode.MotionMagic, rightPosition);
-		leftMaster.set(ControlMode.MotionMagic, leftPosition);
+		rightMaster.set(ControlMode.MotionMagic, rightTicks);
+		leftMaster.set(ControlMode.MotionMagic, leftTicks);
 	}
 
 	public static double getLeftTicks() {

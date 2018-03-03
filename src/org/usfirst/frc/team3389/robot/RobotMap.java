@@ -49,8 +49,11 @@ public class RobotMap {
 		lSlotIdx   = 0,
 		rSlotIdx   = 1,
 		lPIDLoopIdx= 0,
-		rPIDLoopIdx= 1;
+		rPIDLoopIdx= 1,
+		convRatio = 1,
 	
+		cruiseVelocity = 10000,
+		accel = 3000;
 	//public static DrivePIDOutput leftDriveOutput = new DrivePIDOutput(DriveTrain.leftFront);	
 	//public static DrivePIDOutput rightDriveOutput = new DrivePIDOutput(DriveTrain.rightFront);
 	

@@ -111,7 +111,7 @@ public class DriveTrain extends Subsystem {
 
 	}
 	
-	public void turnDrive(double speed, double heading) {
+	public static void turnDrive(double speed, double heading) {
 		// PID constants and computation variables
 		double kP = 0.5, kI = 0.5, kD = 0; // we wont be using derivative data
 		double result_speed = 0, integral = 0, derivative = 0, error = 0, previous_error = 0;

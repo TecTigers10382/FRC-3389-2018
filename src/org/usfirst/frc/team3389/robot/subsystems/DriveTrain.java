@@ -56,7 +56,7 @@ public class DriveTrain extends Subsystem {
 		rightSlave.follow(rightMaster);
 		leftSlave.follow(leftMaster);
 		// encoderInit();
-		pidInit();
+		motionMagicPidInit();
 		driveGyro = new MPU9250(); 
 		driveGyro.startUpdatingThread();
 
@@ -97,8 +97,8 @@ public class DriveTrain extends Subsystem {
 	 */
 	private void rawDrive(double leftPower, double rightPower) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:" + leftPower + ", " + rightPower);
-		leftMaster.changeControlMode(TalonControlMode.Speed);
-		rightMaster.set(ControlMode.Velocity, rightPower);
+
+		driveVelocity(leftPower,rightPower);
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit" + leftMaster.getMotorOutputPercent());
 		// SmartDashboard.putNumber("encoder1", leftEnc.getDistance());
@@ -111,7 +111,7 @@ public class DriveTrain extends Subsystem {
 
 	}
 	
-	public static void turnDrive(double speed, double heading) {
+	public void turnDrive(double speed, double heading) {
 		// PID constants and computation variables
 		double kP = 0.5, kI = 0.5, kD = 0; // we wont be using derivative data
 		double result_speed = 0, integral = 0, derivative = 0, error = 0, previous_error = 0;
@@ -251,7 +251,7 @@ public class DriveTrain extends Subsystem {
 	// rightEnc.setSamplesToAverage(7);
 	// }
 
-	private void pidInit() {
+	private void motionMagicPidInit() {
 
 
 		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.lPIDLoopIdx, RobotMap.rTimeoutMs); /* PIDLoop=0,timeoutMs=0 */
@@ -309,10 +309,43 @@ public class DriveTrain extends Subsystem {
 		rightMaster.setSelectedSensorPosition(0, RobotMap.rPIDLoopIdx, RobotMap.rTimeoutMs);
 
 			}
+	
+	public static void velocityPidInit() {
+		
+		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.lPIDLoopIdx, RobotMap.rTimeoutMs); /* PIDLoop=0,timeoutMs=0 */
+		// leftBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /*
+		// PIDLoop=0,timeoutMs=0 */
+		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.rPIDLoopIdx, RobotMap.rTimeoutMs);
+		
+		leftMaster.setSensorPhase(true);
+		rightMaster.setSensorPhase(true);
+		
+		leftMaster.configNominalOutputForward(0, RobotMap.lTimeoutMs);
+		leftMaster.configNominalOutputReverse(0, RobotMap.lTimeoutMs);
+		leftMaster.configPeakOutputForward(1, RobotMap.lTimeoutMs);
+		leftMaster.configPeakOutputReverse(-1, RobotMap.lTimeoutMs);
+		
+		rightMaster.configNominalOutputForward(0, RobotMap.rTimeoutMs);
+		rightMaster.configNominalOutputReverse(0, RobotMap.rTimeoutMs);
+		rightMaster.configPeakOutputForward(1, RobotMap.rTimeoutMs);
+		rightMaster.configPeakOutputReverse(-1, RobotMap.rTimeoutMs);
+		
+		leftMaster.config_kF(RobotMap.lPIDLoopIdx, 0.34, RobotMap.lTimeoutMs);
+		leftMaster.config_kP(RobotMap.lPIDLoopIdx, 0.2, RobotMap.lTimeoutMs);
+		leftMaster.config_kI(RobotMap.lPIDLoopIdx, 0, RobotMap.lTimeoutMs);
+		leftMaster.config_kD(RobotMap.lPIDLoopIdx, 0, RobotMap.lTimeoutMs);
+		
+		rightMaster.config_kF(RobotMap.rPIDLoopIdx, 0.34, RobotMap.rTimeoutMs);
+		rightMaster.config_kP(RobotMap.rPIDLoopIdx, 0.2, RobotMap.rTimeoutMs);
+		rightMaster.config_kI(RobotMap.rPIDLoopIdx, 0, RobotMap.rTimeoutMs);
+		rightMaster.config_kD(RobotMap.rPIDLoopIdx, 0, RobotMap.rTimeoutMs);
+	}
 
 	public static void driveVelocity(double leftVelocity, double rightVelocity) {
-		rightMaster.set(ControlMode.Velocity, rightVelocity);
-		leftMaster.set(ControlMode.Velocity, leftVelocity);
+		double rightVelo=rightVelocity*4096*500/600;
+		double leftVelo=leftVelocity*4096*500/600;
+		rightMaster.set(ControlMode.Velocity, rightVelo);
+		leftMaster.set(ControlMode.Velocity, leftVelo);
 	}
 
 	public static void drivePosition(int leftPosition, int rightPosition) {

@@ -53,7 +53,7 @@ public class RobotMap {
 		convRatio = 1,
 	
 		cruiseVelocity = 10000,
-		accel = 3000;
+		accel = 15000;
 	//public static DrivePIDOutput leftDriveOutput = new DrivePIDOutput(DriveTrain.leftFront);	
 	//public static DrivePIDOutput rightDriveOutput = new DrivePIDOutput(DriveTrain.rightFront);
 	

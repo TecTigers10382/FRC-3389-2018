@@ -97,9 +97,8 @@ public class DriveTrain extends Subsystem {
 	 */
 	private void rawDrive(double leftPower, double rightPower) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:" + leftPower + ", " + rightPower);
-
-		leftMaster.set(ControlMode.PercentOutput, leftPower);
-		rightMaster.set(ControlMode.PercentOutput, rightPower);
+		leftMaster.changeControlMode(TalonControlMode.Speed);
+		rightMaster.set(ControlMode.Velocity, rightPower);
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit" + leftMaster.getMotorOutputPercent());
 		// SmartDashboard.putNumber("encoder1", leftEnc.getDistance());

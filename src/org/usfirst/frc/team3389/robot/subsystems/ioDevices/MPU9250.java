@@ -761,7 +761,12 @@ public class MPU9250 extends I2CUpdatableAddress {
 	 */
 	private void calibrateSensors() {
 		Robot.robotLogger.log(Logger.INFO,  this, "Calibration starting in 3 seconds (don't move the sensor)");
-		pause(3000);
+
+		pause(3000); // let the MPU stabilize for 3 seconds
+		
+		// TODO - we really should not be doing the logo here but it makes it easy and we are running out of time 
+		Robot.robotScreen.updateBitmap(OLEDBitmap.GAME.getData(), OLEDBitmap.LOGO.getWidth(), OLEDBitmap.LOGO.getHeight(), 0, 0);
+
 		Robot.robotLogger.log(Logger.INFO,  this, "Calibration will take aprox 5 seconds (don't move the sensor)");
 
 		// during calibration we take 50 readings, 100ms apart
@@ -779,11 +784,15 @@ public class MPU9250 extends I2CUpdatableAddress {
 			gyroAngularSpeedOffsetX += angularSpeeds[0];
 			gyroAngularSpeedOffsetY += angularSpeeds[1];
 			gyroAngularSpeedOffsetZ += angularSpeeds[2];
+			Robot.robotScreen.updateGraphBar(0, Robot.robotScreen.getHeight()-8, Robot.robotScreen.getWidth(), 8, ((double)(i+1)/(double)nbReadings)); 
 			pause(100);
 		}
 		gyroAngularSpeedOffsetX /= nbReadings;
 		gyroAngularSpeedOffsetY /= nbReadings;
 		gyroAngularSpeedOffsetZ /= nbReadings;
+
+		// TODO - we really should not be doing the logo here but it makes it easy and we are running out of time 
+		Robot.robotScreen.updateBitmap(OLEDBitmap.READY.getData(), OLEDBitmap.LOGO.getWidth(), OLEDBitmap.LOGO.getHeight(), 0, 0);
 
 		Robot.robotLogger.log(Logger.INFO, this, "Calibration ended");
 	}
@@ -824,6 +833,37 @@ public class MPU9250 extends I2CUpdatableAddress {
 		}
 		updatingThread = null;
 	}
+
+	/**
+	 * Reset values for the accelerometer angles, gyroscope angles and filtered
+	 * angles values back to 0.0.
+	 * 
+	 * caution should be used that this method is not called when multiple objects are fetching gyro/accel data values concurrently
+	 */
+	public void resetValues() {
+		// Accelerometer
+		accelAccelerationX = 0.0;
+		accelAccelerationY = 0.0;
+		accelAccelerationZ = 0.0;
+		accelAngleX = 0.0;
+		accelAngleY = 0.0;
+		accelAngleZ = 0.0;
+
+		// Gyroscope
+		gyroAngularSpeedX = 0.0; 
+		gyroAngularSpeedY = 0.0;
+		gyroAngularSpeedZ = 0.0;
+		// angular speed * time = angle
+		gyroAngleX = 0.0;
+		gyroAngleY = 0.0;
+		gyroAngleZ = 0.0;
+
+		// Low Pass Filtered vales
+		filteredAngleX = 0.0;
+		filteredAngleY = 0.0;
+		filteredAngleZ = 0.0;
+	}
+
 
 	/**
 	 * Update values for the accelerometer angles, gyroscope angles and filtered

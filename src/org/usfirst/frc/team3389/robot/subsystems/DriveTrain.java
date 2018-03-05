@@ -112,41 +112,47 @@ public class DriveTrain extends Subsystem {
 	}
 	
 	public void turnDrive(double speed, double heading) {
+		// PID constants and computation variables
+		double kP = 0.5, kI = 0.5, kD = 0; // we wont be using derivative data
+		double result_speed = 0, integral = 0, derivative = 0, error = 0, previous_error = 0;
+
 		//get initial heading
-		double initial=driveGyro.getFilteredYaw();	
-		double current= driveGyro.getFilteredYaw();
-		double direction= 1.0;
-		double pivot = initial + 180;
-		double P, I, D = 1;
-		double integral, previous_error, setpoint = 0;
-		
-		if(initial >180) {
-			pivot= initial;
+		double current, initial=driveGyro.getFilteredYaw();	
+
+		//direction calculation variables
+		double direction = 1.0, pivot = initial + 180;
+
+		// determine if we it is quicker to turn right or left to get to the new heading
+		if(initial > 180) {
+			// flip all of the directional variables when operating in the second half of the circle
+			pivot = initial;
 			initial = initial - 180;
 			direction = -(direction);
 		}
 		
-	       /* double error = heading- driveGyro.getFilteredYaw(); // Error = Target - Actual
-	        double integral += (error*.02); // Integral is increased by the error*time (which is .02 seconds using normal IterativeRobot)
-	        derivative = (error - this.previous_error) / .02;
-	        this.rcw = P*error + I*this.integral + D*derivative;
-	        */
+		// loop until robot has turned to new heading
+		current= driveGyro.getFilteredYaw();
 		while(current < heading) {
-			double error= (heading - current)/(heading - initial);
-			
+			previous_error = error;
+		    error = heading - driveGyro.getFilteredYaw(); // Error = Target - Actual
+		    integral += (error*.02); // Integral is increased by the error*time (which is .02 seconds using normal IterativeRobot)
+		    derivative = (error - previous_error) / .02;
+		    result_speed = speed * ((kP*error + kI*integral + kD*derivative) / heading);
+
 			if((heading>initial)&&(heading<=pivot)) {
-				driveVelocity((direction*speed),-(direction*speed));
+				driveVelocity((direction*result_speed),-(direction*result_speed));
 			}
 			else {
-				driveVelocity(-(direction*speed),(direction*speed));
+				driveVelocity(-(direction*result_speed),(direction*result_speed));
 			}
-			current= driveGyro.getFilteredYaw();
+			Robot.robotLogger.log(Logger.INFO, this, "PID turning: target=" + heading + ", current=" + current + ", speed=" + result_speed);
+			current = driveGyro.getFilteredYaw();
+			// since we will not perfectly tune the PID
+			// we have a safety condition to break from the loop if we are 'close enough'
+			// increase the constant if we find we are getting stuck in this loop
+			if (Math.abs(current - heading) < 0.05)
+				break;
 		}
-		
-		//loop until current heading= initial +heading
-			//driveVelocity left and right
-			//get current heading
-		
 	}
 
 	/**

@@ -76,14 +76,6 @@ public class Robot extends TimedRobot {
 
 //		driveTrain.encoderInit();
 
-		if (!robotScreen.init())
-			robotLogger.log(Logger.ERROR, this, "failed to initialize OLED display");
-		else {
-			robotScreen.drawBitmap(OLEDBitmap.LOGO.getData(), OLEDBitmap.LOGO.getWidth(), OLEDBitmap.LOGO.getHeight(),
-					0, 0);
-			robotScreen.refresh();
-		}
-
 		m_oi = new OI();
 		
 

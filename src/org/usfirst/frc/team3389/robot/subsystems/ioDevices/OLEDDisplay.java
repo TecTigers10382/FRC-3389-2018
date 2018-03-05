@@ -100,8 +100,14 @@ public class OLEDDisplay extends I2CUpdatableAddress {
 		super(Port.kMXP, defaultAddress);
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		
-		invert_display= true;
+		invert_display= false;
         clear();  // erase screen buffer
+		
+        if (!init())
+			Robot.robotLogger.log(Logger.ERROR, this, "failed to initialize OLED display");
+		else
+			updateBitmap(OLEDBitmap.LOGO.getData(), OLEDBitmap.LOGO.getWidth(), OLEDBitmap.LOGO.getHeight(), 0, 0);
+
 
         Robot.robotLogger.log(Logger.DEBUG, this, "exit");
     }
@@ -114,9 +120,9 @@ public class OLEDDisplay extends I2CUpdatableAddress {
      * 
      * @return boolean success
      */
-    public final boolean init() {
+    private final boolean init() {
     	Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-    	invert_display = true;
+    	invert_display = false;
     	setFont(OLEDFont.FONT_5X8);
             
     	writeByte(0x00,SSD1306_DISPLAYOFF);                    // 0xAE
@@ -252,7 +258,7 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     
     /**
      * set an individual pixel on
-     * uses the current invertColors() setting to determin if 'on' is white or black
+     * uses the current invertColors() setting to determine if 'on' is white or black
      * positional values are zero-based
      * 
      * @param x int horizontal pixel position on the display starting from left
@@ -266,7 +272,7 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     	this.setPixelColor(x, y, (this.invert_display ? !(val) : val));
     }
 
-
+    
     /**
      * set the font to use for subsequent text operations
      * also updates the character size used for subsequent text operations
@@ -353,6 +359,74 @@ public class OLEDDisplay extends I2CUpdatableAddress {
                 setPixel(posX, posY, BLACK);
             }
         }
+    }
+
+
+    /**
+     * fill a portion of the video buffer setting those pixels to black
+     * this methods observes the most recent call to inverteColors() to determine
+     * the definition of black
+     * positional values are zero-based
+     * 
+     * @param x int the left most pixel is the rectangular area
+     * @param y int the top most pixel is the rectangular area
+     * @param width int the width of the rectangular area
+     * @param height int the height of the rectangular area
+     */
+    public synchronized void fillRect(int x, int y, int width, int height) {
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
+        for (int posX = x; posX < x + width; ++posX) {
+            for (int posY = y; posY < y + height; ++posY) {
+                setPixel(posX, posY, WHITE);
+            }
+        }
+    }
+
+
+    /**
+     * draw a filled rectangle as a percentage of the device width and clear remainder of line
+     * uses the current invertColors() setting to determine if 'on' is white or black
+     * positional values are zero-based
+     * 
+     * @param x int the left most pixel is the rectangular area
+     * @param y int the top most pixel is the rectangular area
+     * @param width int the width of the rectangular area
+     * @param height int the height of the rectangular area
+     * @param val float portion (0.0 - 1.0) of width of the display to fill
+     */
+    public synchronized void drawGraphBar(int x, int y, int width, int height, double val) {
+    	if (!inited) {
+    		Robot.robotLogger.log(Logger.WARNING, this, "OLED Display not initialized");
+    		return;
+    	}
+    	if (val < 0)
+    		val = 0.0;
+    	if (val > 1)
+    		val = 1.0;
+    		
+    	int split = (int) Math.round(this.getWidth() * val);
+    	fillRect(x, y, split, height);
+    	clearRect (x+split, y, width-split, height);
+    }
+    
+
+    /**
+     * draw a filled rectangle as a percentage of the device width and clear remainder of line and update display
+     * uses the current invertColors() setting to determine if 'on' is white or black
+     * positional values are zero-based
+     * 
+     * @param x int the left most pixel is the rectangular area
+     * @param y int the top most pixel is the rectangular area
+     * @param width int the width of the rectangular area
+     * @param height int the height of the rectangular area
+     * @param val float portion (0.0 - 1.0) of width of the display to fill
+     */
+    public synchronized void updateGraphBar(int x, int y, int width, int height, double val) {
+    	drawGraphBar(x, y, width, height, val);
+    	refresh();
     }
     
     /*
@@ -488,6 +562,7 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     	clearRect(0, line * currentFont.getOuterHeight(), this.getWidth(), currentFont.getOuterHeight());
     }
 
+
     /**
      * draws the given bitmap over the current image buffer.
      * this methods observes the most recent invertColors() setting
@@ -521,6 +596,23 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     }
 
     
+    /**
+     * draws the given bitmap over the current image buffer and refresh display.
+     * this methods observes the most recent invertColors() setting
+     * to determine if a set pixel is black or white and non-set pixels are the other
+
+     * @param bitmap byte[] binary bitmap image data 
+     * @param width the pixel width of the bitmap image
+     * @param height the pixel height of the bitmap image
+     * @param x int the left most pixel position of the image
+     * @param y int the top most pixel position of the image 
+     */
+    public synchronized void updateBitmap(byte[] bitmap, int width, int height, int x, int y) {
+    	drawBitmap(bitmap, width, height, x, y);
+    	refresh();
+    }
+    
+    	
     /**
      * draws the given image over the current image buffer. The image
      * is automatically converted to a binary image (one bit per pixel)

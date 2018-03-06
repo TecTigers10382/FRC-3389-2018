@@ -62,6 +62,16 @@ public class DriveTrain extends Subsystem {
 
 		leftMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
+		
+		leftMaster.configContinuousCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
+		rightMaster.configContinuousCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
+		leftSlave.configContinuousCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
+		rightSlave.configContinuousCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
+		
+		leftMaster.enableCurrentLimit(true);
+		rightMaster.enableCurrentLimit(true);
+		leftSlave.enableCurrentLimit(true);
+		rightSlave.enableCurrentLimit(true);
 
 		// TODO for PID example @see
 		// https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java

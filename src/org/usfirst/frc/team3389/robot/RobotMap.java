@@ -54,6 +54,8 @@ public class RobotMap {
 	
 		cruiseVelocity = 10000,
 		accel = 15000;
+	
+	public final static int CURRENT_LIMIT = 38;
 	//public static DrivePIDOutput leftDriveOutput = new DrivePIDOutput(DriveTrain.leftFront);	
 	//public static DrivePIDOutput rightDriveOutput = new DrivePIDOutput(DriveTrain.rightFront);
 	

@@ -235,12 +235,15 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putBoolean("Up switch", lifter.getUp());
 
 		SmartDashboard.putBoolean("Down Switch", lifter.getDown()); 
-		SmartDashboard.putNumber("encoder", driveTrain.leftMaster.getSelectedSensorPosition(0));
-		SmartDashboard.putNumber("ejfdlkfs", driveTrain.leftMaster.getSelectedSensorVelocity(0));
-		SmartDashboard.putNumber("otherencoder", driveTrain.rightMaster.getSelectedSensorPosition(0));
-		SmartDashboard.putNumber("otherejfdlkfs", driveTrain.rightMaster.getSelectedSensorVelocity(0));
+		SmartDashboard.putNumber("OutputVoltage LeftMaster", DriveTrain.leftMaster.getMotorOutputVoltage());
+		SmartDashboard.putNumber("OutputVoltage RightMaster", DriveTrain.rightMaster.getMotorOutputVoltage());
+		SmartDashboard.putNumber("OutputVoltage LeftSlave", DriveTrain.leftSlave.getMotorOutputVoltage());
+		SmartDashboard.putNumber("OutputVoltage RightSlave", DriveTrain.rightSlave.getMotorOutputVoltage());
+		SmartDashboard.putNumber("OutputCurrent LeftMaster", DriveTrain.leftMaster.getOutputCurrent());
+		SmartDashboard.putNumber("OutputCurrent RightMaster", DriveTrain.rightMaster.getOutputCurrent());
+		SmartDashboard.putNumber("OutputCurrent LeftSlave", DriveTrain.leftSlave.getOutputCurrent());
+		SmartDashboard.putNumber("OutputCurrent RightSlave", DriveTrain.rightSlave.getOutputCurrent());
 		
-
 		SmartDashboard.putBoolean("Down Switch", lifter.getDown());
 		// robotScreen.refresh();
 		// Display on SmartDashboard

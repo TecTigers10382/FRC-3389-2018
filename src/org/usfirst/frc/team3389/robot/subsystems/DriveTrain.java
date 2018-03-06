@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * Subsystem for the drive train of the robot. Contains the 4 Talons neccessary
+ * Subsystem for the drive train of the robot. Contains the 4 Talons necessary
  * for the operation of all the motors in order to move the robot.
  * 
  * @author Tec Tigers
@@ -111,6 +111,7 @@ public class DriveTrain extends Subsystem {
 
 	}
 	
+/*  code moved to command DriveTurn.java
 	public void turnDrive(double speed, double heading) {
 		// PID constants and computation variables
 		double kP = 0.5, kI = 0.5, kD = 0; // we wont be using derivative data
@@ -154,7 +155,9 @@ public class DriveTrain extends Subsystem {
 				break;
 		}
 	}
-
+*/
+	
+	
 	/**
 	 * Drives the Drive Train with 2 analog stick's y values like a tank.
 	 * 
@@ -254,12 +257,10 @@ public class DriveTrain extends Subsystem {
 	private void motionMagicPidInit() {
 
 
-		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.lPIDLoopIdx, RobotMap.rTimeoutMs); /* PIDLoop=0,timeoutMs=0 */
-		// leftBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /*
-		// PIDLoop=0,timeoutMs=0 */
-		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.rPIDLoopIdx, RobotMap.rTimeoutMs); /* PIDLoop=0,timeoutMs=0 */
-		// rightBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /*
-		// PIDLoop=0,timeoutMs=0 */
+		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.lPIDLoopIdx, RobotMap.lTimeoutMs); /* PIDLoop=0,timeoutMs=0 */
+		// leftBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /* PIDLoop=0,timeoutMs=0 */
+		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.rPIDLoopIdx, RobotMap.rTimeoutMs); /* PIDLoop=1,timeoutMs=0 */
+		// rightBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /* PIDLoop=0,timeoutMs=0 */
 
 		leftMaster.setSensorPhase(true);
 		rightMaster.setSensorPhase(true);
@@ -312,10 +313,8 @@ public class DriveTrain extends Subsystem {
 	
 	public static void velocityPidInit() {
 		
-		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.lPIDLoopIdx, RobotMap.rTimeoutMs); /* PIDLoop=0,timeoutMs=0 */
-		// leftBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /*
-		// PIDLoop=0,timeoutMs=0 */
-		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.rPIDLoopIdx, RobotMap.rTimeoutMs);
+		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.lPIDLoopIdx, RobotMap.lTimeoutMs);  /* PIDLoop=0,timeoutMs=0 */
+		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.rPIDLoopIdx, RobotMap.rTimeoutMs); /* PIDLoop=1,timeoutMs=0 */
 		
 		leftMaster.setSensorPhase(true);
 		rightMaster.setSensorPhase(true);

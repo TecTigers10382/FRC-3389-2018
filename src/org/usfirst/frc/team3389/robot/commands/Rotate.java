@@ -25,7 +25,8 @@ public class Rotate extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-		Robot.driveTrain.turnDrive(.5 , 40);
+		// See new command: DriveTurn.java
+		// Robot.driveTrain.turnDrive(.5 , 40);
 	}
 
 	// Called repeatedly when this Command is scheduled to run

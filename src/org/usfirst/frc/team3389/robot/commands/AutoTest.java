@@ -20,14 +20,13 @@ public class AutoTest extends Command {
 	public AutoTest() {
 		// Use requires() here to declare subsystem dependencies
 		//requires(Robot.kExampleSubsystem);
-		requires(Robot.driveTrain);
+		requires(Robot.driveTrain); 
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
 		DriveTrain.drivePosition(100000,-100000);
-		//DriveTrain.turnDrive(.5, 40);
 	}
 
 	// Called repeatedly when this Command is scheduled to run

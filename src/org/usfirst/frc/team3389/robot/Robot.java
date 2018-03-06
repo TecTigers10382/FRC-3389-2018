@@ -14,10 +14,9 @@ import org.usfirst.frc.team3389.robot.commands.AutoRedLeft;
 import org.usfirst.frc.team3389.robot.commands.AutoRedMiddle;
 import org.usfirst.frc.team3389.robot.commands.AutoRedRight;
 import org.usfirst.frc.team3389.robot.commands.AutoTest;
+import org.usfirst.frc.team3389.robot.commands.DriveTurn;
 import org.usfirst.frc.team3389.robot.commands.PIDTuning;
 import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
-import org.usfirst.frc.team3389.robot.subsystems.ioDevices.MPU9250;
-import org.usfirst.frc.team3389.robot.subsystems.ioDevices.OLEDBitmap;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.OLEDDisplay;
 import org.usfirst.frc.team3389.robot.subsystems.ioDevices.TimeOfFlight;
 import org.usfirst.frc.team3389.robot.subsystems.manipulators.Intake;
@@ -88,6 +87,7 @@ public class Robot extends TimedRobot {
 		m_chooser.addObject("Blue Middle", new AutoBlueMiddle());
 		m_chooser.addObject("Blue Right", new AutoBlueRight());
 		m_chooser.addObject("PIDTuner", new PIDTuning());
+		m_chooser.addObject("Turn 45", new DriveTurn(.5, 45));
 
 		SmartDashboard.putData("Auto mode", m_chooser);
 

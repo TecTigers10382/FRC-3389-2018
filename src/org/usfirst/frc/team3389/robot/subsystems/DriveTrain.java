@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  *
  */
 public class DriveTrain extends Subsystem {
-	public static MPU9250 driveGyro;
+	public MPU9250 driveGyro;
 	public static TalonSRX leftMaster;
 	public static TalonSRX leftSlave;
 	public static TalonSRX rightSlave;
@@ -63,16 +63,21 @@ public class DriveTrain extends Subsystem {
 		leftMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		
-		leftMaster.configContinuousCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
-		rightMaster.configContinuousCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
-		leftSlave.configContinuousCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
-		rightSlave.configContinuousCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
+		leftMaster.configPeakCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
+		rightMaster.configPeakCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
+		leftSlave.configPeakCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
+		rightSlave.configPeakCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
 		
+		leftMaster.configPeakCurrentDuration(5, 5);
+		rightMaster.configPeakCurrentDuration(5, 5);
+		rightSlave.configPeakCurrentDuration(5, 5);
+		leftSlave.configPeakCurrentDuration(5, 5);
+
 		leftMaster.enableCurrentLimit(true);
 		rightMaster.enableCurrentLimit(true);
 		leftSlave.enableCurrentLimit(true);
 		rightSlave.enableCurrentLimit(true);
-
+		
 		// TODO for PID example @see
 		// https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
 
@@ -350,14 +355,14 @@ public class DriveTrain extends Subsystem {
 		rightMaster.config_kD(RobotMap.rPIDLoopIdx, 0, RobotMap.rTimeoutMs);
 	}
 
-	public static void driveVelocity(double leftVelocity, double rightVelocity) {
+	public void driveVelocity(double leftVelocity, double rightVelocity) {
 		double rightVelo=rightVelocity*4096*500/600;
 		double leftVelo=leftVelocity*4096*500/600;
 		rightMaster.set(ControlMode.Velocity, rightVelo);
 		leftMaster.set(ControlMode.Velocity, leftVelo);
 	}
 
-	public static void drivePosition(int leftPosition, int rightPosition) {
+	public void drivePosition(int leftPosition, int rightPosition) {
 
 		rightTicks = RobotMap.convRatio * rightPosition;
 		leftTicks = RobotMap.convRatio * leftPosition;
@@ -365,15 +370,15 @@ public class DriveTrain extends Subsystem {
 		leftMaster.set(ControlMode.MotionMagic, leftTicks);
 	}
 
-	public static double getLeftTicks() {
+	public double getLeftTicks() {
 		return leftTicks;
 
 	}
 
-	public static double getRightTicks() {
+	public double getRightTicks() {
 		return rightTicks;
 	}
-	public static void drivePercent(int leftPercent,int rightPercent) {
+	public void drivePercent(int leftPercent,int rightPercent) {
 		leftMaster.set(ControlMode.PercentOutput, leftPercent);
 		rightMaster.set(ControlMode.PercentOutput, rightPercent);
 	}

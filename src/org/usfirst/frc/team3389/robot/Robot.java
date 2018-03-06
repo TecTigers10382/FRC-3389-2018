@@ -43,7 +43,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
 
 	// Initialize all subsystems
-	public static final Logger robotLogger = new Logger(Logger.NONE);
+	public static final Logger robotLogger = new Logger(Logger.DEBUG);
 
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
 	public static final OLEDDisplay robotScreen = new OLEDDisplay();
@@ -190,10 +190,11 @@ public class Robot extends TimedRobot {
 	public void autonomousPeriodic() {
 		// given this is called in a loop its too noisy to be of use for debugging //
 		// robotLogger.log(Logger.DEBUG, this, "enter");
-		
+		robotLogger.log(Logger.DEBUG, this, "auto Periodic enter");
 		Scheduler.getInstance().run();
 		SmartDashboard.putNumber("LeftPosition", driveTrain.leftMaster.getSelectedSensorPosition(0));
 		SmartDashboard.putNumber("RightPosition", driveTrain.rightMaster.getSelectedSensorPosition(0));
+		robotLogger.log(Logger.DEBUG, this, "auto Periodic exit");
 	}
 
 	@Override

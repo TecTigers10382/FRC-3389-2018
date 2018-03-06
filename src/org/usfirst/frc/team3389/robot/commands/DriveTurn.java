@@ -36,7 +36,7 @@ public class DriveTurn extends Command {
 	protected void initialize() {
 		timer = System.nanoTime();
 		//get initial heading
-		initial = DriveTrain.driveGyro.getFilteredYaw();
+		initial = Robot.driveTrain.driveGyro.getFilteredYaw();
 		//direction calculation variables
 		direction = 1.0;
 		pivot = initial + 180;
@@ -56,7 +56,7 @@ public class DriveTurn extends Command {
 		double elapsed = (double)(System.nanoTime() - timer) / 1000000000.0;
 		timer = System.nanoTime();
 		
-		current = DriveTrain.driveGyro.getFilteredYaw();
+		current = Robot.driveTrain.driveGyro.getFilteredYaw();
 		previous_error = error;
 		error = target_heading - current;
 
@@ -66,9 +66,9 @@ public class DriveTurn extends Command {
 		result_speed = target_speed * ((kP*error + kI*integral + kD*derivative) / target_heading);
 
 		if((target_heading > initial) && (target_heading <= pivot))
-			DriveTrain.driveVelocity((direction * result_speed), -(direction * result_speed));
+			Robot.driveTrain.driveVelocity((direction * result_speed), -(direction * result_speed));
 		else
-			DriveTrain.driveVelocity(-(direction * result_speed),(direction * result_speed));
+			Robot.driveTrain.driveVelocity(-(direction * result_speed),(direction * result_speed));
 
 		Robot.robotLogger.log(Logger.INFO, this, "PID turning: target=" + target_heading + ", current=" + current + ", speed=" + result_speed);
 	}

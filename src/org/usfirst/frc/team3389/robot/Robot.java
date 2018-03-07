@@ -23,6 +23,7 @@ import org.usfirst.frc.team3389.robot.subsystems.Intake;
 import org.usfirst.frc.team3389.robot.subsystems.Lifter;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -89,6 +90,9 @@ public class Robot extends TimedRobot {
 
 		driverStation = DriverStation.getInstance();
 		
+		// FIXME verify this code displays the camera correctly - it may need to be programmatically added to the dashboard
+		CameraServer.getInstance().startAutomaticCapture();
+		
 		robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
@@ -148,18 +152,27 @@ public class Robot extends TimedRobot {
 		// This pulls the FMS game data
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
-		if (gameData.charAt(0) == 'L') {
-			if (gameData.charAt(1) == 'L') {
-				// Put LL auto here
+		if (!gameData.isEmpty()) {
+			robotLogger.log(Logger.INFO, this, "The field configuration is " + gameData);
+
+			// FIXME we need to add our autonomous commands
+			// FIXME where do we indicate the starting position of the robot - eg right, center, or left?
+			if (gameData.charAt(0) == 'L') {
+				if (gameData.charAt(1) == 'L') {
+					// Put LL auto here
+				} else {
+					// Put LR auto here
+				}
 			} else {
-				// Put LR auto here
+				if (gameData.charAt(1) == 'L') {
+					// Put RL auto here
+				} else {
+					// Put RR auto here
+				}
 			}
 		} else {
-			if (gameData.charAt(1) == 'L') {
-				// Put RL auto here
-			} else {
-				// Put RR auto here
-			}
+			// we failed to get the FMS message
+			robotLogger.log(Logger.WARNING, this, "The field configuration was not received");
 		}
 
 		Robot.driveTrain.driveGyro.resetValues();
@@ -171,8 +184,6 @@ public class Robot extends TimedRobot {
 			e.printStackTrace();
 		}
 		
-		
-		robotLogger.log(Logger.INFO, this, "The field configuration is " + gameData);
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
 		 * switch(autoSelected) { case "My Auto": autonomousCommand = new

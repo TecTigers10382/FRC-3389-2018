@@ -15,6 +15,7 @@ import org.usfirst.frc.team3389.robot.commands.AutoRedMiddle;
 import org.usfirst.frc.team3389.robot.commands.AutoRedRight;
 import org.usfirst.frc.team3389.robot.commands.DriveDistance;
 import org.usfirst.frc.team3389.robot.commands.DriveTurn;
+import org.usfirst.frc.team3389.robot.commands.TestCommandGroup;
 import org.usfirst.frc.team3389.robot.ioDevices.OLEDDisplay;
 import org.usfirst.frc.team3389.robot.ioDevices.TimeOfFlight;
 import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
@@ -74,6 +75,7 @@ public class Robot extends TimedRobot {
 
 		// m_chooser.addDefault("Default Auto", new ExampleCommand());
 		m_chooser.addDefault("Test Auto", new DriveDistance(1000)); // FIXME need to know the unit of measure for 'distance'
+		m_chooser.addObject("Test Command Group", new TestCommandGroup());
 		m_chooser.addObject("Red Left", new AutoRedLeft());
 		m_chooser.addObject("Red Middle", new AutoRedMiddle());
 		m_chooser.addObject("Red Right", new AutoRedRight());

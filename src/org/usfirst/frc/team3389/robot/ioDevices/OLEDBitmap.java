@@ -1,4 +1,4 @@
-package org.usfirst.frc.team3389.robot.subsystems.ioDevices;
+package org.usfirst.frc.team3389.robot.ioDevices;
 
 // bitmap creation steps: Create 128x64 B&W JPG file. Use https://www.dcode.fr/binary-image to get binary data. Finish by formatting data
 public enum OLEDBitmap {

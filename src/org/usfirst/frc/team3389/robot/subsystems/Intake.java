@@ -1,14 +1,13 @@
-package org.usfirst.frc.team3389.robot.subsystems.manipulators;
+package org.usfirst.frc.team3389.robot.subsystems;
 
 import org.usfirst.frc.team3389.robot.Robot;
 import org.usfirst.frc.team3389.robot.RobotMap;
-import org.usfirst.frc.team3389.robot.commands.IntakeStick;
+import org.usfirst.frc.team3389.robot.commands.TeliOpIntake;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -18,6 +17,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  * @author Tec Tigers
  * @see org.usfirst.frc.team3389.robot.commands.IntakeStick
  */
+
 public class Intake extends Subsystem {
 	TalonSRX intakeLeft;
 	TalonSRX intakeRight;
@@ -32,8 +32,8 @@ public class Intake extends Subsystem {
 		intakeRight = new TalonSRX(RobotMap.INTAKE_RIGHT);
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
-
 	}
+
 
 	/**
 	 * Intakes cubes by spinning motors at power
@@ -46,10 +46,10 @@ public class Intake extends Subsystem {
 
 		intakeLeft.set(ControlMode.PercentOutput,power);
 		intakeRight.set(ControlMode.PercentOutput,power);
-		
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
+
 
 	/**
 	 * Stops all motors on intake.
@@ -63,13 +63,17 @@ public class Intake extends Subsystem {
 
 	}
 
+	
 	/**
-	 * Intializes default command of IntakeStick.
+	 * Initializes the DriveTrain's default command to the Drive command.
+	 * The default for this subsystem is the associated teliop command. 
+	 * 
+	 * @see org.usfirst.frc.team3389.robot.commands.Drive
 	 */
 	protected void initDefaultCommand() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 
-		setDefaultCommand(new IntakeStick());
+		setDefaultCommand(new TeliOpIntake());
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 

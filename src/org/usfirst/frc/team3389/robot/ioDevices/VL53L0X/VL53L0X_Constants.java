@@ -1,4 +1,4 @@
-package org.usfirst.frc.team3389.robot.subsystems.ioDevices.VL53L0X;
+package org.usfirst.frc.team3389.robot.ioDevices.VL53L0X;
 
 /**
  * Contains all the constants for the VL53L0X class

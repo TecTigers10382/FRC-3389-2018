@@ -7,12 +7,12 @@
 
 // https://github.com/FRC-Team-Vern/VL53L0X_Example/blob/master/src/org/usfirst/frc/team5461/robot/sensors/VL53L0X.java
 
-package org.usfirst.frc.team3389.robot.subsystems.ioDevices.VL53L0X;
+package org.usfirst.frc.team3389.robot.ioDevices.VL53L0X;
 
 import java.nio.ByteBuffer;
 
 import org.usfirst.frc.team3389.robot.Robot;
-import org.usfirst.frc.team3389.robot.subsystems.ioDevices.I2CUpdatableAddress;
+import org.usfirst.frc.team3389.robot.ioDevices.I2CUpdatableAddress;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import edu.wpi.first.wpilibj.RobotController;

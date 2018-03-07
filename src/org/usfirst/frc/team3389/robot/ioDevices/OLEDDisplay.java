@@ -15,7 +15,7 @@
  * @author Limor Fried/Ladyada
  */
 
-package org.usfirst.frc.team3389.robot.subsystems.ioDevices;
+package org.usfirst.frc.team3389.robot.ioDevices;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;

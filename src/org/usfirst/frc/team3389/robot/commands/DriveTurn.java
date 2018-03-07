@@ -12,6 +12,8 @@ import org.usfirst.frc.team3389.robot.utils.Logger;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+// TODO the gyro based turns will need to be moved back to the DriveTrain subsystem eventually and changed to use PIDsubsystem
+
 /**
  * An example command. You can replace me with your own command.
  */
@@ -23,14 +25,22 @@ public class DriveTurn extends Command {
 	double direction = 1.0;
 	long timer = 0;
 
-	public DriveTurn(double speed, double heading) {
-		
+	/**
+	 * initiate a relative turn at a given speed
+	 * 
+	 * The turn is relative to the current heading.
+	 * If the robot is actively turning then the result is unpredictable
+	 * 
+	 * @param speed double the maximum speed for turning
+	 * @param turn double the number of degrees to turn
+	 */
 
+	public DriveTurn(double speed, double turn) {
 		// Use requires() here to declare subsystem dependencies
 		// requires(Robot.kExampleSubsystem);
 		requires(Robot.driveTrain);
 		target_speed = speed;
-		target_heading = heading;
+		target_heading = Robot.driveTrain.driveGyro.getFilteredYaw() + turn;
 	}
 
 	// Called just before this Command runs the first time

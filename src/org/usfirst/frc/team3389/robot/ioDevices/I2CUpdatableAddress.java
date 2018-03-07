@@ -7,7 +7,7 @@
 
 //https://github.com/FRC-Team-Vern/VL53L0X_Example/blob/master/src/org/usfirst/frc/team5461/robot/sensors/I2CUpdatableAddress.java
 
-package org.usfirst.frc.team3389.robot.subsystems.ioDevices;
+package org.usfirst.frc.team3389.robot.ioDevices;
 
 
 import java.nio.ByteBuffer;

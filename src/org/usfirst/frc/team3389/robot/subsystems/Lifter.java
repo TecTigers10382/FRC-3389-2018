@@ -1,9 +1,9 @@
-package org.usfirst.frc.team3389.robot.subsystems.manipulators;
+package org.usfirst.frc.team3389.robot.subsystems;
 
 import org.usfirst.frc.team3389.robot.Robot;
 import org.usfirst.frc.team3389.robot.RobotMap;
-import org.usfirst.frc.team3389.robot.commands.LiftStick;
 import org.usfirst.frc.team3389.robot.utils.Logger;
+import org.usfirst.frc.team3389.robot.commands.TeliOpLift;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.Faults;
@@ -14,54 +14,47 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
+
+
 public class Lifter extends Subsystem {
 	TalonSRX lift;
-	StickyFaults liftSFaults = new StickyFaults();
-	Faults LiftFaults = new Faults();
-	Encoder enc = new Encoder(4, 5, false, Encoder.EncodingType.k4X);
+	StickyFaults liftSFaults;
+	Faults liftFaults;
+	Encoder enc;
 	DigitalInput upSwitch;
 	DigitalInput downSwitch;
 
 	private double height;
 	private double radius;
 
+	
 	public Lifter() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-		lift = new TalonSRX(4);
+		lift = new TalonSRX(4); // TODO the specific ID should be in the RobotMap
+
 		lift.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
-		Debug();
-		
 		lift.setInverted(true);
 		
-		upSwitch=new DigitalInput(RobotMap.UP_SWITCH_PIN);
+		liftFaults = new Faults();
+		liftSFaults = new StickyFaults();
+		enc = new Encoder(4, 5, false, Encoder.EncodingType.k4X);
+		
+		upSwitch = new DigitalInput(RobotMap.UP_SWITCH_PIN);
 		downSwitch = new DigitalInput(RobotMap.DOWN_SWITCH_PIN);
 		
+		Debug();
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
+	
 	public void driveLift(double power) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:\t" + power);
 
-//		if (power > 0 && getUp() == true) {
-//			power = 0;
-//		}
-//
-//		if (power < 0 && getDown() == true) {
-//			power = 0;
-//		}
-
-		lift.set(ControlMode.PercentOutput, power);
+		lift.set(ControlMode.PercentOutput, power); // TODO the intake has a scalar for power. does the lift need one also? 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
-	protected void initDefaultCommand() {
-		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-
-		setDefaultCommand(new LiftStick());
-
-		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
-	}
-
+	
 	public void stop() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 
@@ -70,11 +63,7 @@ public class Lifter extends Subsystem {
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
-	public double getHeight() {
-		height = radius * (enc.get() / 360);
-		return height;
-	}
-
+	
 	public void gotoHeight(int inches) {
 		getHeight();
 		double wantedInch = inches;
@@ -90,6 +79,23 @@ public class Lifter extends Subsystem {
 
 	}
 
+	
+	public double getHeight() {
+		height = radius * (enc.get() / 360);
+		return height;
+	}
+
+	
+	public boolean getUp() {
+		return upSwitch.get();
+	}
+
+	
+	public boolean getDown() {
+		return downSwitch.get();
+	}
+
+	
 	private void Debug() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "TALON DEBUG\n==================================");
 		Robot.robotLogger.log(Logger.DEBUG, this, "Output Current");
@@ -106,7 +112,7 @@ public class Lifter extends Subsystem {
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 
 		// Talon Faults
-		Robot.robotLogger.log(Logger.DEBUG, this, lift.getFaults(LiftFaults).toString());
+		Robot.robotLogger.log(Logger.DEBUG, this, lift.getFaults(liftFaults).toString());
 
 		// Talon Stick Faults
 		Robot.robotLogger.log(Logger.DEBUG, this, lift.getStickyFaults(liftSFaults).toString());
@@ -114,15 +120,23 @@ public class Lifter extends Subsystem {
 		clearStickyFaults();
 	}
 
+	
 	private void clearStickyFaults() {
 		lift.clearStickyFaults(0);
 	}
 
-	public boolean getUp() {
-		return upSwitch.get();
-	}
+	/**
+	 * Initializes the DriveTrain's default command to the Drive command.
+	 * The default for this subsystem is the associated teliop command. 
+	 * 
+	 * @see org.usfirst.frc.team3389.robot.commands.Drive
+	 */
+	protected void initDefaultCommand() {
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 
-	public boolean getDown() {
-		return downSwitch.get();
+		setDefaultCommand(new TeliOpLift());
+
+		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 }
+

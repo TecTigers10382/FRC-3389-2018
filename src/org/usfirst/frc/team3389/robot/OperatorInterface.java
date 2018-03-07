@@ -14,12 +14,12 @@ import edu.wpi.first.wpilibj.Joystick;
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
-public class OI {
-	Joystick leftStick = new Joystick(0);
-	Joystick rightStick = new Joystick(1);
+public class OperatorInterface {
+	Joystick jsDriver   = new Joystick(0);   // typically it's the left joystick
+	Joystick jsOperator = new Joystick(1);   // typically it's the right joystick
 	
 	
-	public OI(){
+	public OperatorInterface(){
 		
 	}
 	
@@ -27,16 +27,16 @@ public class OI {
 	 * Let's other objects get values from the left joystick.
 	 * @return	Returns the leftStick object
 	 */
-	public Joystick getLeftJoystick(){
-		return leftStick;
+	public Joystick getDriverJoystick(){
+		return jsDriver;
 	}
 	
 	/**
 	 * Let's other objects get values from the right joystick.
 	 * @return	Returns the rightStick object
 	 */
-	public Joystick getRightJoystick(){
-		return rightStick;
+	public Joystick getOperatorJoystick(){
+		return jsOperator;
 	}
 	
 	//// CREATING BUTTONS

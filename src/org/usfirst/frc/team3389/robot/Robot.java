@@ -13,14 +13,13 @@ import org.usfirst.frc.team3389.robot.commands.AutoBlueRight;
 import org.usfirst.frc.team3389.robot.commands.AutoRedLeft;
 import org.usfirst.frc.team3389.robot.commands.AutoRedMiddle;
 import org.usfirst.frc.team3389.robot.commands.AutoRedRight;
-import org.usfirst.frc.team3389.robot.commands.AutoTest;
+import org.usfirst.frc.team3389.robot.commands.DriveDistance;
 import org.usfirst.frc.team3389.robot.commands.DriveTurn;
-import org.usfirst.frc.team3389.robot.commands.PIDTuning;
+import org.usfirst.frc.team3389.robot.ioDevices.OLEDDisplay;
+import org.usfirst.frc.team3389.robot.ioDevices.TimeOfFlight;
 import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
-import org.usfirst.frc.team3389.robot.subsystems.ioDevices.OLEDDisplay;
-import org.usfirst.frc.team3389.robot.subsystems.ioDevices.TimeOfFlight;
-import org.usfirst.frc.team3389.robot.subsystems.manipulators.Intake;
-import org.usfirst.frc.team3389.robot.subsystems.manipulators.Lifter;
+import org.usfirst.frc.team3389.robot.subsystems.Intake;
+import org.usfirst.frc.team3389.robot.subsystems.Lifter;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -58,7 +57,7 @@ public class Robot extends TimedRobot {
 	
 	// public static final ExampleSubsystem kExampleSubsystem = new
 	// ExampleSubsystem();
-	public static OI m_oi;
+	public static OperatorInterface operatorControllers;
 
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -71,23 +70,18 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
 
-		m_oi = new OI();
-
-//		driveTrain.encoderInit();
-
-		m_oi = new OI();
-		
+		operatorControllers = new OperatorInterface();
 
 		// m_chooser.addDefault("Default Auto", new ExampleCommand());
-		m_chooser.addDefault("Test Auto", new AutoTest());
+		m_chooser.addDefault("Test Auto", new DriveDistance(1000)); // FIXME need to know the unit of measure for 'distance'
 		m_chooser.addObject("Red Left", new AutoRedLeft());
 		m_chooser.addObject("Red Middle", new AutoRedMiddle());
 		m_chooser.addObject("Red Right", new AutoRedRight());
 		m_chooser.addObject("Blue Left", new AutoBlueLeft());
 		m_chooser.addObject("Blue Middle", new AutoBlueMiddle());
 		m_chooser.addObject("Blue Right", new AutoBlueRight());
-		m_chooser.addObject("PIDTuner", new PIDTuning());
-		m_chooser.addObject("Turn 180", new DriveTurn(.5, 90));
+		m_chooser.addObject("Turn Left 90", new DriveTurn(.5, -90.0));
+		m_chooser.addObject("Turn Right 90", new DriveTurn(.5, 90.0));
 
 		SmartDashboard.putData("Auto mode", m_chooser);
 
@@ -167,6 +161,7 @@ public class Robot extends TimedRobot {
 		}
 
 		Robot.driveTrain.driveGyro.resetValues();
+		
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
@@ -201,8 +196,8 @@ public class Robot extends TimedRobot {
 		// robotLogger.log(Logger.DEBUG, this, "enter");
 		robotLogger.log(Logger.DEBUG, this, "auto Periodic enter");
 		Scheduler.getInstance().run();
-		SmartDashboard.putNumber("LeftPosition", driveTrain.leftMaster.getSelectedSensorPosition(0));
-		SmartDashboard.putNumber("RightPosition", driveTrain.rightMaster.getSelectedSensorPosition(0));
+		SmartDashboard.putNumber("LeftPosition", driveTrain.leftMaster.getSelectedSensorPosition(0));   // TODO should the dashboard show encoder distance or physical distance
+		SmartDashboard.putNumber("RightPosition", driveTrain.rightMaster.getSelectedSensorPosition(0)); // TODO should the dashboard show encoder distance or physical distance
 		SmartDashboard.putNumber("gyro", driveTrain.driveGyro.getFilteredYaw());
 		robotLogger.log(Logger.DEBUG, this, "auto Periodic exit");
 	}
@@ -215,7 +210,6 @@ public class Robot extends TimedRobot {
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
-		driveTrain.velocityPidInit();
 		if (m_autonomousCommand != null) {
 			robotLogger.log(Logger.INFO, this, "teleop cancels autonomous");
 			m_autonomousCommand.cancel();
@@ -282,8 +276,7 @@ public class Robot extends TimedRobot {
 		// System.out.println("range distance = " +
 		// timeOfFlight.getDistanceMillimeters() + "mm");
 		// robotScreen.drawTextLine("test message", 0);
-		// robotScreen.drawTextLine("range = " + timeOfFlight.getDistanceMillimeters() +
-		// "mm", 1);
+		// robotScreen.drawTextLine("range = " + timeOfFlight.getDistanceMillimeters() + "mm", 1);
 		// robotScreen.refresh();
 
 		// given this is called in a loop its too noisy to be of use for debugging //

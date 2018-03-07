@@ -11,7 +11,7 @@
  * version 2.1 of the License, or (at your option) any later version.
  */
 
-package org.usfirst.frc.team3389.robot.subsystems.ioDevices;
+package org.usfirst.frc.team3389.robot.ioDevices;
 
 public enum OLEDFont {
 

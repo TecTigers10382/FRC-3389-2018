@@ -24,11 +24,6 @@ public class RobotMap {
 		DRIVE_RIGHTSLAVE = 3,
 		DRIVE_RIGHTMASTER = 2;
 	
-//	public static Talon DRIVE_LEFTFRONT = new Talon(0);
-//	public static Talon DRIVE_LEFTBACK = new Talon(1);
-//	public static Talon DRIVE_RIGHTFRONT = new Talon(3);
-//	public static Talon DRIVE_RIGHTBACK = new Talon(2);
-	
 	public final static int
 		LIFT = 4;
 		
@@ -50,11 +45,13 @@ public class RobotMap {
 		rSlotIdx   = 1,
 		lPIDLoopIdx= 0,
 		rPIDLoopIdx= 1,
-		convRatio = 1,
+		convRatio = 1,  // FIXME need to measure number of ticks for 1.0 meeter? foot? inch?  
 	
 		cruiseVelocity = 10000,
 		accel = 15000;
-	
+
+	// TODO create constants for scalars for motors used on various subsystems such as the lifter, intake, etc
+
 	public final static int CURRENT_LIMIT = 38;
 	//public static DrivePIDOutput leftDriveOutput = new DrivePIDOutput(DriveTrain.leftFront);	
 	//public static DrivePIDOutput rightDriveOutput = new DrivePIDOutput(DriveTrain.rightFront);
@@ -62,7 +59,7 @@ public class RobotMap {
 	
 	
 	// For example to map the left and right motors, you could define the
-	// following variables to use with your drivetrain subsystem.
+	// following variables to use with your DriveTrain subsystem.
 	// public static int leftMotor = 1;
 	// public static int rightMotor = 2;
 

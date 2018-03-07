@@ -113,7 +113,7 @@
  * 
  */
 
-package org.usfirst.frc.team3389.robot.subsystems.ioDevices;
+package org.usfirst.frc.team3389.robot.ioDevices;
 
 import org.usfirst.frc.team3389.robot.Robot;
 import org.usfirst.frc.team3389.robot.utils.Logger;

@@ -7,10 +7,10 @@
 package org.usfirst.frc.team3389.robot.commands;
 
 import org.usfirst.frc.team3389.robot.Robot;
-import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * An example command. You can replace me with your own command.
@@ -24,8 +24,10 @@ public class DriveTurn extends Command {
 	long timer = 0;
 
 	public DriveTurn(double speed, double heading) {
+		
+
 		// Use requires() here to declare subsystem dependencies
-		//requires(Robot.kExampleSubsystem);
+		// requires(Robot.kExampleSubsystem);
 		requires(Robot.driveTrain);
 		target_speed = speed;
 		target_heading = heading;
@@ -35,14 +37,15 @@ public class DriveTurn extends Command {
 	@Override
 	protected void initialize() {
 		timer = System.nanoTime();
-		//get initial heading
+		// get initial heading
 		initial = Robot.driveTrain.driveGyro.getFilteredYaw();
-		//direction calculation variables
+		// direction calculation variables
 		direction = 1.0;
 		pivot = initial + 180;
-		target_heading = 0;
-		if(initial > 180) {
-			// flip all of the directional variables when operating in the second half of the circle
+		//target_heading = 0;
+		if (initial > 180) {
+			// flip all of the directional variables when operating in the second half of
+			// the circle
 			pivot = initial;
 			initial = initial - 180;
 			direction = -(direction);
@@ -52,25 +55,32 @@ public class DriveTurn extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		// we calculate time between executions to more accurately compute PID derivative 
-		double elapsed = (double)(System.nanoTime() - timer) / 1000000000.0;
+		// we calculate time between executions to more accurately compute PID
+		// derivative
+		double elapsed = (double) (System.nanoTime() - timer) / 1000000000.0;
 		timer = System.nanoTime();
-		
+
 		current = Robot.driveTrain.driveGyro.getFilteredYaw();
 		previous_error = error;
 		error = target_heading - current;
 
-		integral += (error * elapsed); // Integral is increased by the error*time (which is .02 seconds using normal IterativeRobot)
+		integral += (error * elapsed); // Integral is increased by the error*time (which is .02 seconds using normal
+										// IterativeRobot)
 		derivative = (error - previous_error) / elapsed;
-		// the computed offsets are all 'heading values', we divide by the target heading to get a value between 0 .. 1
-		result_speed = target_speed * ((kP*error + kI*integral + kD*derivative) / target_heading);
+		// the computed offsets are all 'heading values', we divide by the target
+		// heading to get a value between 0 .. 1
+		result_speed = target_speed * ((kP * error + kI * integral + kD * derivative) / target_heading);
 
-		if((target_heading > initial) && (target_heading <= pivot))
+		if ((target_heading > initial) && (target_heading <= pivot)) {
 			Robot.driveTrain.driveVelocity((direction * result_speed), -(direction * result_speed));
-		else
-			Robot.driveTrain.driveVelocity(-(direction * result_speed),(direction * result_speed));
+		} else {
+			Robot.driveTrain.driveVelocity(-(direction * result_speed), (direction * result_speed));
+		}
+		double[] temp = {timer, current, error, integral, derivative, result_speed};
+		SmartDashboard.putNumberArray("turn", temp);
 
-		Robot.robotLogger.log(Logger.INFO, this, "PID turning: target=" + target_heading + ", current=" + current + ", speed=" + result_speed);
+		Robot.robotLogger.log(Logger.INFO, this,
+				"PID turning: target=" + target_heading + ", current=" + current + ", speed=" + result_speed);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
@@ -79,7 +89,7 @@ public class DriveTurn extends Command {
 		// since we will not perfectly tune the PID
 		// we have a safety condition to break from the loop if we are 'close enough'
 		// increase the constant if we find we are getting stuck in this loop
-		if (Math.abs(current - target_heading) < 0.05)
+		if (Math.abs(current - target_heading) < 1)
 			return true;
 		return false;
 	}

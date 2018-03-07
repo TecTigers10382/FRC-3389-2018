@@ -63,6 +63,9 @@ public class DriveTrain extends Subsystem {
 		leftMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		
+		rightMaster.setInverted(true);
+		rightSlave.setInverted(true);
+		
 		leftMaster.configPeakCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
 		rightMaster.configPeakCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
 		leftSlave.configPeakCurrentLimit(RobotMap.CURRENT_LIMIT, 5);

@@ -43,7 +43,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends TimedRobot {
 
 	// Initialize all subsystems
-	public static final Logger robotLogger = new Logger(Logger.DEBUG);
+	public static final Logger robotLogger = new Logger(Logger.NONE);
 
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
 	public static final OLEDDisplay robotScreen = new OLEDDisplay();
@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
 		m_chooser.addObject("Blue Middle", new AutoBlueMiddle());
 		m_chooser.addObject("Blue Right", new AutoBlueRight());
 		m_chooser.addObject("PIDTuner", new PIDTuning());
-		m_chooser.addObject("Turn 45", new DriveTurn(.5, 45));
+		m_chooser.addObject("Turn 180", new DriveTurn(.5, 90));
 
 		SmartDashboard.putData("Auto mode", m_chooser);
 
@@ -166,6 +166,15 @@ public class Robot extends TimedRobot {
 			}
 		}
 
+		Robot.driveTrain.driveGyro.resetValues();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		robotLogger.log(Logger.INFO, this, "The field configuration is " + gameData);
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector", "Default");
@@ -194,6 +203,7 @@ public class Robot extends TimedRobot {
 		Scheduler.getInstance().run();
 		SmartDashboard.putNumber("LeftPosition", driveTrain.leftMaster.getSelectedSensorPosition(0));
 		SmartDashboard.putNumber("RightPosition", driveTrain.rightMaster.getSelectedSensorPosition(0));
+		SmartDashboard.putNumber("gyro", driveTrain.driveGyro.getFilteredYaw());
 		robotLogger.log(Logger.DEBUG, this, "auto Periodic exit");
 	}
 
@@ -205,7 +215,7 @@ public class Robot extends TimedRobot {
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
-		DriveTrain.velocityPidInit();
+		driveTrain.velocityPidInit();
 		if (m_autonomousCommand != null) {
 			robotLogger.log(Logger.INFO, this, "teleop cancels autonomous");
 			m_autonomousCommand.cancel();
@@ -236,15 +246,16 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putBoolean("Up switch", lifter.getUp());
 
 		SmartDashboard.putBoolean("Down Switch", lifter.getDown()); 
-		SmartDashboard.putNumber("OutputVoltage LeftMaster", DriveTrain.leftMaster.getMotorOutputVoltage());
-		SmartDashboard.putNumber("OutputVoltage RightMaster", DriveTrain.rightMaster.getMotorOutputVoltage());
-		SmartDashboard.putNumber("OutputVoltage LeftSlave", DriveTrain.leftSlave.getMotorOutputVoltage());
-		SmartDashboard.putNumber("OutputVoltage RightSlave", DriveTrain.rightSlave.getMotorOutputVoltage());
-		SmartDashboard.putNumber("OutputCurrent LeftMaster", DriveTrain.leftMaster.getOutputCurrent());
-		SmartDashboard.putNumber("OutputCurrent RightMaster", DriveTrain.rightMaster.getOutputCurrent());
-		SmartDashboard.putNumber("OutputCurrent LeftSlave", DriveTrain.leftSlave.getOutputCurrent());
-		SmartDashboard.putNumber("OutputCurrent RightSlave", DriveTrain.rightSlave.getOutputCurrent());
-		
+//		SmartDashboard.putNumber("OutputVoltage LeftMaster", DriveTrain.leftMaster.getMotorOutputVoltage());
+//		SmartDashboard.putNumber("OutputVoltage RightMaster", DriveTrain.rightMaster.getMotorOutputVoltage());
+//		SmartDashboard.putNumber("OutputVoltage LeftSlave", DriveTrain.leftSlave.getMotorOutputVoltage());
+//		SmartDashboard.putNumber("OutputVoltage RightSlave", DriveTrain.rightSlave.getMotorOutputVoltage());
+//		SmartDashboard.putNumber("OutputCurrent LeftMaster", DriveTrain.leftMaster.getOutputCurrent());
+//		SmartDashboard.putNumber("OutputCurrent RightMaster", DriveTrain.rightMaster.getOutputCurrent());
+//		SmartDashboard.putNumber("OutputCurrent LeftSlave", DriveTrain.leftSlave.getOutputCurrent());
+//		SmartDashboard.putNumber("OutputCurrent RightSlave", DriveTrain.rightSlave.getOutputCurrent());
+		SmartDashboard.putNumber("gyro", driveTrain.driveGyro.getFilteredYaw());
+
 		SmartDashboard.putBoolean("Down Switch", lifter.getDown());
 		// robotScreen.refresh();
 		// Display on SmartDashboard

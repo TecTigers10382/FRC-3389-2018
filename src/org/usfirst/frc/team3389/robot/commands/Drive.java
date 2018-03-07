@@ -72,7 +72,7 @@ public class Drive extends Command {
 		if (Math.abs(right) < .1)
 			right = 0;
 		
-		Robot.driveTrain.tankDrive(-left, right);
+		Robot.driveTrain.tankDrive(-left, -right);
 		
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 

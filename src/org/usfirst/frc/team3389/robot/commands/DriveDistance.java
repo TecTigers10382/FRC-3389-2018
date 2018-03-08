@@ -1,4 +1,4 @@
-/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
+os/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -46,6 +46,7 @@ public class DriveDistance extends Command {
 	protected void initialize() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		// do any pre-loop setup here
+		drive.drivePosition(distance, distance);
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
@@ -58,9 +59,8 @@ public class DriveDistance extends Command {
 	@Override
 	protected void execute() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-		drive.drivePosition(distance, distance);
+		// since the PID drive operation is executing within the talon (firmware), nothing is needed in the execute() loop.
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
-
 	}
 
 	/**

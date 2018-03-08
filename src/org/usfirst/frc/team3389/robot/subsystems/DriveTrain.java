@@ -138,7 +138,11 @@ public class DriveTrain extends Subsystem {
 		leftMaster.set(ControlMode.Velocity, leftVelo);
 	}
 
-	
+	/**
+	 * Drives robot certian distance
+	 * @param leftPosition left distance in inches
+	 * @param rightPosition right distance in inches
+	 */
 	public void drivePosition(double leftPosition, double rightPosition) {
 		rightTicks = RobotMap.convRatio * rightPosition;
 		leftTicks = RobotMap.convRatio * leftPosition;

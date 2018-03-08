@@ -45,11 +45,11 @@ public class RobotMap {
 		rSlotIdx   = 1,
 		lPIDLoopIdx= 0,
 		rPIDLoopIdx= 1,
-		convRatio = 1,  // FIXME need to measure number of ticks for 1.0 meeter? foot? inch?  
-	
 		cruiseVelocity = 10000,
 		accel = 15000;
-
+	
+	public static double convRatio = 4096.0/(Math.PI*2.0*3.05);
+	
 	// TODO create constants for scalars for motors used on various subsystems such as the lifter, intake, etc
 
 	public final static int CURRENT_LIMIT = 38;

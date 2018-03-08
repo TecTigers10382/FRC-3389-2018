@@ -20,5 +20,7 @@ public class AutoRedLeft extends CommandGroup {
 		//   addParallel(new CommandB());
 		//   addParallel(new CommandC());
 		//   addSequential(new CommandD());
+		addSequential(new DriveDistance(12));
+//		addSequential(new DriveTurn(.3, 90));
 	}
 }

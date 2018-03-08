@@ -28,13 +28,14 @@ public class DriveTurn extends Command {
 	/**
 	 * initiate a relative turn at a given speed
 	 * 
-	 * The turn is relative to the current heading.
-	 * If the robot is actively turning then the result is unpredictable
+	 * The turn is relative to the current heading. If the robot is actively turning
+	 * then the result is unpredictable
 	 * 
-	 * @param speed double the maximum speed for turning
-	 * @param turn double the number of degrees to turn
+	 * @param speed
+	 *            double the maximum speed for turning
+	 * @param turn
+	 *            double the number of degrees to turn
 	 */
-
 	public DriveTurn(double speed, double turn) {
 		// Use requires() here to declare subsystem dependencies
 		// requires(Robot.kExampleSubsystem);
@@ -52,7 +53,7 @@ public class DriveTurn extends Command {
 		// direction calculation variables
 		direction = 1.0;
 		pivot = initial + 180;
-		//target_heading = 0;
+		// target_heading = 0;
 		if (initial > 180) {
 			// flip all of the directional variables when operating in the second half of
 			// the circle
@@ -86,7 +87,7 @@ public class DriveTurn extends Command {
 		} else {
 			Robot.driveTrain.driveVelocity(-(direction * result_speed), (direction * result_speed));
 		}
-		double[] temp = {timer, current, error, integral, derivative, result_speed};
+		double[] temp = { timer, current, error, integral, derivative, result_speed };
 		SmartDashboard.putNumberArray("turn", temp);
 
 		Robot.robotLogger.log(Logger.INFO, this,

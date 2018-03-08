@@ -46,6 +46,7 @@ public class DriveDistance extends Command {
 	protected void initialize() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		// do any pre-loop setup here
+		drive.drivePosition(distance, distance);
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
@@ -58,9 +59,8 @@ public class DriveDistance extends Command {
 	@Override
 	protected void execute() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-		drive.drivePosition(distance, distance);
+		// since the PID drive operation is executing within the talon (firmware), nothing is needed in the execute() loop.
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
-
 	}
 
 	/**

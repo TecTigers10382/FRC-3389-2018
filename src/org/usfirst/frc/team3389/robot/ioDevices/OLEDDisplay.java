@@ -339,6 +339,110 @@ public class OLEDDisplay extends I2CUpdatableAddress {
 
     
     /**
+     * draw a line of pixels on with configurable dashes
+     * uses the current invertColors() setting to determine if 'on' is white or black
+     * positional values are zero-based
+     * 
+     * points are referenced from the top left to the bottom right
+     * @param x1 int horizontal pixel position for start of line on the display
+     * @param y1 int vertical pixel position for start of line on the display
+     * @param x2 int horizontal pixel position for end of line on the display
+     * @param y2 int vertical pixel position for end of line on the display
+     * @param dashes length of dashes for dashed lines, 0 is a solid line
+     */
+    public synchronized void drawLine(int x1, int y1, int x2, int y2, int dashes) {
+    	// this code does not optimize for the common case of straight lines
+    	boolean swap = false;
+    	int x, y;
+    	int dx, dy;
+	    int tmp, err;
+    	int step;
+    	int dash = 0;
+    	boolean visible = true;
+
+    	if ( x1 > x2 )
+    		dx = x1-x2;
+    	else
+    		dx = x2-x1;
+    	if ( y1 > y2 )
+    		dy = y1-y2;
+    	else
+    		dy = y2-y1;
+
+    	if ( dy > dx ) { 
+    		swap = true;
+    		tmp = dx; dx =dy; dy = tmp;
+    		tmp = x1; x1 =y1; y1 = tmp;
+    		tmp = x2; x2 =y2; y2 = tmp;
+    	}
+    	if ( x1 > x2 ) { 
+    		tmp = x1; x1 =x2; x2 = tmp;
+    		tmp = y1; y1 =y2; y2 = tmp;
+    	}
+    	err = dx >> 1;
+        if ( y2 > y1 )
+        	step = 1;
+        else
+        	step = -1;
+        y = y1;
+        for( x = x1; x <= x2; x++ ) {
+        	// we alternate between visible and no-visible pixels ever 'dashes' number of pixels
+        	if (dashes > 0) {
+        		dash += 1;
+        		if (dash >= dashes) {
+        			visible = !visible;
+        			dash = 0;
+        		}
+        	}
+        	if (!swap) 
+      	      Robot.robotScreen.setPixel(x, y, visible);
+    	    else 
+      	      Robot.robotScreen.setPixel(y, x, visible); 
+        	err -= dy;
+        	if (err < 0) {
+        		y += step;
+        		err += dx;
+        	}
+        }    	
+    }
+    
+    
+    /**
+     * draw a solid line of pixels on
+     * uses the current invertColors() setting to determine if 'on' is white or black
+     * positional values are zero-based
+     * 
+     * points are referenced from the top left to the bottom right
+     * @param x1 int horizontal pixel position for start of line on the display
+     * @param y1 int vertical pixel position for start of line on the display
+     * @param x2 int horizontal pixel position for end of line on the display
+     * @param y2 int vertical pixel position for end of line on the display
+     */
+    public synchronized void drawLine(int x1, int y1, int x2, int y2) {
+    	drawLine(x1, y1, x2, y2, 0);
+    }
+    
+    
+    /**
+     * draw an unfilled rectangle of pixels on
+     * uses the current invertColors() setting to determine if 'on' is white or black
+     * positional values are zero-based
+     * 
+     * points are referenced from the top left to the bottom right
+     * @param x int horizontal pixel position for start of line on the display
+     * @param y int vertical pixel position for start of line on the display
+     * @param width int width of rectangle
+     * @param height int height of rectangle
+     */
+    public synchronized void drawRect(int x, int y, int width, int height) {
+    	drawLine (x, y, x + width, y);
+    	drawLine (x + width, y, x + width, y + height);
+    	drawLine (x + width, y + height, x, y + height);
+    	drawLine (x, y + height, x, y);
+    }
+    
+    
+    /**
      * erase a portion of the video buffer setting those pixels to black
      * this methods observes the most recent call to inverteColors() to determine
      * the definition of black

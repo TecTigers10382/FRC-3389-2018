@@ -143,6 +143,9 @@ public class Robot extends TimedRobot {
 		robotLogger.log(Logger.INFO, this,
 				"autonomous mode = " + m_chooser.getName() + "::" + m_autonomousCommand.getName());
 
+		driveTrain.leftMaster.setSelectedSensorPosition(0, 0, 0);
+		driveTrain.rightMaster.setSelectedSensorPosition(0, 0, 0);
+		
 		/*
 		 * I would recommend instead of changing the auto command here, have the command
 		 * have the conditionals We will most likely need a Left, Center, and Right auto

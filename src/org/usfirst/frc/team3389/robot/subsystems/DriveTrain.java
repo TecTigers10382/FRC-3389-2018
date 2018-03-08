@@ -234,8 +234,8 @@ public class DriveTrain extends Subsystem {
 		leftMaster.configMotionCruiseVelocity(RobotMap.cruiseVelocity, RobotMap.lTimeoutMs);
 		leftMaster.configMotionAcceleration(RobotMap.accel, RobotMap.lTimeoutMs);
 		
-		rightMaster.configMotionCruiseVelocity(15000, RobotMap.rTimeoutMs);
-		rightMaster.configMotionAcceleration(6000, RobotMap.rTimeoutMs);
+		rightMaster.configMotionCruiseVelocity(RobotMap.cruiseVelocity, RobotMap.rTimeoutMs);
+		rightMaster.configMotionAcceleration(RobotMap.accel, RobotMap.rTimeoutMs);
 		
 		leftMaster.setSelectedSensorPosition(0, RobotMap.lPIDLoopIdx, RobotMap.lTimeoutMs);
 		rightMaster.setSelectedSensorPosition(0, RobotMap.rPIDLoopIdx, RobotMap.rTimeoutMs);
@@ -270,6 +270,8 @@ public class DriveTrain extends Subsystem {
 		rightMaster.config_kP(RobotMap.rPIDLoopIdx, 0.2, RobotMap.rTimeoutMs);
 		rightMaster.config_kI(RobotMap.rPIDLoopIdx, 0, RobotMap.rTimeoutMs);
 		rightMaster.config_kD(RobotMap.rPIDLoopIdx, 0, RobotMap.rTimeoutMs);
+		
+		
 	}
 
 	

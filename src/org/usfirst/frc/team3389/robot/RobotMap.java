@@ -46,9 +46,9 @@ public class RobotMap {
 		lPIDLoopIdx= 0,
 		rPIDLoopIdx= 1,
 		cruiseVelocity = 10000,
-		accel = 15000;
+		accel = 20000;
 	
-	public static double convRatio = 4096.0/(Math.PI*2.0*3.05);
+	public static double convRatio = (4096.0*26.0*48.0)/(Math.PI*2.0*3.05*12.0*32);
 	
 	// TODO create constants for scalars for motors used on various subsystems such as the lifter, intake, etc
 

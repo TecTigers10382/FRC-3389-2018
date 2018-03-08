@@ -156,7 +156,10 @@ public class DriveTrain extends Subsystem {
 		rightMaster.set(ControlMode.PercentOutput, rightPercent);
 	}
 
-
+	/**
+	 * Returns position in inches from Talons
+	 * @return position in inches
+	 */
 	public double getPosition() {
 		return ((double) leftMaster.getActiveTrajectoryPosition() / RobotMap.convRatio);
 	}

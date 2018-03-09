@@ -6,13 +6,13 @@
 */
 /*
  * Ported to the NI RoboRIO and extended.
- * Using material from Florian Frankenberger under GNU LGPL2.1.
- * Ported from Adafruit's BSD licensed SSD1306 library
- * @see https://github.com/adafruit/Adafruit_SSD1306
+
+ * based off of github projects:
+ *   @see https://github.com/mhudoba/Arduino-OLED-Pong
+ *   @see https://github.com/ruction/arduino-pong
  * 
  * @author FRC Team 3389
- * @author Florian Frankenberger
- * @author Limor Fried/Ladyada
+ * 
  */
 
 package org.usfirst.frc.team3389.robot.ioDevices;
@@ -59,6 +59,9 @@ public class OLEDPong {
 	private Random rndGenerator;
 	private boolean done = false;
 	
+	private Thread thread = null;
+	private boolean stopped = true;
+
 	
 	public OLEDPong(int players) { // players can be 0, 1, or 2
 		playerCount = players;     // currently no user controls are available so zero is the only smart choice
@@ -67,6 +70,39 @@ public class OLEDPong {
 		// seed the randomizer to each game is different
 		rndGenerator = new Random();
 	}
+	
+	/**
+	 * Starts the thread responsible to playing a single game of Pong
+	 */
+	public void start() {
+		if (thread == null || !thread.isAlive()) {
+			stopped = false;
+			thread = new Thread(()->{ play();  });
+			thread.start();
+		}
+	}
+
+	/**
+	 * Stops the thread responsible for playing a single game of Pong
+	 * 
+	 * @throws InterruptedException
+	 *             if any thread has interrupted the current thread. The interrupted
+	 *             status of the current thread is cleared when this exception is
+	 *             thrown.
+	 */
+	public void stop() {
+		done = true;
+		stopped = true;
+		try {
+			thread.join();
+		} catch (InterruptedException e) {
+			// not much to do since this is just an easter egg
+		}
+		thread = null;
+		Robot.robotScreen.updateBitmap(OLEDBitmap.READY.getData(), OLEDBitmap.READY.getWidth(), OLEDBitmap.READY.getHeight(), 0, 0);
+	}
+	
+	
 	
 	public void play() {
 		// initialize new game
@@ -90,10 +126,17 @@ public class OLEDPong {
 			*/
 		} while (!done);
 		drawGame(); // draw the final win
+		stop();
 	}
 
+
+	public boolean isRunning() {
+		return !stopped;
+	}
+	
+
 	public void quit() {
-		done = true;
+		stop();
 	}
 	
 	private void assignDirection(int a, int b, int c, int d, int e, int f, int g, int h) {
@@ -192,14 +235,17 @@ public class OLEDPong {
 		Robot.robotScreen.drawLine(64, 0, 64, 64, 4);         // draw court net in middle
 		Robot.robotScreen.drawRect(PADDLE_XL, paddleL, 1, PADDLE_SIZE); // player1 paddle on left
 		Robot.robotScreen.drawRect(PADDLE_XR, paddleR, 1, PADDLE_SIZE); // player2 paddle on right
-		// Robot.robotScreen.setPixel(ballX, ballY, true);    // single pixel ball
-		Robot.robotScreen.fillRect(ballX, ballY, 2, 2);       // 2x2 ball
 		Robot.robotScreen.drawString(String.format("%02d", scoreL), 30, 0);
 		Robot.robotScreen.drawString(String.format("%02d", scoreR), 94, 0);
 		if (scoreL >= 10)
 			Robot.robotScreen.drawString("WIN", 30, 0);
 		if (scoreR >= 10)
 			Robot.robotScreen.drawString("WIN", 94, 0);
+
+		if (!done) {
+			// Robot.robotScreen.setPixel(ballX, ballY, true);    // single pixel ball
+			Robot.robotScreen.fillRect(ballX, ballY, 2, 2);       // 2x2 ball
+		}
 
 		Robot.robotScreen.refresh();
 	}
@@ -215,33 +261,33 @@ public class OLEDPong {
 					paddleL -= 1;
 				if(paddleL + (PADDLE_SIZE/2) < ballY)
 					paddleL += 1;
-				if(paddleL < 1)
-					paddleL = 1;
-				if(paddleL > (64 - PADDLE_SIZE))
-					paddleL = (64 - PADDLE_SIZE);
 			}
 		}
 		else {
-			// get input from somewhere
+			paddleL += (int)(5 * Robot.operatorControllers.getOperatorJoystick().getRawAxis(1));
 		}
+		if(paddleL < 1)
+			paddleL = 1;
+		if(paddleL > (64 - PADDLE_SIZE))
+			paddleL = (64 - PADDLE_SIZE);
 
 		if (playerCount < 1) {
 			// we only update the paddle position if the ball is coming toward the right
 			if (lastballX <= ballX) {
 				// assume the paddle is 6 pixels tall
-				if(paddleR + 3 > ballY)
+				if(paddleR + (PADDLE_SIZE/2) > ballY)
 					paddleR -= 1;
-				if(paddleR + 3 < ballY)
+				if(paddleR + (PADDLE_SIZE/2) < ballY)
 					paddleR += 1;
-				if(paddleR < 1)
-					paddleR = 1;
-				if(paddleR > (64 -3))
-					paddleR = (64 - 3);
 			}
 		}
 		else {
-			// get input from somewhere
+			paddleR += (int)(5 * Robot.operatorControllers.getDriverJoystick().getRawAxis(1));
 		}
+		if(paddleR < 1)
+			paddleR = 1;
+		if(paddleR > (64 - PADDLE_SIZE))
+			paddleR = (64 - PADDLE_SIZE);
 	}
 	
 	

@@ -161,7 +161,8 @@ public class DriveTrain extends Subsystem {
 	 * @return position in inches
 	 */
 	public double getPosition() {
-		return ((double) leftMaster.getActiveTrajectoryPosition() / RobotMap.convRatio);
+		return ((double) leftMaster.getSelectedSensorPosition(0) / RobotMap.convRatio);
+		// return ((double) leftMaster.getActiveTrajectoryPosition() / RobotMap.convRatio);
 	}
 	
 	

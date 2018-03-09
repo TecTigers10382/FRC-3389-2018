@@ -161,19 +161,23 @@ public class OLEDPong {
 		    assignDirection(UP_LEFT, UP_RIGHTS, UP_LEFTS, UP_RIGHTS, DOWN_LEFT, DOWN_RIGHTS, DOWN_LEFTS, DOWN_RIGHTS);
 		else if ((ballX <= PADDLE_XL+2) && ((ballY > paddleL + lower) && (ballY <= paddleL + bottom)))                     //Left Paddle BOTTOM
 			assignDirection(UP_LEFT, UP_RIGHT, UP_LEFTS, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT, DOWN_LEFTS, DOWN_RIGHT);
-		else if (ballX >= 128) {
-			rndDirection = rndGenerator.nextInt(6) + 2; // generate a number between 2 and 6
+		else if (ballX >= 127) {
+			rndDirection = rndGenerator.nextInt(4) + 2; // generate a number 2,3,4,5
 			direct = START;
 			movementVal = 0;
 			lastballX = ballX;
 			lastballY = ballY;
+			ballX = 64;
+			ballY = 32;
 			scoreL++;
-		} else if (ballX <= 1) { //beyond Left wall
-			rndDirection = rndGenerator.nextInt(6) + 2; // generate a number between 2 and 6
+		} else if (ballX <= 2) { //beyond Left wall
+			rndDirection = rndGenerator.nextInt(4) + 2; // generate a number between 2,3,4,5
 			direct = START;
 			movementVal = 0;
 			lastballX = ballX;
 			lastballY = ballY;
+			ballX = 64;
+			ballY = 32;
 			scoreR++;
 		} else if (ballY <= 2) { //Upper wall
 			assignDirection(UP_RIGHT, DOWN_RIGHT, UP_LEFT, DOWN_LEFT, UP_RIGHTS, DOWN_RIGHTS, UP_LEFTS, DOWN_LEFTS);
@@ -243,10 +247,10 @@ public class OLEDPong {
 	
 	private boolean computeGame() {
 		if (direct == START) {
-			if (rndDirection == UP_RIGHT) {movement(UP_RIGHT, 128);}
-			else if (rndDirection == UP_LEFT) {movement(UP_LEFT, 128);}
-			else if (rndDirection == DOWN_RIGHT) {movement(DOWN_RIGHT, 128);}
-			else if (rndDirection == DOWN_LEFT) {movement(DOWN_LEFT, 128);
+			if (rndDirection == UP_RIGHT) {movement(UP_RIGHT, 64);}
+			else if (rndDirection == UP_LEFT) {movement(UP_LEFT, 64);}
+			else if (rndDirection == DOWN_RIGHT) {movement(DOWN_RIGHT, 64);}
+			else if (rndDirection == DOWN_LEFT) {movement(DOWN_LEFT, 64);
 			}    
 		} 
 		else if (direct == UP_RIGHT) {movement(UP_RIGHT, 64);}

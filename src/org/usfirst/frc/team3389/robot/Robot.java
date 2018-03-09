@@ -75,7 +75,7 @@ public class Robot extends TimedRobot {
 		operatorControllers = new OperatorInterface();
 
 		// m_chooser.addDefault("Default Auto", new ExampleCommand());
-		m_chooser.addDefault("Test Auto", new DriveDistance(1000)); // FIXME need to know the unit of measure for 'distance'
+		m_chooser.addDefault("Test Auto", new DriveDistance(16)); // FIXME need to know the unit of measure for 'distance'
 		m_chooser.addObject("Test Command Group", new TestCommandGroup());
 		m_chooser.addObject("Red Left", new AutoRedLeft());
 		m_chooser.addObject("Red Middle", new AutoRedMiddle());
@@ -254,7 +254,7 @@ public class Robot extends TimedRobot {
 		//SmartDashboard.putNumber("Heading: ", angle);
 
 		SmartDashboard.putBoolean("Up switch", lifter.getUp());
-
+		SmartDashboard.putNumber("LiftPower", lifter.lift.getMotorOutputPercent());
 		SmartDashboard.putBoolean("Down Switch", lifter.getDown()); 
 //		SmartDashboard.putNumber("OutputVoltage LeftMaster", DriveTrain.leftMaster.getMotorOutputVoltage());
 //		SmartDashboard.putNumber("OutputVoltage RightMaster", DriveTrain.rightMaster.getMotorOutputVoltage());

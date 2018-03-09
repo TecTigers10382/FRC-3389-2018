@@ -8,37 +8,38 @@
 package org.usfirst.frc.team3389.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OperatorInterface {
-	Joystick jsDriver   = new Joystick(0);   // typically it's the left joystick
-	Joystick jsOperator = new Joystick(1);   // typically it's the right joystick
-	
-	
-	public OperatorInterface(){
-		
+	Joystick jsDriver = new Joystick(0); // typically it's the left joystick
+	Joystick jsOperator = new Joystick(1); // typically it's the right joystick
+
+	public OperatorInterface() {
 	}
-	
+
 	/**
 	 * Let's other objects get values from the left joystick.
-	 * @return	Returns the leftStick object
+	 * 
+	 * @return Returns the leftStick object
 	 */
-	public Joystick getDriverJoystick(){
+	public Joystick getDriverJoystick() {
 		return jsDriver;
 	}
-	
+
 	/**
 	 * Let's other objects get values from the right joystick.
-	 * @return	Returns the rightStick object
+	 * 
+	 * @return Returns the rightStick object
 	 */
-	public Joystick getOperatorJoystick(){
+	public Joystick getOperatorJoystick() {
 		return jsOperator;
 	}
-	
+
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
 	//// joystick.
@@ -66,4 +67,6 @@ public class OperatorInterface {
 	// Start the command when the button is released and let it run the command
 	// until it is finished as determined by it's isFinished method.
 	// button.whenReleased(new ExampleCommand());
+
+	Button liftLock = new JoystickButton(jsOperator, 0);
 }

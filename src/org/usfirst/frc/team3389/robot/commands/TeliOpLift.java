@@ -70,10 +70,10 @@ public class TeliOpLift extends Command {
 		double power = liftStick.getRawAxis(5); // TODO the joystick axis should be in RobotMap
 
 			if (Math.abs(power) < .1)
-			power = 0;
+			power = .16;
 			
 			if(power<0) {
-				power=power/8;
+				power=power/6;
 			}
 			
 			lifter.driveLift(power);

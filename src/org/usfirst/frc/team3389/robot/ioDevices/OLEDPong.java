@@ -126,7 +126,6 @@ public class OLEDPong {
 			*/
 		} while (!done);
 		drawGame(); // draw the final win
-		drawFinish();
 	}
 
 
@@ -251,30 +250,6 @@ public class OLEDPong {
 	}
 
 
-	private void drawFinish() {
-		String messages[] = { "ﾫﾚﾞﾒ￟ￌￌￇￆￅ", "ﾼﾗﾚﾆﾞﾑﾑﾚ￟ﾵￓ￟ﾼﾐﾓﾚ￟ﾨￓ", "ﾻﾞﾉﾖﾛ￟ﾼￓ￟ﾻﾚﾌﾋﾖﾑ￟ﾾￓ", "ﾺﾍﾖﾜ￟ﾼￓ￟ﾵﾐﾌﾗ￟ﾲￓ", "ﾱﾞﾋﾗﾞﾑ￟ﾬￓ￟ﾯﾍﾞﾋﾖﾔﾞ￟ﾯￓ", "ﾬﾗﾞﾑﾚ￟ﾷￓ￟ﾬﾗﾞﾆﾑﾚ￟ﾳ" };
-
-		Robot.robotScreen.clear();
-
-		for (int i = 0; i < messages.length; i++) {
-			String e = messages[i];
-			String d = "";;
-			for (int j = 0; j < e.length(); j++)
-				d = d + (char)(~(e.charAt(j))); 
-			Robot.robotScreen.drawTextLine(d, i);
-		}
-
-		Robot.robotScreen.refresh();
-
-		// display finish message for 10 seconds
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-		}
-	}
-	
-	
 	private void updatePlayers() {
 		// an autonomous paddle will move toward the ball
 		// autonomous paddles need two speeds (but that would make them too smart)
@@ -323,14 +298,14 @@ public class OLEDPong {
 			else if (rndDirection == DOWN_LEFT) {movement(DOWN_LEFT, 64);
 			}    
 		} 
-		else if (direct == UP_RIGHT) {movement(UP_RIGHT, 64);}
-		else if (direct == UP_LEFT) {movement(UP_LEFT, 64);}
-		else if (direct == DOWN_RIGHT) {movement(DOWN_RIGHT, 64);}
-		else if (direct == DOWN_LEFT) {movement(DOWN_LEFT, 64);}
-		else if (direct == UP_RIGHTS) {movement(UP_RIGHT, 16);}
-		else if (direct == UP_LEFTS) {movement(UP_LEFT, 16);}
-		else if (direct == DOWN_RIGHTS) {movement(DOWN_RIGHT, 16);}
-		else if (direct == DOWN_LEFTS) {movement(DOWN_LEFT, 16);
+		else if (direct == UP_RIGHT) {movement(UP_RIGHT, 96);}
+		else if (direct == UP_LEFT) {movement(UP_LEFT, 96);}
+		else if (direct == DOWN_RIGHT) {movement(DOWN_RIGHT, 96);}
+		else if (direct == DOWN_LEFT) {movement(DOWN_LEFT, 96);}
+		else if (direct == UP_RIGHTS) {movement(UP_RIGHT, 32);}
+		else if (direct == UP_LEFTS) {movement(UP_LEFT, 32);}
+		else if (direct == DOWN_RIGHTS) {movement(DOWN_RIGHT, 32);}
+		else if (direct == DOWN_LEFTS) {movement(DOWN_LEFT, 32);
 		}
 
 		checkCollision();
@@ -340,5 +315,26 @@ public class OLEDPong {
 		if ((scoreL >= 10) || (scoreR >= 10))
 			return true;
 		return done; // was false but we may have been quit externally
+	}
+
+
+	
+	public void showTeam() {
+		String messages[] = { "ﾫﾚﾞﾒ￟ￌￌￇￆ", "ﾼﾗﾚﾆﾞﾑﾑﾚ￟ﾵￓ￟ﾼﾐﾓﾚ￟ﾨￓ", "ﾻﾞﾉﾖﾛ￟ﾼￓ￟ﾻﾚﾌﾋﾖﾑ￟ﾾￓ", "ﾺﾍﾖﾜ￟ﾼￓ￟ﾵﾐﾌﾗ￟ﾲￓ", "ﾱﾞﾋﾗﾞﾑ￟ﾬￓ￟ﾯﾍﾞﾋﾖﾔﾞ￟ﾯￓ", "ﾬﾗﾞﾑﾚ￟ﾷￓ￟ﾬﾗﾞﾆﾑﾚ￟ﾳ" }; // colon ￅ
+
+		Robot.robotScreen.clear();
+
+		for (int i = 0; i < messages.length; i++) {
+			String e = messages[i];
+			String d = "";;
+			for (int j = 0; j < e.length(); j++)
+				d = d + (char)(~(e.charAt(j)));
+			if (i == 0)
+				Robot.robotScreen.drawStringCentered(d, ((Robot.robotScreen.getFontOuterHeight() + 1) * i));
+			else
+				Robot.robotScreen.drawStringCentered(d, ((Robot.robotScreen.getFontOuterHeight() + 1) * i) + 2);
+		}
+
+		Robot.robotScreen.refresh();
 	}
 }

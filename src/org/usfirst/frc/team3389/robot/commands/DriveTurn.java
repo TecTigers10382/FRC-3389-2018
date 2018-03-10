@@ -41,6 +41,9 @@ public class DriveTurn extends Command {
 		// requires(Robot.kExampleSubsystem);
 		requires(Robot.driveTrain);
 		target_speed = speed;
+
+		// TODO this will run when the object is made, not when the command runs.
+		// Consider putting this in the initialize method
 		target_heading = Robot.driveTrain.driveGyro.getFilteredYaw() + turn;
 	}
 
@@ -54,6 +57,15 @@ public class DriveTurn extends Command {
 		direction = 1.0;
 		pivot = initial + 180;
 		// target_heading = 0;
+
+		// TODO This condition appears incorrect, the gyro returns negative values as
+		// well as values greater than 360 so this will not decide the direction
+		// correctly
+		// As this class is supposed to be relative, the direction should just be
+		// whatever the sign of the incoming angle is right?
+		// ex:
+		// if(target_heading - initial < 0)
+		//		direction = -direction;
 		if (initial > 180) {
 			// flip all of the directional variables when operating in the second half of
 			// the circle

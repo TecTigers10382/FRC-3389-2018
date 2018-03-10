@@ -17,6 +17,7 @@ import org.usfirst.frc.team3389.robot.commands.DriveDistance;
 import org.usfirst.frc.team3389.robot.commands.DriveTurn;
 import org.usfirst.frc.team3389.robot.commands.TestCommandGroup;
 import org.usfirst.frc.team3389.robot.ioDevices.OLEDDisplay;
+import org.usfirst.frc.team3389.robot.ioDevices.OLEDPong;
 import org.usfirst.frc.team3389.robot.ioDevices.TimeOfFlight;
 import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team3389.robot.subsystems.Intake;
@@ -48,10 +49,11 @@ public class Robot extends TimedRobot {
 
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
 	public static final OLEDDisplay robotScreen = new OLEDDisplay();
-	 // this includes calibration which takes 8-12 seconds to
-															// complete
-
+	// private static OLEDPong gameEasterEgg= new OLEDPong(1);
+	
+	 // this includes calibration which takes 8-12 seconds
 	public static final DriveTrain driveTrain = new DriveTrain();
+
 	public static final Intake intake = new Intake();
 	public static final Lifter lifter = new Lifter();
 
@@ -92,6 +94,19 @@ public class Robot extends TimedRobot {
 		
 		// FIXME verify this code displays the camera correctly - it may need to be programmatically added to the dashboard
 		CameraServer.getInstance().startAutomaticCapture();
+		
+		// test to see if easter egg should be launched
+		// TODO determine best combination of buttons such that it's unlikely to happen by accident
+		/* 
+		if (	operatorControllers.getDriverJoystick().getRawButton(5) &&
+				operatorControllers.getDriverJoystick().getRawButton(6) &&
+				operatorControllers.getDriverJoystick().getRawButton(7) &&
+				operatorControllers.getDriverJoystick().getRawButton(8))
+		{
+			easteregg.start();
+			easteregg.stop();
+		}
+		*/
 		
 		robotLogger.log(Logger.DEBUG, this, "exit");
 	}

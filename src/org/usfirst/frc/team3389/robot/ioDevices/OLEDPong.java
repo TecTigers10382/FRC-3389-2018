@@ -126,7 +126,7 @@ public class OLEDPong {
 			*/
 		} while (!done);
 		drawGame(); // draw the final win
-		stop();
+		drawFinish();
 	}
 
 
@@ -250,6 +250,30 @@ public class OLEDPong {
 		Robot.robotScreen.refresh();
 	}
 
+
+	private void drawFinish() {
+		String messages[] = { "ﾫﾚﾞﾒ￟ￌￌￇￆￅ", "ﾼﾗﾚﾆﾞﾑﾑﾚ￟ﾵￓ￟ﾼﾐﾓﾚ￟ﾨￓ", "ﾻﾞﾉﾖﾛ￟ﾼￓ￟ﾻﾚﾌﾋﾖﾑ￟ﾾￓ", "ﾺﾍﾖﾜ￟ﾼￓ￟ﾵﾐﾌﾗ￟ﾲￓ", "ﾱﾞﾋﾗﾞﾑ￟ﾬￓ￟ﾯﾍﾞﾋﾖﾔﾞ￟ﾯￓ", "ﾬﾗﾞﾑﾚ￟ﾷￓ￟ﾬﾗﾞﾆﾑﾚ￟ﾳ" };
+
+		Robot.robotScreen.clear();
+
+		for (int i = 0; i < messages.length; i++) {
+			String e = messages[i];
+			String d = "";;
+			for (int j = 0; j < e.length(); j++)
+				d = d + (char)(~(e.charAt(j))); 
+			Robot.robotScreen.drawTextLine(d, i);
+		}
+
+		Robot.robotScreen.refresh();
+
+		// display finish message for 10 seconds
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+		}
+	}
+	
 	
 	private void updatePlayers() {
 		// an autonomous paddle will move toward the ball

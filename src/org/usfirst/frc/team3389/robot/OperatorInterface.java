@@ -7,6 +7,8 @@
 
 package org.usfirst.frc.team3389.robot;
 
+import org.usfirst.frc.team3389.robot.commands.LiftFull;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -18,8 +20,11 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 public class OperatorInterface {
 	Joystick jsDriver = new Joystick(0); // typically it's the left joystick
 	Joystick jsOperator = new Joystick(1); // typically it's the right joystick
+	
+	Button liftFull = new JoystickButton(jsOperator, 0);
 
 	public OperatorInterface() {
+		liftFull.whileHeld(new LiftFull());
 	}
 
 	/**
@@ -68,5 +73,5 @@ public class OperatorInterface {
 	// until it is finished as determined by it's isFinished method.
 	// button.whenReleased(new ExampleCommand());
 
-	Button liftLock = new JoystickButton(jsOperator, 0);
+	
 }

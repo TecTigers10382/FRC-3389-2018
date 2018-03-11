@@ -24,10 +24,10 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class DriveTrain extends Subsystem {
 	public MPU9250 driveGyro;
-	public TalonSRX leftMaster;
+	public static TalonSRX leftMaster;
 	public TalonSRX leftSlave;
 	public TalonSRX rightSlave;
-	public TalonSRX rightMaster;
+	public static TalonSRX rightMaster;
 	StickyFaults LFsFaults = new StickyFaults();
 	StickyFaults RFsFaults = new StickyFaults();
 	StickyFaults LBsFaults = new StickyFaults();

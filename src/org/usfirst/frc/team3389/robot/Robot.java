@@ -47,6 +47,11 @@ public class Robot extends TimedRobot {
 	// Initialize all subsystems
 	public static final Logger robotLogger = new Logger(Logger.NONE);
 
+	//TODO Delete These
+	static double leftMax=0;
+	static double rightMax=0;
+
+	
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
 	public static final OLEDDisplay robotScreen = new OLEDDisplay();
 	// private static OLEDPong gameEasterEgg= new OLEDPong(1);
@@ -245,9 +250,9 @@ public class Robot extends TimedRobot {
 			robotLogger.log(Logger.INFO, this, "teleop cancels autonomous");
 			m_autonomousCommand.cancel();
 		}
-		
 //		driveTrain.resetEncoders();
-
+		leftMax=0;
+		rightMax=0;
 		robotScreen.clear();
 		robotScreen.refresh();
 
@@ -270,7 +275,18 @@ public class Robot extends TimedRobot {
 
 		SmartDashboard.putBoolean("Up switch", lifter.getUp());
 		SmartDashboard.putNumber("LiftPower", lifter.lift.getMotorOutputPercent());
-		SmartDashboard.putBoolean("Down Switch", lifter.getDown()); 
+		SmartDashboard.putBoolean("Down Switch", lifter.getDown());
+		
+		if (DriveTrain.leftMaster.getSelectedSensorVelocity(RobotMap.lPIDLoopIdx)>=leftMax) {
+			leftMax=DriveTrain.leftMaster.getSelectedSensorVelocity(RobotMap.lPIDLoopIdx);
+		}
+		if (DriveTrain.rightMaster.getSelectedSensorVelocity(RobotMap.rPIDLoopIdx)>=rightMax) {
+			rightMax=DriveTrain.rightMaster.getSelectedSensorVelocity(RobotMap.rPIDLoopIdx);
+		}
+		SmartDashboard.putNumber("Left Speed", DriveTrain.leftMaster.getSelectedSensorVelocity(RobotMap.lPIDLoopIdx));
+		SmartDashboard.putNumber("Right Speed",DriveTrain.rightMaster.getSelectedSensorVelocity(RobotMap.rPIDLoopIdx));
+		SmartDashboard.putNumber("Left Max Speed", leftMax);
+		SmartDashboard.putNumber("Right Max Speed",rightMax);
 //		SmartDashboard.putNumber("OutputVoltage LeftMaster", DriveTrain.leftMaster.getMotorOutputVoltage());
 //		SmartDashboard.putNumber("OutputVoltage RightMaster", DriveTrain.rightMaster.getMotorOutputVoltage());
 //		SmartDashboard.putNumber("OutputVoltage LeftSlave", DriveTrain.leftSlave.getMotorOutputVoltage());

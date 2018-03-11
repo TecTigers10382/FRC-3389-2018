@@ -68,8 +68,8 @@ public class TeliOpDrive extends Command {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 
 		double left = driveStick.getRawAxis(5); // TODO the axis used for drive should be defined in RobotMap
-		double right = driveStick.getRawAxis(1); // TODO the axis used for drive should be defined in RobotMap
-
+		double right = driveStick.getRawAxis(5); // TODO the axis used for drive should be defined in RobotMap
+//CHANGE THIS BACK TO ONE
 		if (Math.abs(left) < .1) // TODO the joystick 'deadzone' should be defined in RobotMap
 			left = 0;
 		if (Math.abs(right) < .1) // TODO the joystick 'deadzone' should be defined in RobotMap

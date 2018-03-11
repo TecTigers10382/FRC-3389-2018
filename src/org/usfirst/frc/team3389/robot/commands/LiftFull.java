@@ -60,7 +60,7 @@ public class LiftFull extends Command {
 	protected void execute() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 
-		lifter.driveLift(1);
+		lifter.driveLift(.5);
 		
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}

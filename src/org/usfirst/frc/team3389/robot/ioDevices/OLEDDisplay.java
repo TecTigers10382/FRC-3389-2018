@@ -287,6 +287,26 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     
 
     /**
+     * get the height in pixels of the current font
+     * 
+     * @return int the height of the font not including inter-line spacing
+     */
+    public int getFontHeight() {
+    	return currentFont.getHeight();
+    }
+
+    
+    /**
+     * get the height in pixels of a text line using the current font
+     * 
+     * @return int the height of the font including inter-line spacing
+     */
+    public int getFontOuterHeight() {
+    	return currentFont.getOuterHeight();
+    }
+
+    
+    /**
      * draw a string into the video buffer using the current font
      * this method does not clear the pixels of the video buffer prior to rendering
      * positional values are zero-based
@@ -307,8 +327,8 @@ public class OLEDDisplay extends I2CUpdatableAddress {
                 posY += currentFont.getOuterHeight();
                 posX = x;
             } else {
-                if (posX >= 0 && posX + currentFont.getWidth() < this.getWidth()
-                        && posY >= 0 && posY + currentFont.getHeight() < this.getHeight())
+                if (posX >= 0 && posX + currentFont.getWidth() < this.getWidth() &&
+                	posY >= 0 && posY + currentFont.getHeight() < this.getHeight())
                 {
                     currentFont.drawChar(this, c, posX, posY);
                 }

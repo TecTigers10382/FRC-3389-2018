@@ -15,7 +15,7 @@ package org.usfirst.frc.team3389.robot.ioDevices;
 
 public enum OLEDFont {
 
-    FONT_5X8(0, 255, 5, 8, 5, 10, new byte[] {
+    FONT_5X8(0, 255, 5, 8, 5, 9, new byte[] {
         (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
         (byte) 0x3E, (byte) 0x5B, (byte) 0x4F, (byte) 0x5B, (byte) 0x3E,
         (byte) 0x3E, (byte) 0x6B, (byte) 0x4F, (byte) 0x6B, (byte) 0x3E,
@@ -273,7 +273,7 @@ public enum OLEDFont {
         (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
     }),
 
-    FONT_4X5(32, 95, 4, 5, 4, 7, new byte[] {
+    FONT_4X5(32, 95, 4, 5, 4, 6, new byte[] {
         (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
         (byte) 0x00, (byte) 0x17, (byte) 0x00, (byte) 0x00,
         (byte) 0x03, (byte) 0x00, (byte) 0x03, (byte) 0x00,

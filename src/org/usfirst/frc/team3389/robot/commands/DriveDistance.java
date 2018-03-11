@@ -68,8 +68,8 @@ public class DriveDistance extends Command {
 	 */
 	@Override
 	protected boolean isFinished() {
-		// FIXME we need to know the units for distance - 0.1 may be too much or not enough
-		if (Math.abs(drive.getPosition() - distance) < 0.1)
+		// consider the execution finished when we are within 0.5 inches
+		if (Math.abs(drive.getPosition() - distance) < 0.5)
 			return true;
 		return false;
 	}

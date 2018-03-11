@@ -24,6 +24,7 @@ public class DriveTurn extends Command {
 	double target_speed = 0;
 	double direction = 1.0;
 	long timer = 0;
+	double turn;
 
 	/**
 	 * initiate a relative turn at a given speed
@@ -41,18 +42,20 @@ public class DriveTurn extends Command {
 		// requires(Robot.kExampleSubsystem);
 		requires(Robot.driveTrain);
 		target_speed = speed;
-
 		// TODO this will run when the object is made, not when the command runs.
 		// Consider putting this in the initialize method
-		target_heading = Robot.driveTrain.driveGyro.getFilteredYaw() + turn;
+		this.turn =turn;
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
 		timer = System.nanoTime();
+		
 		// get initial heading
+	
 		initial = Robot.driveTrain.driveGyro.getFilteredYaw();
+		target_heading = Robot.driveTrain.driveGyro.getFilteredYaw() + turn;
 		// direction calculation variables
 		direction = 1.0;
 		pivot = initial + 180;
@@ -66,14 +69,7 @@ public class DriveTurn extends Command {
 		// ex:
 		// if(target_heading - initial < 0)
 		//		direction = -direction;
-		if (initial > 180) {
-			// flip all of the directional variables when operating in the second half of
-			// the circle
-			pivot = initial;
-			initial = initial - 180;
-			direction = -(direction);
 		}
-	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
@@ -94,11 +90,17 @@ public class DriveTurn extends Command {
 		// heading to get a value between 0 .. 1
 		result_speed = target_speed * ((kP * error + kI * integral + kD * derivative) / target_heading);
 
-		if ((target_heading > initial) && (target_heading <= pivot)) {
+		/*if ((target_heading > initial) && (target_heading <= pivot)) {
 			Robot.driveTrain.driveVelocity((direction * result_speed), -(direction * result_speed));
 		} else {
 			Robot.driveTrain.driveVelocity(-(direction * result_speed), (direction * result_speed));
+		} */
+		if(turn < 0 ) {
+			Robot.driveTrain.driveVelocity(-(direction * result_speed), (direction * result_speed));
+		} else {
+			Robot.driveTrain.driveVelocity((direction * result_speed), -(direction * result_speed));
 		}
+			
 		double[] temp = { timer, current, error, integral, derivative, result_speed };
 		SmartDashboard.putNumberArray("turn", temp);
 
@@ -120,6 +122,7 @@ public class DriveTurn extends Command {
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
+		Robot.driveTrain.stop();
 	}
 
 	// Called when another command which requires one or more of the same

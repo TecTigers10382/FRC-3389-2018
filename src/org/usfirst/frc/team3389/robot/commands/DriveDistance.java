@@ -60,6 +60,7 @@ public class DriveDistance extends Command {
 	protected void execute() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		// since the PID drive operation is executing within the talon (firmware), nothing is needed in the execute() loop.
+//		drive.drivePosition(distance, distance);
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
@@ -69,8 +70,8 @@ public class DriveDistance extends Command {
 	@Override
 	protected boolean isFinished() {
 		// consider the execution finished when we are within 0.5 inches
-		if (Math.abs(drive.getPosition() - distance) < 0.5)
-			return true;
+//		if (Math.abs(drive.getPosition() - distance) < 0.5)
+//			return true;
 		return false;
 	}
 

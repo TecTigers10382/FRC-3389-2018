@@ -188,9 +188,9 @@ public class Robot extends TimedRobot {
 		}
 		
 		String value = (String) m_chooser.getSelected();
-		Command cmd;
+		Command cmd = null;
 		if (value==null) {
-			cmd=new Nothing();
+//			cmd=new Nothing();
 		}
 		else if(value.equals("Left")) {
 			cmd=new AutoLeft(gameDataInt);
@@ -200,6 +200,9 @@ public class Robot extends TimedRobot {
 		}
 		else if(value.equals("Right")) {
 			cmd=new AutoRight(gameDataInt);
+		}
+		else if(value.equals("TestCommand")) {
+			cmd=new TestCommandGroup();
 		}
 
 		Robot.driveTrain.driveGyro.resetValues();
@@ -219,9 +222,9 @@ public class Robot extends TimedRobot {
 		 */
 
 		// schedule the autonomous command (example)
-		if (m_autonomousCommand != null) {
+		if (cmd != null) {
 			robotLogger.log(Logger.INFO, this, "autonomous start");
-			m_autonomousCommand.start();
+			cmd.start();
 		}
 
 		robotLogger.log(Logger.DEBUG, this, "exit");
@@ -239,6 +242,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("LeftPosition", driveTrain.leftMaster.getSelectedSensorPosition(0));   // TODO should the dashboard show encoder distance or physical distance
 		SmartDashboard.putNumber("RightPosition", driveTrain.rightMaster.getSelectedSensorPosition(0)); // TODO should the dashboard show encoder distance or physical distance
 		SmartDashboard.putNumber("gyro", driveTrain.driveGyro.getFilteredYaw());
+		SmartDashboard.putNumber("PosValues",driveTrain.getPosition());
 		robotLogger.log(Logger.DEBUG, this, "auto Periodic exit");
 	}
 
@@ -301,6 +305,10 @@ public class Robot extends TimedRobot {
 //		SmartDashboard.putNumber("OutputCurrent RightSlave", DriveTrain.rightSlave.getOutputCurrent());
 		SmartDashboard.putNumber("gyro", driveTrain.driveGyro.getFilteredYaw());
 
+		SmartDashboard.putNumber("LeftPosition", driveTrain.leftMaster.getSelectedSensorPosition(0));   // TODO should the dashboard show encoder distance or physical distance
+		SmartDashboard.putNumber("RightPosition", driveTrain.rightMaster.getSelectedSensorPosition(0)); // TODO should the dashboard show encoder distance or physical distance
+
+		
 		SmartDashboard.putBoolean("Down Switch", lifter.getDown());
 		// robotScreen.refresh();
 		// Display on SmartDashboard

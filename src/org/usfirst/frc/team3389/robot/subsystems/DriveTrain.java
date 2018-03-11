@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.StickyFaults;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Subsystem for the drive train of the robot. Contains the 4 Talons necessary
@@ -132,8 +133,8 @@ public class DriveTrain extends Subsystem {
 
 	
 	public void driveVelocity(double leftVelocity, double rightVelocity) {
-		double rightVelo=rightVelocity*4096*500/600;
-		double leftVelo=leftVelocity*4096*500/600;
+		double rightVelo=rightVelocity*300;
+		double leftVelo=leftVelocity*300;
 		rightMaster.set(ControlMode.Velocity, rightVelo);
 		leftMaster.set(ControlMode.Velocity, leftVelo);
 	}
@@ -148,6 +149,7 @@ public class DriveTrain extends Subsystem {
 		leftTicks = RobotMap.convRatio * leftPosition;
 		rightMaster.set(ControlMode.MotionMagic, rightTicks);
 		leftMaster.set(ControlMode.MotionMagic, leftTicks);
+		SmartDashboard.putNumber("TickNumber",rightTicks);
 	}
 
 	
@@ -272,8 +274,7 @@ public class DriveTrain extends Subsystem {
 		rightMaster.config_kI(RobotMap.rPIDLoopIdx, 0, RobotMap.rTimeoutMs);
 		rightMaster.config_kD(RobotMap.rPIDLoopIdx, 0, RobotMap.rTimeoutMs);
 		
-		
-	}
+		}
 
 	
 	/**

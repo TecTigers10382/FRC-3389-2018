@@ -9,9 +9,9 @@ package org.usfirst.frc.team3389.robot;
 
 import org.usfirst.frc.team3389.robot.commands.AutoBlueLeft;
 import org.usfirst.frc.team3389.robot.commands.AutoBlueMiddle;
-import org.usfirst.frc.team3389.robot.commands.AutoBlueRight;
-import org.usfirst.frc.team3389.robot.commands.AutoRedLeft;
-import org.usfirst.frc.team3389.robot.commands.AutoRedMiddle;
+import org.usfirst.frc.team3389.robot.commands.AutoRight;
+import org.usfirst.frc.team3389.robot.commands.AutoLeft;
+import org.usfirst.frc.team3389.robot.commands.AutoMiddle;
 import org.usfirst.frc.team3389.robot.commands.AutoRedRight;
 import org.usfirst.frc.team3389.robot.commands.DriveDistance;
 import org.usfirst.frc.team3389.robot.commands.DriveTurn;
@@ -50,7 +50,8 @@ public class Robot extends TimedRobot {
 	//TODO Delete These
 	static double leftMax=0;
 	static double rightMax=0;
-
+	//Don't Delete this tho
+	public static String gameData;
 	
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
 	public static final OLEDDisplay robotScreen = new OLEDDisplay();
@@ -63,13 +64,12 @@ public class Robot extends TimedRobot {
 	public static final Lifter lifter = new Lifter();
 
 	public static DriverStation driverStation;
-	
 	// public static final ExampleSubsystem kExampleSubsystem = new
 	// ExampleSubsystem();
 	public static OperatorInterface operatorControllers;
 
 	Command m_autonomousCommand;
-	SendableChooser<Command> m_chooser = new SendableChooser<>();
+	SendableChooser<String> m_chooser = new SendableChooser<>();
 
 	/**
 	 * This function is run when the robot is first started up and should be used
@@ -82,16 +82,11 @@ public class Robot extends TimedRobot {
 		operatorControllers = new OperatorInterface();
 
 		// m_chooser.addDefault("Default Auto", new ExampleCommand());
-		m_chooser.addDefault("Test Auto", new DriveDistance(16)); // FIXME need to know the unit of measure for 'distance'
-		m_chooser.addObject("Test Command Group", new TestCommandGroup());
-		m_chooser.addObject("Red Left", new AutoRedLeft());
-		m_chooser.addObject("Red Middle", new AutoRedMiddle());
-		m_chooser.addObject("Red Right", new AutoRedRight());
-		m_chooser.addObject("Blue Left", new AutoBlueLeft());
-		m_chooser.addObject("Blue Middle", new AutoBlueMiddle());
-		m_chooser.addObject("Blue Right", new AutoBlueRight());
-		m_chooser.addObject("Turn Left 90", new DriveTurn(.5, -90.0));
-		m_chooser.addObject("Turn Right 90", new DriveTurn(.5, 90.0));
+		m_chooser.addDefault("Drive Straight", "DriveStraight"); // FIXME need to know the unit of measure for 'distance'
+		m_chooser.addObject("Test Command Group", "TestCommand");
+		m_chooser.addObject("Left","Left");
+		m_chooser.addObject("Middle", "Right");
+		m_chooser.addObject("Right", "Middle");
 
 		SmartDashboard.putData("Auto mode", m_chooser);
 
@@ -156,12 +151,10 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
-
-		driveTrain.resetEncoders();
 		
-		m_autonomousCommand = m_chooser.getSelected();
-		robotLogger.log(Logger.INFO, this,
-				"autonomous mode = " + m_chooser.getName() + "::" + m_autonomousCommand.getName());
+//		m_autonomousCommand = m_chooser.getSelected();
+//		robotLogger.log(Logger.INFO, this,
+//				"autonomous mode = " + m_chooser.getName() + "::" + m_autonomousCommand.getName());
 
 		driveTrain.leftMaster.setSelectedSensorPosition(0, 0, 0);
 		driveTrain.rightMaster.setSelectedSensorPosition(0, 0, 0);
@@ -173,7 +166,6 @@ public class Robot extends TimedRobot {
 		 * one auto per situation.
 		 */
 		// This pulls the FMS game data
-		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		if (!gameData.isEmpty()) {
 			robotLogger.log(Logger.INFO, this, "The field configuration is " + gameData);
@@ -196,6 +188,21 @@ public class Robot extends TimedRobot {
 		} else {
 			// we failed to get the FMS message
 			robotLogger.log(Logger.WARNING, this, "The field configuration was not received");
+		}
+		
+		String value = (String) m_chooser.getSelected();
+		Command cmd;
+		if (value==null) {
+			cmd=new Nothing();
+		}
+		else if(value.equals("Left")) {
+			cmd=new AutoLeft();
+		}
+		else if(value.equals("Middle")) {
+			cmd=new AutoMiddle();
+		}
+		else if(value.equals("Right")) {
+			cmd=new AutoRight();
 		}
 
 		Robot.driveTrain.driveGyro.resetValues();

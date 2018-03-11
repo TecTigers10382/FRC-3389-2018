@@ -10,10 +10,10 @@ package org.usfirst.frc.team3389.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class AutoBlueLeft extends CommandGroup {
+public class AutoMiddle extends CommandGroup {
 	// private properties here
 	
-	public AutoBlueLeft() {
+	public AutoMiddle() {
 		// add any combination of commands in sequential or parallel execution
 		// for example:
 		//   addSequential(new CommandA());

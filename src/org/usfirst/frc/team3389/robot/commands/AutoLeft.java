@@ -10,15 +10,17 @@ package org.usfirst.frc.team3389.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class AutoBlueRight extends CommandGroup {
+public class AutoLeft extends CommandGroup {
 	// private properties here
 	
-	public AutoBlueRight() {
+	public AutoLeft() {
 		// add any combination of commands in sequential or parallel execution
 		// for example:
 		//   addSequential(new CommandA());
 		//   addParallel(new CommandB());
 		//   addParallel(new CommandC());
 		//   addSequential(new CommandD());
+		addSequential(new DriveDistance(36));
+//		addSequential(new DriveTurn(.3, 90));
 	}
 }

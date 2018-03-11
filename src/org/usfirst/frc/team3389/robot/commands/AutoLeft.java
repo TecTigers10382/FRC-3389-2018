@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class AutoLeft extends CommandGroup {
 	// private properties here
 	
-	public AutoLeft() {
+	public AutoLeft(int gameData) {
 		// add any combination of commands in sequential or parallel execution
 		// for example:
 		//   addSequential(new CommandA());

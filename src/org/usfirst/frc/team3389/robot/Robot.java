@@ -7,12 +7,9 @@
 
 package org.usfirst.frc.team3389.robot;
 
-import org.usfirst.frc.team3389.robot.commands.AutoBlueLeft;
-import org.usfirst.frc.team3389.robot.commands.AutoBlueMiddle;
 import org.usfirst.frc.team3389.robot.commands.AutoRight;
 import org.usfirst.frc.team3389.robot.commands.AutoLeft;
 import org.usfirst.frc.team3389.robot.commands.AutoMiddle;
-import org.usfirst.frc.team3389.robot.commands.AutoRedRight;
 import org.usfirst.frc.team3389.robot.commands.DriveDistance;
 import org.usfirst.frc.team3389.robot.commands.DriveTurn;
 import org.usfirst.frc.team3389.robot.commands.TestCommandGroup;
@@ -52,7 +49,7 @@ public class Robot extends TimedRobot {
 	static double rightMax=0;
 	//Don't Delete this tho
 	public static String gameData;
-	
+	public static int gameDataInt;
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
 	public static final OLEDDisplay robotScreen = new OLEDDisplay();
 	// private static OLEDPong gameEasterEgg= new OLEDPong(1);
@@ -174,15 +171,15 @@ public class Robot extends TimedRobot {
 			// FIXME where do we indicate the starting position of the robot - eg right, center, or left?
 			if (gameData.charAt(0) == 'L') {
 				if (gameData.charAt(1) == 'L') {
-					// Put LL auto here
+					gameDataInt = 0;
 				} else {
-					// Put LR auto here
+					gameDataInt = 1;
 				}
 			} else {
 				if (gameData.charAt(1) == 'L') {
-					// Put RL auto here
+					gameDataInt = 3;
 				} else {
-					// Put RR auto here
+					gameDataInt = 4;
 				}
 			}
 		} else {
@@ -196,13 +193,13 @@ public class Robot extends TimedRobot {
 			cmd=new Nothing();
 		}
 		else if(value.equals("Left")) {
-			cmd=new AutoLeft();
+			cmd=new AutoLeft(gameDataInt);
 		}
 		else if(value.equals("Middle")) {
-			cmd=new AutoMiddle();
+			cmd=new AutoMiddle(gameDataInt);
 		}
 		else if(value.equals("Right")) {
-			cmd=new AutoRight();
+			cmd=new AutoRight(gameDataInt);
 		}
 
 		Robot.driveTrain.driveGyro.resetValues();

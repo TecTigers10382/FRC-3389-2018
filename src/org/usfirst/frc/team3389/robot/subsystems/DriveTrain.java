@@ -6,6 +6,7 @@ import org.usfirst.frc.team3389.robot.commands.TeliOpDrive;
 import org.usfirst.frc.team3389.robot.ioDevices.MPU9250;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
+import com.ctre.phoenix.motion.MotionProfileStatus;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -101,6 +102,8 @@ public class DriveTrain extends Subsystem {
 	private void rawDrive(double leftPower, double rightPower) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:" + leftPower + ", " + rightPower);
 		driveVelocity(leftPower, rightPower);
+//		leftMaster.set(ControlMode.Current, leftPower*35);
+//		rightMaster.set(ControlMode.Current, rightPower*35);
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit" + leftMaster.getMotorOutputPercent());
 	}
 	
@@ -133,10 +136,11 @@ public class DriveTrain extends Subsystem {
 
 	
 	public void driveVelocity(double leftVelocity, double rightVelocity) {
-		double rightVelo=rightVelocity*300;
-		double leftVelo=leftVelocity*300;
-		rightMaster.set(ControlMode.Velocity, rightVelo);
-		leftMaster.set(ControlMode.Velocity, leftVelo);
+		
+		double rightVelo=rightVelocity*4096*500/600;
+		double leftVelo=leftVelocity*4096*500/600;
+		rightMaster.set(ControlMode.Velocity, rightVelo/2);
+		leftMaster.set(ControlMode.Velocity, leftVelo/2);
 	}
 
 	/**
@@ -229,10 +233,10 @@ public class DriveTrain extends Subsystem {
 		leftMaster.config_kD(0, 0, RobotMap.lTimeoutMs);
 		
 		rightMaster.selectProfileSlot(RobotMap.rSlotIdx, RobotMap.rPIDLoopIdx);
-		rightMaster.config_kF(0, 0.2, RobotMap.rTimeoutMs);
-		rightMaster.config_kP(0, 0.2, RobotMap.rTimeoutMs);
-		rightMaster.config_kI(0, 0, RobotMap.rTimeoutMs);
-		rightMaster.config_kD(0, 0, RobotMap.rTimeoutMs);
+		rightMaster.config_kF(RobotMap.rSlotIdx, 0.2, RobotMap.rTimeoutMs);
+		rightMaster.config_kP(RobotMap.rSlotIdx, 0.2, RobotMap.rTimeoutMs);
+		rightMaster.config_kI(RobotMap.rSlotIdx, 0, RobotMap.rTimeoutMs);
+		rightMaster.config_kD(RobotMap.rSlotIdx, 0, RobotMap.rTimeoutMs);
 		
 		leftMaster.configMotionCruiseVelocity(RobotMap.cruiseVelocity, RobotMap.lTimeoutMs);
 		leftMaster.configMotionAcceleration(RobotMap.accel, RobotMap.lTimeoutMs);
@@ -264,15 +268,19 @@ public class DriveTrain extends Subsystem {
 		rightMaster.configPeakOutputForward(1, RobotMap.rTimeoutMs);
 		rightMaster.configPeakOutputReverse(-1, RobotMap.rTimeoutMs);
 		
-		leftMaster.config_kF(RobotMap.lPIDLoopIdx, 0.34, RobotMap.lTimeoutMs);
-		leftMaster.config_kP(RobotMap.lPIDLoopIdx, 0.2, RobotMap.lTimeoutMs);
-		leftMaster.config_kI(RobotMap.lPIDLoopIdx, 0, RobotMap.lTimeoutMs);
-		leftMaster.config_kD(RobotMap.lPIDLoopIdx, 0, RobotMap.lTimeoutMs);
 		
-		rightMaster.config_kF(RobotMap.rPIDLoopIdx, 0.34, RobotMap.rTimeoutMs);
-		rightMaster.config_kP(RobotMap.rPIDLoopIdx, 0.2, RobotMap.rTimeoutMs);
-		rightMaster.config_kI(RobotMap.rPIDLoopIdx, 0, RobotMap.rTimeoutMs);
-		rightMaster.config_kD(RobotMap.rPIDLoopIdx, 0, RobotMap.rTimeoutMs);
+		leftMaster.config_kF(0, 0.24, RobotMap.lTimeoutMs);
+		leftMaster.config_kP(0, 0.2, RobotMap.lTimeoutMs);
+		leftMaster.config_kI(0, 0, RobotMap.lTimeoutMs);
+		leftMaster.config_kD(0, 0, RobotMap.lTimeoutMs);
+		leftMaster.selectProfileSlot(RobotMap.lSlotIdx, RobotMap.lPIDLoopIdx);
+		
+		rightMaster.config_kF(RobotMap.rSlotIdx, 0.24, RobotMap.rTimeoutMs);
+		rightMaster.config_kP(RobotMap.rSlotIdx, 0.2, RobotMap.rTimeoutMs);
+		rightMaster.config_kI(RobotMap.rSlotIdx, 0, RobotMap.rTimeoutMs);
+		rightMaster.config_kD(RobotMap.rSlotIdx, 0, RobotMap.rTimeoutMs);
+		rightMaster.selectProfileSlot(RobotMap.rSlotIdx, RobotMap.rPIDLoopIdx);
+		
 		
 		}
 

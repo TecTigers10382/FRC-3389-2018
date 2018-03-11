@@ -21,10 +21,10 @@ public class OperatorInterface {
 	Joystick jsDriver = new Joystick(0); // typically it's the left joystick
 	Joystick jsOperator = new Joystick(1); // typically it's the right joystick
 	
-	Button liftFull = new JoystickButton(jsOperator, 0);
+	//Button liftFull = new JoystickButton(jsOperator, 1);
 
 	public OperatorInterface() {
-		liftFull.whileHeld(new LiftFull());
+		//liftFull.whileHeld(new LiftFull());
 	}
 
 	/**

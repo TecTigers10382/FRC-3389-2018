@@ -7,15 +7,13 @@
 
 package org.usfirst.frc.team3389.robot;
 
-import org.usfirst.frc.team3389.robot.commands.AutoRight;
 import org.usfirst.frc.team3389.robot.commands.AutoLeft;
 import org.usfirst.frc.team3389.robot.commands.AutoMiddle;
-import org.usfirst.frc.team3389.robot.commands.DriveDistance;
-import org.usfirst.frc.team3389.robot.commands.DriveTurn;
+import org.usfirst.frc.team3389.robot.commands.AutoRight;
 import org.usfirst.frc.team3389.robot.commands.TestCommandGroup;
 import org.usfirst.frc.team3389.robot.ioDevices.OLEDDisplay;
-import org.usfirst.frc.team3389.robot.ioDevices.OLEDPong;
 import org.usfirst.frc.team3389.robot.ioDevices.TimeOfFlight;
+import org.usfirst.frc.team3389.robot.subsystems.Climber;
 import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team3389.robot.subsystems.Intake;
 import org.usfirst.frc.team3389.robot.subsystems.Lifter;
@@ -59,6 +57,7 @@ public class Robot extends TimedRobot {
 
 	public static final Intake intake = new Intake();
 	public static final Lifter lifter = new Lifter();
+	public static final Climber climber = new Climber();
 
 	public static DriverStation driverStation;
 	// public static final ExampleSubsystem kExampleSubsystem = new
@@ -263,6 +262,7 @@ public class Robot extends TimedRobot {
 		rightMax=0;
 		robotScreen.clear();
 		robotScreen.refresh();
+		driveTrain.velocityPidInit();
 
 		robotLogger.log(Logger.DEBUG, this, "exit");
 	}
@@ -284,7 +284,10 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putBoolean("Up switch", lifter.getUp());
 		SmartDashboard.putNumber("LiftPower", lifter.lift.getMotorOutputPercent());
 		SmartDashboard.putBoolean("Down Switch", lifter.getDown());
-		
+		SmartDashboard.putNumber("LeftPercent", driveTrain.leftMaster.getMotorOutputPercent());
+		SmartDashboard.putNumber("RightPercent", driveTrain.rightMaster.getMotorOutputPercent());
+		SmartDashboard.putNumber("LeftSlavePercent", driveTrain.leftSlave.getMotorOutputPercent());
+		SmartDashboard.putNumber("RightSlavePercent", driveTrain.rightSlave.getMotorOutputPercent());
 		if (DriveTrain.leftMaster.getSelectedSensorVelocity(RobotMap.lPIDLoopIdx)>=leftMax) {
 			leftMax=DriveTrain.leftMaster.getSelectedSensorVelocity(RobotMap.lPIDLoopIdx);
 		}

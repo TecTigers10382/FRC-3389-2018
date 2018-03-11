@@ -39,22 +39,26 @@ public class RobotMap {
 		DOWN_SWITCH_PIN = 7;
 	
 	public final static int
-		lTimeoutMs = 0,
-		rTimeoutMs = 0,
+		lTimeoutMs = 10,
+		rTimeoutMs = 10,
 		lSlotIdx   = 0,
-		rSlotIdx   = 1,
+		rSlotIdx   = 0,
 		lPIDLoopIdx= 0,
-		rPIDLoopIdx= 1,
-		cruiseVelocity = 1000,
+		rPIDLoopIdx= 0,
+		cruiseVelocity = 500,
 		accel = 50000;
 	
 	public static double convRatio = (17148.0)/(108.0);
 	
 	// TODO create constants for scalars for motors used on various subsystems such as the lifter, intake, etc
 
-	public final static int CURRENT_LIMIT = 38;
+	public final static int CURRENT_LIMIT = 60;
+	
+	public final static double LIFT_TIME = 15.5/8;
 	//public static DrivePIDOutput leftDriveOutput = new DrivePIDOutput(DriveTrain.leftFront);	
 	//public static DrivePIDOutput rightDriveOutput = new DrivePIDOutput(DriveTrain.rightFront);
+
+	public static final int CLIMBER = 0;
 	
 	
 	

@@ -275,16 +275,27 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("RightPercent", driveTrain.rightMaster.getMotorOutputPercent());
 		SmartDashboard.putNumber("LeftSlavePercent", driveTrain.leftSlave.getMotorOutputPercent());
 		SmartDashboard.putNumber("RightSlavePercent", driveTrain.rightSlave.getMotorOutputPercent());
-		if (DriveTrain.leftMaster.getSelectedSensorVelocity(RobotMap.lPIDLoopIdx)>=leftMax) {
-			leftMax=DriveTrain.leftMaster.getSelectedSensorVelocity(RobotMap.lPIDLoopIdx);
-		}
-		if (DriveTrain.rightMaster.getSelectedSensorVelocity(RobotMap.rPIDLoopIdx)>=rightMax) {
-			rightMax=DriveTrain.rightMaster.getSelectedSensorVelocity(RobotMap.rPIDLoopIdx);
-		}
-		SmartDashboard.putNumber("Left Speed", DriveTrain.leftMaster.getSelectedSensorVelocity(RobotMap.lPIDLoopIdx));
-		SmartDashboard.putNumber("Right Speed",DriveTrain.rightMaster.getSelectedSensorVelocity(RobotMap.rPIDLoopIdx));
-		SmartDashboard.putNumber("Left Max Speed", leftMax);
-		SmartDashboard.putNumber("Right Max Speed",rightMax);
+//		
+//		SmartDashboard.getNumber("", defaultValue)
+//		SmartDashboard.getNumber("", defaultValue)
+//		SmartDashboard.getNumber("", defaultValue)
+//		SmartDashboard.getNumber("", defaultValue)
+//		SmartDashboard.getNumber("", defaultValue)
+//		SmartDashboard.getNumber("", defaultValue)
+//		SmartDashboard.getNumber("", defaultValue)
+//		SmartDashboard.getNumber("", defaultValue)
+//		
+		
+		//if (DriveTrain.leftMaster.getSelectedSensorVelocity(RobotMap.lPIDLoopIdx)>=leftMax) {
+//			leftMax=DriveTrain.leftMaster.getSelectedSensorVelocity(RobotMap.lPIDLoopIdx);
+//		}
+//		if (DriveTrain.rightMaster.getSelectedSensorVelocity(RobotMap.rPIDLoopIdx)>=rightMax) {
+//			rightMax=DriveTrain.rightMaster.getSelectedSensorVelocity(RobotMap.rPIDLoopIdx);
+//		}
+//		SmartDashboard.putNumber("Left Speed", DriveTrain.leftMaster.getSelectedSensorVelocity(RobotMap.lPIDLoopIdx));
+//		SmartDashboard.putNumber("Right Speed",DriveTrain.rightMaster.getSelectedSensorVelocity(RobotMap.rPIDLoopIdx));
+//		SmartDashboard.putNumber("Left Max Speed", leftMax);
+//		SmartDashboard.putNumber("Right Max Speed",rightMax);
 //		SmartDashboard.putNumber("OutputVoltage LeftMaster", DriveTrain.leftMaster.getMotorOutputVoltage());
 //		SmartDashboard.putNumber("OutputVoltage RightMaster", DriveTrain.rightMaster.getMotorOutputVoltage());
 //		SmartDashboard.putNumber("OutputVoltage LeftSlave", DriveTrain.leftSlave.getMotorOutputVoltage());

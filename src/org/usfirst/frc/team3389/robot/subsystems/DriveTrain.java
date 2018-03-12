@@ -343,6 +343,18 @@ public class DriveTrain extends Subsystem {
 
 		clearStickyFaults();
 	}
+	public void lPidVal(double f,double p,double i,double d) {
+	leftMaster.config_kF(RobotMap.lSlotIdx, f, RobotMap.lTimeoutMs);
+	leftMaster.config_kP(RobotMap.lSlotIdx, p, RobotMap.lTimeoutMs);
+	leftMaster.config_kI(RobotMap.lSlotIdx, i, RobotMap.lTimeoutMs);
+	leftMaster.config_kD(RobotMap.lSlotIdx, d, RobotMap.lTimeoutMs);
+	}
+	public void rPidVal(double f,double p,double i,double d) {
+	rightMaster.config_kF(RobotMap.rSlotIdx, f, RobotMap.rTimeoutMs);
+	rightMaster.config_kP(RobotMap.rSlotIdx, p, RobotMap.rTimeoutMs);
+	rightMaster.config_kI(RobotMap.rSlotIdx, i, RobotMap.rTimeoutMs);
+	rightMaster.config_kD(RobotMap.rSlotIdx, d, RobotMap.rTimeoutMs);
+	}
 
 	
 	/**

@@ -8,46 +8,50 @@
 package org.usfirst.frc.team3389.robot.commands;
 
 import org.usfirst.frc.team3389.robot.Robot;
-import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
+import org.usfirst.frc.team3389.robot.subsystems.Lifter;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
- * Tele-Op command that continuously updates the DriveTrain with the values from
- * the left JoyStick.
+ * Tele-Op command that continuously updates the Intakes with the values from
+ * the right JoyStick.
  * 
  * @author TEC Tigers
- * @see org.usfirst.frc.team3389.robot.subsystems.DriveTrain
+ * @see org.usfirst.frc.team3389.robot.subsystems.Intake
  * 
  */
-public class TeliOpDrive extends Command {
 
-	Joystick driveStick;
-	DriveTrain drive;
+/* TODO extend for positional lift
+ * if the encoder gets installed on the lift chain shaft
+ * then it will be easy to perform lift-to-height actions
+ */
 
+public class LiftFull extends Command {
+
+	Joystick liftStick;
+	Lifter lifter;
+	
 	/**
-	 * Constructor gains control of the DriveTrain subsystem of the robot.
+	 * Constructor gains control of the Intake subsystem of the robot.
 	 * 
-	 * @see org.usfirst.frc.team3389.robot.subsystems.DriveTrain
+	 * @see org.usfirst.frc.team3389.robot.subsystems.Intake
 	 */
-	public TeliOpDrive() {
+	public LiftFull() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		// perform one-time setup here
-		
-		// Use requires() here to declare subsystem dependencies
-		requires(Robot.driveTrain);
-		drive = Robot.driveTrain;
 
-		driveStick = Robot.operatorControllers.getDriverJoystick();
-		
+		requires(Robot.lifter);
+		lifter = Robot.lifter;
+
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
 	/**
-	 * initialize is called each time the command is going to be used
-	 *  
+	 * Grabs the joystick from the OI object of the robot before running the
+	 * command.
+	 * 
 	 * @see org.usfirst.frc.team3389.robot.OIs
 	 */
 	@Override
@@ -57,52 +61,38 @@ public class TeliOpDrive extends Command {
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
-	/**
-	 * As the command is run, updates the joystick values and controls the
-	 * DriveTrain with them.
-	 * 
-	 * @see org.usfirst.frc.team3389.robot.subsystems.DriveTrain
-	 */
+	
 	@Override
 	protected void execute() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 
-		double left = driveStick.getRawAxis(5); // TODO the axis used for drive should be defined in RobotMap
-		double right = driveStick.getRawAxis(1); // TODO the axis used for drive should be defined in RobotMap
-//CHANGE THIS BACK TO ONE
-		if (Math.abs(left) < .1) // TODO the joystick 'deadzone' should be defined in RobotMap
-			left = 0;
-		if (Math.abs(right) < .1) // TODO the joystick 'deadzone' should be defined in RobotMap
-			right = 0;
-		
-		drive.tankDrive(-left, -right);
+		lifter.driveLift(.5);
 		
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
-
 	}
 
-	/**
-	 * Never allows Drive command to finish on its own terms.
-	 */
 	@Override
 	protected boolean isFinished() {
 		return false;
 	}
 
 	/**
-	 * Stops drivetrain's motion if command is ended with isFinished
+	 * Stops intake's motion if command is ended with isFinished
 	 * 
-	 * @see org.usfirst.frc.team3389.robot.commands.Drive#isFinished()
+	 * @see org.usfirst.frc.team3389.robot.commands.Intake#isFinished()
 	 */
 	@Override
 	protected void end() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-		drive.stop();
+
+		lifter.stop();
+		
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
+
 	}
 
 	/**
-	 * Stops drivetrain's motion if another command is ran that needs it.
+	 * Stops intake's motion if another command is ran that needs it.
 	 */
 	@Override
 	protected void interrupted() {

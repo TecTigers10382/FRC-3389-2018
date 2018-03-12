@@ -7,18 +7,13 @@
 
 package org.usfirst.frc.team3389.robot;
 
-import org.usfirst.frc.team3389.robot.commands.AutoBlueLeft;
-import org.usfirst.frc.team3389.robot.commands.AutoBlueMiddle;
-import org.usfirst.frc.team3389.robot.commands.AutoBlueRight;
-import org.usfirst.frc.team3389.robot.commands.AutoRedLeft;
-import org.usfirst.frc.team3389.robot.commands.AutoRedMiddle;
-import org.usfirst.frc.team3389.robot.commands.AutoRedRight;
-import org.usfirst.frc.team3389.robot.commands.DriveDistance;
-import org.usfirst.frc.team3389.robot.commands.DriveTurn;
+import org.usfirst.frc.team3389.robot.commands.AutoLeft;
+import org.usfirst.frc.team3389.robot.commands.AutoMiddle;
+import org.usfirst.frc.team3389.robot.commands.AutoRight;
 import org.usfirst.frc.team3389.robot.commands.TestCommandGroup;
 import org.usfirst.frc.team3389.robot.ioDevices.OLEDDisplay;
-import org.usfirst.frc.team3389.robot.ioDevices.OLEDPong;
 import org.usfirst.frc.team3389.robot.ioDevices.TimeOfFlight;
+import org.usfirst.frc.team3389.robot.subsystems.Climber;
 import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team3389.robot.subsystems.Intake;
 import org.usfirst.frc.team3389.robot.subsystems.Lifter;
@@ -47,6 +42,12 @@ public class Robot extends TimedRobot {
 	// Initialize all subsystems
 	public static final Logger robotLogger = new Logger(Logger.NONE);
 
+	//TODO Delete These
+	static double leftMax=0;
+	static double rightMax=0;
+	//Don't Delete this tho
+	public static String gameData;
+	public static int gameDataInt;
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
 	public static final OLEDDisplay robotScreen = new OLEDDisplay();
 	// private static OLEDPong gameEasterEgg= new OLEDPong(1);
@@ -56,15 +57,15 @@ public class Robot extends TimedRobot {
 
 	public static final Intake intake = new Intake();
 	public static final Lifter lifter = new Lifter();
+	public static final Climber climber = new Climber();
 
 	public static DriverStation driverStation;
-	
 	// public static final ExampleSubsystem kExampleSubsystem = new
 	// ExampleSubsystem();
 	public static OperatorInterface operatorControllers;
 
 	Command m_autonomousCommand;
-	SendableChooser<Command> m_chooser = new SendableChooser<>();
+	SendableChooser<String> m_chooser = new SendableChooser<>();
 
 	/**
 	 * This function is run when the robot is first started up and should be used
@@ -77,16 +78,11 @@ public class Robot extends TimedRobot {
 		operatorControllers = new OperatorInterface();
 
 		// m_chooser.addDefault("Default Auto", new ExampleCommand());
-		m_chooser.addDefault("Test Auto", new DriveDistance(16)); // FIXME need to know the unit of measure for 'distance'
-		m_chooser.addObject("Test Command Group", new TestCommandGroup());
-		m_chooser.addObject("Red Left", new AutoRedLeft());
-		m_chooser.addObject("Red Middle", new AutoRedMiddle());
-		m_chooser.addObject("Red Right", new AutoRedRight());
-		m_chooser.addObject("Blue Left", new AutoBlueLeft());
-		m_chooser.addObject("Blue Middle", new AutoBlueMiddle());
-		m_chooser.addObject("Blue Right", new AutoBlueRight());
-		m_chooser.addObject("Turn Left 90", new DriveTurn(.5, -90.0));
-		m_chooser.addObject("Turn Right 90", new DriveTurn(.5, 90.0));
+		m_chooser.addDefault("Drive Straight", "DriveStraight"); // FIXME need to know the unit of measure for 'distance'
+		m_chooser.addObject("Test Command Group", "TestCommand");
+		m_chooser.addObject("Left","Left");
+		m_chooser.addObject("Middle", "Right");
+		m_chooser.addObject("Right", "Middle");
 
 		SmartDashboard.putData("Auto mode", m_chooser);
 
@@ -94,20 +90,7 @@ public class Robot extends TimedRobot {
 		
 		// FIXME verify this code displays the camera correctly - it may need to be programmatically added to the dashboard
 		CameraServer.getInstance().startAutomaticCapture();
-		
-		// test to see if easter egg should be launched
-		// TODO determine best combination of buttons such that it's unlikely to happen by accident
-		/* 
-		if (	operatorControllers.getDriverJoystick().getRawButton(5) &&
-				operatorControllers.getDriverJoystick().getRawButton(6) &&
-				operatorControllers.getDriverJoystick().getRawButton(7) &&
-				operatorControllers.getDriverJoystick().getRawButton(8))
-		{
-			easteregg.start();
-			easteregg.stop();
-		}
-		*/
-		
+				
 		robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
@@ -151,12 +134,10 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
-
-		driveTrain.resetEncoders();
 		
-		m_autonomousCommand = m_chooser.getSelected();
-		robotLogger.log(Logger.INFO, this,
-				"autonomous mode = " + m_chooser.getName() + "::" + m_autonomousCommand.getName());
+//		m_autonomousCommand = m_chooser.getSelected();
+//		robotLogger.log(Logger.INFO, this,
+//				"autonomous mode = " + m_chooser.getName() + "::" + m_autonomousCommand.getName());
 
 		driveTrain.leftMaster.setSelectedSensorPosition(0, 0, 0);
 		driveTrain.rightMaster.setSelectedSensorPosition(0, 0, 0);
@@ -168,7 +149,6 @@ public class Robot extends TimedRobot {
 		 * one auto per situation.
 		 */
 		// This pulls the FMS game data
-		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		if (!gameData.isEmpty()) {
 			robotLogger.log(Logger.INFO, this, "The field configuration is " + gameData);
@@ -177,20 +157,38 @@ public class Robot extends TimedRobot {
 			// FIXME where do we indicate the starting position of the robot - eg right, center, or left?
 			if (gameData.charAt(0) == 'L') {
 				if (gameData.charAt(1) == 'L') {
-					// Put LL auto here
+					gameDataInt = 0;
 				} else {
-					// Put LR auto here
+					gameDataInt = 1;
 				}
 			} else {
 				if (gameData.charAt(1) == 'L') {
-					// Put RL auto here
+					gameDataInt = 3;
 				} else {
-					// Put RR auto here
+					gameDataInt = 4;
 				}
 			}
 		} else {
 			// we failed to get the FMS message
 			robotLogger.log(Logger.WARNING, this, "The field configuration was not received");
+		}
+		
+		String value = (String) m_chooser.getSelected();
+		Command cmd = null;
+		if (value==null) {
+//			cmd=new Nothing();
+		}
+		else if(value.equals("Left")) {
+			cmd=new AutoLeft(gameDataInt);
+		}
+		else if(value.equals("Middle")) {
+			cmd=new AutoMiddle(gameDataInt);
+		}
+		else if(value.equals("Right")) {
+			cmd=new AutoRight(gameDataInt);
+		}
+		else if(value.equals("TestCommand")) {
+			cmd=new TestCommandGroup();
 		}
 
 		Robot.driveTrain.driveGyro.resetValues();
@@ -210,9 +208,9 @@ public class Robot extends TimedRobot {
 		 */
 
 		// schedule the autonomous command (example)
-		if (m_autonomousCommand != null) {
+		if (cmd != null) {
 			robotLogger.log(Logger.INFO, this, "autonomous start");
-			m_autonomousCommand.start();
+			cmd.start();
 		}
 
 		robotLogger.log(Logger.DEBUG, this, "exit");
@@ -230,6 +228,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("LeftPosition", driveTrain.leftMaster.getSelectedSensorPosition(0));   // TODO should the dashboard show encoder distance or physical distance
 		SmartDashboard.putNumber("RightPosition", driveTrain.rightMaster.getSelectedSensorPosition(0)); // TODO should the dashboard show encoder distance or physical distance
 		SmartDashboard.putNumber("gyro", driveTrain.driveGyro.getFilteredYaw());
+		SmartDashboard.putNumber("PosValues",driveTrain.getPosition());
 		robotLogger.log(Logger.DEBUG, this, "auto Periodic exit");
 	}
 
@@ -245,11 +244,12 @@ public class Robot extends TimedRobot {
 			robotLogger.log(Logger.INFO, this, "teleop cancels autonomous");
 			m_autonomousCommand.cancel();
 		}
-		
 //		driveTrain.resetEncoders();
-
+		leftMax=0;
+		rightMax=0;
 		robotScreen.clear();
 		robotScreen.refresh();
+		driveTrain.velocityPidInit();
 
 		robotLogger.log(Logger.DEBUG, this, "exit");
 	}
@@ -270,7 +270,21 @@ public class Robot extends TimedRobot {
 
 		SmartDashboard.putBoolean("Up switch", lifter.getUp());
 		SmartDashboard.putNumber("LiftPower", lifter.lift.getMotorOutputPercent());
-		SmartDashboard.putBoolean("Down Switch", lifter.getDown()); 
+		SmartDashboard.putBoolean("Down Switch", lifter.getDown());
+		SmartDashboard.putNumber("LeftPercent", driveTrain.leftMaster.getMotorOutputPercent());
+		SmartDashboard.putNumber("RightPercent", driveTrain.rightMaster.getMotorOutputPercent());
+		SmartDashboard.putNumber("LeftSlavePercent", driveTrain.leftSlave.getMotorOutputPercent());
+		SmartDashboard.putNumber("RightSlavePercent", driveTrain.rightSlave.getMotorOutputPercent());
+		if (DriveTrain.leftMaster.getSelectedSensorVelocity(RobotMap.lPIDLoopIdx)>=leftMax) {
+			leftMax=DriveTrain.leftMaster.getSelectedSensorVelocity(RobotMap.lPIDLoopIdx);
+		}
+		if (DriveTrain.rightMaster.getSelectedSensorVelocity(RobotMap.rPIDLoopIdx)>=rightMax) {
+			rightMax=DriveTrain.rightMaster.getSelectedSensorVelocity(RobotMap.rPIDLoopIdx);
+		}
+		SmartDashboard.putNumber("Left Speed", DriveTrain.leftMaster.getSelectedSensorVelocity(RobotMap.lPIDLoopIdx));
+		SmartDashboard.putNumber("Right Speed",DriveTrain.rightMaster.getSelectedSensorVelocity(RobotMap.rPIDLoopIdx));
+		SmartDashboard.putNumber("Left Max Speed", leftMax);
+		SmartDashboard.putNumber("Right Max Speed",rightMax);
 //		SmartDashboard.putNumber("OutputVoltage LeftMaster", DriveTrain.leftMaster.getMotorOutputVoltage());
 //		SmartDashboard.putNumber("OutputVoltage RightMaster", DriveTrain.rightMaster.getMotorOutputVoltage());
 //		SmartDashboard.putNumber("OutputVoltage LeftSlave", DriveTrain.leftSlave.getMotorOutputVoltage());
@@ -281,6 +295,10 @@ public class Robot extends TimedRobot {
 //		SmartDashboard.putNumber("OutputCurrent RightSlave", DriveTrain.rightSlave.getOutputCurrent());
 		SmartDashboard.putNumber("gyro", driveTrain.driveGyro.getFilteredYaw());
 
+		SmartDashboard.putNumber("LeftPosition", driveTrain.leftMaster.getSelectedSensorPosition(0));   // TODO should the dashboard show encoder distance or physical distance
+		SmartDashboard.putNumber("RightPosition", driveTrain.rightMaster.getSelectedSensorPosition(0)); // TODO should the dashboard show encoder distance or physical distance
+
+		
 		SmartDashboard.putBoolean("Down Switch", lifter.getDown());
 		// robotScreen.refresh();
 		// Display on SmartDashboard

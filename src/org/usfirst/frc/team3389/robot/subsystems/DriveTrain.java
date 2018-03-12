@@ -6,6 +6,7 @@ import org.usfirst.frc.team3389.robot.commands.TeliOpDrive;
 import org.usfirst.frc.team3389.robot.ioDevices.MPU9250;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
+import com.ctre.phoenix.motion.MotionProfileStatus;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -14,6 +15,7 @@ import com.ctre.phoenix.motorcontrol.StickyFaults;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Subsystem for the drive train of the robot. Contains the 4 Talons necessary
@@ -24,10 +26,10 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class DriveTrain extends Subsystem {
 	public MPU9250 driveGyro;
-	public TalonSRX leftMaster;
+	public static TalonSRX leftMaster;
 	public TalonSRX leftSlave;
 	public TalonSRX rightSlave;
-	public TalonSRX rightMaster;
+	public static TalonSRX rightMaster;
 	StickyFaults LFsFaults = new StickyFaults();
 	StickyFaults RFsFaults = new StickyFaults();
 	StickyFaults LBsFaults = new StickyFaults();
@@ -100,6 +102,8 @@ public class DriveTrain extends Subsystem {
 	private void rawDrive(double leftPower, double rightPower) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:" + leftPower + ", " + rightPower);
 		driveVelocity(leftPower, rightPower);
+//		leftMaster.set(ControlMode.Current, leftPower*35);
+//		rightMaster.set(ControlMode.Current, rightPower*35);
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit" + leftMaster.getMotorOutputPercent());
 	}
 	
@@ -132,10 +136,11 @@ public class DriveTrain extends Subsystem {
 
 	
 	public void driveVelocity(double leftVelocity, double rightVelocity) {
+		
 		double rightVelo=rightVelocity*4096*500/600;
 		double leftVelo=leftVelocity*4096*500/600;
-		rightMaster.set(ControlMode.Velocity, rightVelo);
-		leftMaster.set(ControlMode.Velocity, leftVelo);
+		rightMaster.set(ControlMode.Velocity, rightVelo/2);
+		leftMaster.set(ControlMode.Velocity, leftVelo/2);
 	}
 
 	/**
@@ -148,6 +153,7 @@ public class DriveTrain extends Subsystem {
 		leftTicks = RobotMap.convRatio * leftPosition;
 		rightMaster.set(ControlMode.MotionMagic, rightTicks);
 		leftMaster.set(ControlMode.MotionMagic, leftTicks);
+		SmartDashboard.putNumber("TickNumber",rightTicks);
 	}
 
 	
@@ -161,8 +167,14 @@ public class DriveTrain extends Subsystem {
 	 * @return position in inches
 	 */
 	public double getPosition() {
+		/* TODO find more accurate metric for position
+		 * since 'position' methods assume left and right are
+		 * moving to the same target value, then one possible solution
+		 * is to return the lesser of absolute value of the left and right 
+		 * position values. This would allow the both left and right
+		 * to settle on their target values.
+		 */
 		return ((double) leftMaster.getSelectedSensorPosition(0) / RobotMap.convRatio);
-		// return ((double) leftMaster.getActiveTrajectoryPosition() / RobotMap.convRatio);
 	}
 	
 	
@@ -219,6 +231,10 @@ public class DriveTrain extends Subsystem {
 		rightMaster.configPeakOutputForward(1, RobotMap.rTimeoutMs);
 		rightMaster.configPeakOutputReverse(-1, RobotMap.rTimeoutMs);
 		
+		/* TODO tune PID to solve acceleration and robot reaching final position 
+		 * @see example: https://youtu.be/jI7SnhuVXg4?t=2m17s
+		 * use the dashboard to view desired position vs actual position
+		 */
 		
 		leftMaster.selectProfileSlot(RobotMap.lSlotIdx, RobotMap.lPIDLoopIdx);
 		leftMaster.config_kF(0, 0.2, RobotMap.lTimeoutMs);
@@ -227,10 +243,10 @@ public class DriveTrain extends Subsystem {
 		leftMaster.config_kD(0, 0, RobotMap.lTimeoutMs);
 		
 		rightMaster.selectProfileSlot(RobotMap.rSlotIdx, RobotMap.rPIDLoopIdx);
-		rightMaster.config_kF(0, 0.2, RobotMap.rTimeoutMs);
-		rightMaster.config_kP(0, 0.2, RobotMap.rTimeoutMs);
-		rightMaster.config_kI(0, 0, RobotMap.rTimeoutMs);
-		rightMaster.config_kD(0, 0, RobotMap.rTimeoutMs);
+		rightMaster.config_kF(RobotMap.rSlotIdx, 0.2, RobotMap.rTimeoutMs);
+		rightMaster.config_kP(RobotMap.rSlotIdx, 0.2, RobotMap.rTimeoutMs);
+		rightMaster.config_kI(RobotMap.rSlotIdx, 0, RobotMap.rTimeoutMs);
+		rightMaster.config_kD(RobotMap.rSlotIdx, 0, RobotMap.rTimeoutMs);
 		
 		leftMaster.configMotionCruiseVelocity(RobotMap.cruiseVelocity, RobotMap.lTimeoutMs);
 		leftMaster.configMotionAcceleration(RobotMap.accel, RobotMap.lTimeoutMs);
@@ -262,18 +278,26 @@ public class DriveTrain extends Subsystem {
 		rightMaster.configPeakOutputForward(1, RobotMap.rTimeoutMs);
 		rightMaster.configPeakOutputReverse(-1, RobotMap.rTimeoutMs);
 		
-		leftMaster.config_kF(RobotMap.lPIDLoopIdx, 0.34, RobotMap.lTimeoutMs);
-		leftMaster.config_kP(RobotMap.lPIDLoopIdx, 0.2, RobotMap.lTimeoutMs);
-		leftMaster.config_kI(RobotMap.lPIDLoopIdx, 0, RobotMap.lTimeoutMs);
-		leftMaster.config_kD(RobotMap.lPIDLoopIdx, 0, RobotMap.lTimeoutMs);
 		
-		rightMaster.config_kF(RobotMap.rPIDLoopIdx, 0.34, RobotMap.rTimeoutMs);
-		rightMaster.config_kP(RobotMap.rPIDLoopIdx, 0.2, RobotMap.rTimeoutMs);
-		rightMaster.config_kI(RobotMap.rPIDLoopIdx, 0, RobotMap.rTimeoutMs);
-		rightMaster.config_kD(RobotMap.rPIDLoopIdx, 0, RobotMap.rTimeoutMs);
+		/* TODO tune PID to solve acceleration and robot accuracy 
+		 * @see example: https://youtu.be/jI7SnhuVXg4?t=2m17s
+		 * use the dashboard to view desired position vs actual position
+		 */
+
+		leftMaster.config_kF(0, 0.24, RobotMap.lTimeoutMs);
+		leftMaster.config_kP(0, 0.2, RobotMap.lTimeoutMs);
+		leftMaster.config_kI(0, 0, RobotMap.lTimeoutMs);
+		leftMaster.config_kD(0, 0, RobotMap.lTimeoutMs);
+		leftMaster.selectProfileSlot(RobotMap.lSlotIdx, RobotMap.lPIDLoopIdx);
+		
+		rightMaster.config_kF(RobotMap.rSlotIdx, 0.24, RobotMap.rTimeoutMs);
+		rightMaster.config_kP(RobotMap.rSlotIdx, 0.2, RobotMap.rTimeoutMs);
+		rightMaster.config_kI(RobotMap.rSlotIdx, 0, RobotMap.rTimeoutMs);
+		rightMaster.config_kD(RobotMap.rSlotIdx, 0, RobotMap.rTimeoutMs);
+		rightMaster.selectProfileSlot(RobotMap.rSlotIdx, RobotMap.rPIDLoopIdx);
 		
 		
-	}
+		}
 
 	
 	/**

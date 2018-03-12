@@ -39,22 +39,35 @@ public class RobotMap {
 		DOWN_SWITCH_PIN = 7;
 	
 	public final static int
-		lTimeoutMs = 0,
-		rTimeoutMs = 0,
+		lTimeoutMs = 10,
+		rTimeoutMs = 10,
 		lSlotIdx   = 0,
-		rSlotIdx   = 1,
+		rSlotIdx   = 0,
 		lPIDLoopIdx= 0,
-		rPIDLoopIdx= 1,
-		cruiseVelocity = 10000,
-		accel = 20000;
+		rPIDLoopIdx= 0,
+		cruiseVelocity = 500,
+		accel = 50000;
 	
-	public static double convRatio = (4096.0*26.0*48.0)/(Math.PI*2.0*3.05*12.0*32);
+	/* Method of computing encoder drive ration:
+	 *  1) add raw encoder 'ticks' value to dashboard
+	 *  2) power robot
+	 *  3) note initial encoder value
+	 *  4) manually move (push / roll) robot a fixed distance
+	 *  5) note final encoder value
+	 *  ration = (final - initial) / distance
+	 *  note: the value recorded here is in ticks/inch 
+	 */
+	public static double convRatio = (17148.0)/(108.0);
 	
 	// TODO create constants for scalars for motors used on various subsystems such as the lifter, intake, etc
 
-	public final static int CURRENT_LIMIT = 38;
+	public final static int CURRENT_LIMIT = 60;
+	
+	public final static double LIFT_TIME = 15.5/8;
 	//public static DrivePIDOutput leftDriveOutput = new DrivePIDOutput(DriveTrain.leftFront);	
 	//public static DrivePIDOutput rightDriveOutput = new DrivePIDOutput(DriveTrain.rightFront);
+
+	public static final int CLIMBER = 0;
 	
 	
 	

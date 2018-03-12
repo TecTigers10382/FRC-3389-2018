@@ -50,7 +50,7 @@ public class Lifter extends Subsystem {
 	public void driveLift(double power) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:\t" + power);
 		
-		lift.set(ControlMode.PercentOutput, power); // TODO the intake has a scalar for power. does the lift need one also? 
+		lift.set(ControlMode.PercentOutput, -power); // TODO the intake has a scalar for power. does the lift need one also? 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
@@ -95,6 +95,12 @@ public class Lifter extends Subsystem {
 		return downSwitch.get();
 	}
 
+	
+	/* TODO add PID for encoder
+	 * if the encoder is able to installed on the chain shaft, then 
+	 * the PID setup will resemble the motionMagicPidInit() implementation
+	 * from DriveTrain.java
+	 */
 	
 	private void Debug() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "TALON DEBUG\n==================================");

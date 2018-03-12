@@ -22,6 +22,12 @@ import edu.wpi.first.wpilibj.command.Command;
  * @see org.usfirst.frc.team3389.robot.subsystems.Intake
  * 
  */
+
+/* TODO extend for positional lift
+ * if the encoder gets installed on the lift chain shaft
+ * then it will be easy to perform lift-to-height actions
+ */
+
 public class LiftFull extends Command {
 
 	Joystick liftStick;

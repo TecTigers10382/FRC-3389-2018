@@ -31,7 +31,6 @@ public class Lifter extends Subsystem {
 	public Lifter() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		lift = new TalonSRX(4); // TODO the specific ID should be in the RobotMap
-		
 
 		lift.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		lift.setInverted(true);
@@ -96,6 +95,12 @@ public class Lifter extends Subsystem {
 		return downSwitch.get();
 	}
 
+	
+	/* TODO add PID for encoder
+	 * if the encoder is able to installed on the chain shaft, then 
+	 * the PID setup will resemble the motionMagicPidInit() implementation
+	 * from DriveTrain.java
+	 */
 	
 	private void Debug() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "TALON DEBUG\n==================================");

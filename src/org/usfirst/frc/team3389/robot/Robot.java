@@ -90,20 +90,7 @@ public class Robot extends TimedRobot {
 		
 		// FIXME verify this code displays the camera correctly - it may need to be programmatically added to the dashboard
 		CameraServer.getInstance().startAutomaticCapture();
-		
-		// test to see if easter egg should be launched
-		// TODO determine best combination of buttons such that it's unlikely to happen by accident
-		/* 
-		if (	operatorControllers.getDriverJoystick().getRawButton(5) &&
-				operatorControllers.getDriverJoystick().getRawButton(6) &&
-				operatorControllers.getDriverJoystick().getRawButton(7) &&
-				operatorControllers.getDriverJoystick().getRawButton(8))
-		{
-			easteregg.start();
-			easteregg.stop();
-		}
-		*/
-		
+				
 		robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 

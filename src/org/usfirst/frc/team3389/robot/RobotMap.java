@@ -48,6 +48,15 @@ public class RobotMap {
 		cruiseVelocity = 500,
 		accel = 50000;
 	
+	/* Method of computing encoder drive ration:
+	 *  1) add raw encoder 'ticks' value to dashboard
+	 *  2) power robot
+	 *  3) note initial encoder value
+	 *  4) manually move (push / roll) robot a fixed distance
+	 *  5) note final encoder value
+	 *  ration = (final - initial) / distance
+	 *  note: the value recorded here is in ticks/inch 
+	 */
 	public static double convRatio = (17148.0)/(108.0);
 	
 	// TODO create constants for scalars for motors used on various subsystems such as the lifter, intake, etc

@@ -167,8 +167,14 @@ public class DriveTrain extends Subsystem {
 	 * @return position in inches
 	 */
 	public double getPosition() {
+		/* TODO find more accurate metric for position
+		 * since 'position' methods assume left and right are
+		 * moving to the same target value, then one possible solution
+		 * is to return the lesser of absolute value of the left and right 
+		 * position values. This would allow the both left and right
+		 * to settle on their target values.
+		 */
 		return ((double) leftMaster.getSelectedSensorPosition(0) / RobotMap.convRatio);
-		// return ((double) leftMaster.getActiveTrajectoryPosition() / RobotMap.convRatio);
 	}
 	
 	
@@ -225,6 +231,10 @@ public class DriveTrain extends Subsystem {
 		rightMaster.configPeakOutputForward(1, RobotMap.rTimeoutMs);
 		rightMaster.configPeakOutputReverse(-1, RobotMap.rTimeoutMs);
 		
+		/* TODO tune PID to solve acceleration and robot reaching final position 
+		 * @see example: https://youtu.be/jI7SnhuVXg4?t=2m17s
+		 * use the dashboard to view desired position vs actual position
+		 */
 		
 		leftMaster.selectProfileSlot(RobotMap.lSlotIdx, RobotMap.lPIDLoopIdx);
 		leftMaster.config_kF(0, 0.2, RobotMap.lTimeoutMs);
@@ -269,6 +279,11 @@ public class DriveTrain extends Subsystem {
 		rightMaster.configPeakOutputReverse(-1, RobotMap.rTimeoutMs);
 		
 		
+		/* TODO tune PID to solve acceleration and robot accuracy 
+		 * @see example: https://youtu.be/jI7SnhuVXg4?t=2m17s
+		 * use the dashboard to view desired position vs actual position
+		 */
+
 		leftMaster.config_kF(0, 0.24, RobotMap.lTimeoutMs);
 		leftMaster.config_kP(0, 0.2, RobotMap.lTimeoutMs);
 		leftMaster.config_kI(0, 0, RobotMap.lTimeoutMs);

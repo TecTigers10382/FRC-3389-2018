@@ -61,6 +61,12 @@ public class DriveDistance extends Command {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		// since the PID drive operation is executing within the talon (firmware), nothing is needed in the execute() loop.
 //		drive.drivePosition(distance, distance);
+		
+		/* TODO option for fine tuning left & right
+		 * if there is a way to adjust motor power/speed velocity
+		 * then possible test if left or right is lagging and temporarily increase  
+		 */
+		
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 

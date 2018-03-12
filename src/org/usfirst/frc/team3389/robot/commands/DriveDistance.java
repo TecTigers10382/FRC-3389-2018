@@ -76,8 +76,8 @@ public class DriveDistance extends Command {
 	@Override
 	protected boolean isFinished() {
 		// consider the execution finished when we are within 0.5 inches
-//		if (Math.abs(drive.getPosition() - distance) < 0.5)
-//			return true;
+		if (Math.abs(drive.getPosition() - distance) < 0.5)
+			return true;
 		return false;
 	}
 

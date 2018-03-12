@@ -2,8 +2,8 @@ package org.usfirst.frc.team3389.robot.subsystems;
 
 import org.usfirst.frc.team3389.robot.Robot;
 import org.usfirst.frc.team3389.robot.RobotMap;
-import org.usfirst.frc.team3389.robot.utils.Logger;
 import org.usfirst.frc.team3389.robot.commands.TeliOpLift;
+import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.Faults;

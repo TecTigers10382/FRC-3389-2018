@@ -10,6 +10,7 @@ package org.usfirst.frc.team3389.robot;
 import org.usfirst.frc.team3389.robot.commands.AutoLeft;
 import org.usfirst.frc.team3389.robot.commands.AutoMiddle;
 import org.usfirst.frc.team3389.robot.commands.AutoRight;
+import org.usfirst.frc.team3389.robot.commands.TeliOpLift;
 import org.usfirst.frc.team3389.robot.commands.TestCommandGroup;
 import org.usfirst.frc.team3389.robot.ioDevices.OLEDDisplay;
 import org.usfirst.frc.team3389.robot.ioDevices.TimeOfFlight;

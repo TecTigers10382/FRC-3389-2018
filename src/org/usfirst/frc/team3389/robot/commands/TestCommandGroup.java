@@ -15,7 +15,15 @@ public class TestCommandGroup extends CommandGroup {
 	
 	public TestCommandGroup() {
 		// drive a rectangle of size 10 x 2
-		addSequential(new DriveDistance(48.0)); // TODO what is the unit of measure for distance ?
+//		addSequential(new DriveTurn(.5, -90));
+//		addSequential(new IntakeAuto(.5, 2));
+//		addSequential(new LiftAuto(1.5));
+		
+		addParallel(new LiftAuto(2));
+		addSequential(new DriveDistance(11*12+4-33));
+		addSequential(new IntakeAuto(-1, 2));
+		
+//		addSequential(new DriveDistance(48.0)); // TODO what is the unit of measure for distance ?
 //		addSequential(new DriveTurn(.5, 90.0));	
 //		addSequential(new DriveDistance(2.0)); // TODO what is the unit of measure for distance ?
 //		addSequential(new DriveTurn(.5, 90.0));	

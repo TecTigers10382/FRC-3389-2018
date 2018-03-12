@@ -34,8 +34,8 @@ public class LiftAuto extends Command {
 		// Use requires() here to declare subsystem dependencies
 		// requires(Robot.kExampleSubsystem);
 		requires(Robot.lifter);
-		lift_speed= 0.5;
-		half_speed = 0.25;
+		lift_speed= -0.5;
+		half_speed = -0.25;
 		lift_duration = duration;
 	}
 
@@ -71,7 +71,7 @@ public class LiftAuto extends Command {
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
-		Robot.lifter.stop();
+		Robot.lifter.driveLift(-.12);
 	}
 
 	// Called when another command which requires one or more of the same

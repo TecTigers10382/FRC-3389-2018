@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * An example command. You can replace me with your own command.
  */
 public class LiftAuto extends Command {
-	double lift_speed = 0.0;
-	double half_speed = 0.0;
+	double lift_speed;
+	double half_speed;
 	double lift_duration = 0.0;
 	long endTimer;
 	long slowTimer;
@@ -30,12 +30,12 @@ public class LiftAuto extends Command {
 	 * @param duration
 	 *            the length of time that the lift will run
 	 */
-	public LiftAuto(double speed, double duration) {
+	public LiftAuto(double duration) {
 		// Use requires() here to declare subsystem dependencies
 		// requires(Robot.kExampleSubsystem);
 		requires(Robot.lifter);
-		lift_speed = speed;
-		half_speed = speed/2;
+		lift_speed= 0.5;
+		half_speed = 0.25;
 		lift_duration = duration;
 	}
 

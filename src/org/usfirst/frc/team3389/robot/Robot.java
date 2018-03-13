@@ -257,6 +257,7 @@ public class Robot extends TimedRobot {
 
 	/**
 	 * This function is called periodically during operator control.
+	 * 
 	 */
 	@Override
 	public void teleopPeriodic() {
@@ -269,25 +270,25 @@ public class Robot extends TimedRobot {
 		// robotScreen.drawTextLine(String.format("Heading: %+5.1f", angle), 5);
 		//SmartDashboard.putNumber("Heading: ", angle);
 
-		SmartDashboard.putBoolean("Up switch", lifter.getUp());
-		SmartDashboard.putNumber("LiftPower", lifter.lift.getMotorOutputPercent());
-		SmartDashboard.putBoolean("Down Switch", lifter.getDown());
-		SmartDashboard.putNumber("LeftPercent", driveTrain.leftMaster.getMotorOutputPercent());
-		SmartDashboard.putNumber("RightPercent", driveTrain.rightMaster.getMotorOutputPercent());
-		SmartDashboard.putNumber("LeftSlavePercent", driveTrain.leftSlave.getMotorOutputPercent());
-		SmartDashboard.putNumber("RightSlavePercent", driveTrain.rightSlave.getMotorOutputPercent());
-		// Uses Preferences class if you actually want to do this lol.
-		double lf=0,lp=0,li=0,ld=0,rf=0,rp=0,ri=0,rd=0;
-		SmartDashboard.getNumber("left-F", lf);
-		SmartDashboard.getNumber("left-P", lp);
-		SmartDashboard.getNumber("left-I", li);
-		SmartDashboard.getNumber("left-D", ld);
-		SmartDashboard.getNumber("right-F", rf);
-		SmartDashboard.getNumber("right-P", rp);
-		SmartDashboard.getNumber("right-I", ri);
-		SmartDashboard.getNumber("right-D", rd);
-		driveTrain.lPidVal(lf, lp, li, ld);
-		driveTrain.rPidVal(rf, rp, ri, rd);
+//		SmartDashboard.putBoolean("Up switch", lifter.getUp());
+//		SmartDashboard.putNumber("LiftPower", lifter.lift.getMotorOutputPercent());
+//		SmartDashboard.putBoolean("Down Switch", lifter.getDown());
+//		SmartDashboard.putNumber("LeftPercent", driveTrain.leftMaster.getMotorOutputPercent());
+//		SmartDashboard.putNumber("RightPercent", driveTrain.rightMaster.getMotorOutputPercent());
+//		SmartDashboard.putNumber("LeftSlavePercent", driveTrain.leftSlave.getMotorOutputPercent());
+//		SmartDashboard.putNumber("RightSlavePercent", driveTrain.rightSlave.getMotorOutputPercent());
+//		double lf=0,lp=0,li=0,ld=0,rf=0,rp=0,ri=0,rd=0;
+//		lf=SmartDashboard.getNumber("leftF", 1);
+//		lp=SmartDashboard.getNumber("leftP", 0);
+//		li=SmartDashboard.getNumber("leftI", 0);
+//		ld=SmartDashboard.getNumber("leftD", 0);
+//		rf=SmartDashboard.getNumber("rightF", 0);
+//		rp=SmartDashboard.getNumber("rightP", 0);
+//		ri=SmartDashboard.getNumber("rightI", 0);
+//		rd=SmartDashboard.getNumber("rightD", 0);
+//		driveTrain.lPidVal(lf, lp, li, ld);
+//		SmartDashboard.putString("PID", lf+" "+lp+" "+li);
+//		driveTrain.rPidVal(rf, rp, ri, rd);
 //		
 		
 		//if (DriveTrain.leftMaster.getSelectedSensorVelocity(RobotMap.lPIDLoopIdx)>=leftMax) {

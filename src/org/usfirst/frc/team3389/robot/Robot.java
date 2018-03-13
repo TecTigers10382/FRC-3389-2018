@@ -276,6 +276,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("RightPercent", driveTrain.rightMaster.getMotorOutputPercent());
 		SmartDashboard.putNumber("LeftSlavePercent", driveTrain.leftSlave.getMotorOutputPercent());
 		SmartDashboard.putNumber("RightSlavePercent", driveTrain.rightSlave.getMotorOutputPercent());
+		// Uses Preferences class if you actually want to do this lol.
 		double lf=0,lp=0,li=0,ld=0,rf=0,rp=0,ri=0,rd=0;
 		SmartDashboard.getNumber("left-F", lf);
 		SmartDashboard.getNumber("left-P", lp);

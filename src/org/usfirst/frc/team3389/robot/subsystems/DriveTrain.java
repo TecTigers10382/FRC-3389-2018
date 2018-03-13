@@ -58,6 +58,8 @@ public class DriveTrain extends Subsystem {
 
 		// encoderInit();
 		motionMagicPidInit();
+		
+		// FIXME This will overwrite your motionmagic profile
 		velocityPidInit();
 
 		driveGyro = new MPU9250();  // this will take approximately 10 seconds to initialize and calibrate 
@@ -234,6 +236,14 @@ public class DriveTrain extends Subsystem {
 		/* TODO tune PID to solve acceleration and robot reaching final position 
 		 * @see example: https://youtu.be/jI7SnhuVXg4?t=2m17s
 		 * use the dashboard to view desired position vs actual position
+		 */
+		
+		/* TODO
+		 * watch this: https://www.youtube.com/watch?v=_bWvXn4ilrY
+		 * F = basically adds a delay, smoothes the input (maybe disable from velocity?)
+		 * P = how fast it goes
+		 * I = how much it tries to correct
+		 * D = how much it slows as it nears the target
 		 */
 		
 		leftMaster.selectProfileSlot(RobotMap.lSlotIdx, RobotMap.lPIDLoopIdx);

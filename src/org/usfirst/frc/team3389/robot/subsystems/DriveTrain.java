@@ -284,7 +284,7 @@ public class DriveTrain extends Subsystem {
 		 * use the dashboard to view desired position vs actual position
 		 */
 
-		leftMaster.config_kF(0, 0.115, RobotMap.lTimeoutMs);
+		leftMaster.config_kF(0, 0.05, RobotMap.lTimeoutMs);
 		leftMaster.config_kP(0, .2, RobotMap.lTimeoutMs);
 		leftMaster.config_kI(0, 0, RobotMap.lTimeoutMs);
 		leftMaster.config_kD(0, 0, RobotMap.lTimeoutMs);

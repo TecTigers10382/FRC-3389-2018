@@ -49,6 +49,11 @@ public class Intake extends Subsystem {
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
+	
+	public void driveSeperate(double left, double right) {
+		intakeLeft.set(ControlMode.PercentOutput, left);
+		intakeRight.set(ControlMode.PercentOutput, right);
+	}
 
 
 	/**

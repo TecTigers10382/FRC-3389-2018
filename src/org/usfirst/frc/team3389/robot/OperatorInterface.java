@@ -7,7 +7,11 @@
 
 package org.usfirst.frc.team3389.robot;
 
+import org.usfirst.frc.team3389.robot.commands.TeliOpIntakeSpin;
+
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -18,9 +22,11 @@ public class OperatorInterface {
 	Joystick jsOperator = new Joystick(1); // typically it's the right joystick
 	
 	//Button liftFull = new JoystickButton(jsOperator, 1);
+	Button intakeSpin = new JoystickButton(jsOperator, 2);
 
 	public OperatorInterface() {
 		//liftFull.whileHeld(new LiftFull());
+		intakeSpin.whileHeld(new TeliOpIntakeSpin());
 	}
 
 	/**

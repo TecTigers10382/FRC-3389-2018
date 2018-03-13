@@ -16,11 +16,15 @@ It can lift!
 
 It can intake!
 
+### \*NEW!\* Climb
+
+**It can climb!**
+
 ## WIP:
 
-### Climbing
+~~### Climbing~~
 
-Still needs a physical climber subsystem.
+~~Still needs a physical climber subsystem.~~
 
 ### Autonomous
 

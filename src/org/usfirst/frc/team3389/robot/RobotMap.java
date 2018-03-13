@@ -45,7 +45,7 @@ public class RobotMap {
 		rSlotIdx   = 0,
 		lPIDLoopIdx= 0,
 		rPIDLoopIdx= 0,
-		cruiseVelocity = 500,
+		cruiseVelocity = 1000,
 		accel = 50000;
 	
 	/* Method of computing encoder drive ration:

@@ -141,8 +141,8 @@ public class DriveTrain extends Subsystem {
 		
 		double rightVelo=rightVelocity*4096*500/600;
 		double leftVelo=leftVelocity*4096*500/600;
-		rightMaster.set(ControlMode.Velocity, rightVelo/2);
-		leftMaster.set(ControlMode.Velocity, leftVelo/2);
+		rightMaster.set(ControlMode.Velocity, rightVelo);
+		leftMaster.set(ControlMode.Velocity, leftVelo);
 	}
 
 	/**
@@ -294,8 +294,8 @@ public class DriveTrain extends Subsystem {
 		 * use the dashboard to view desired position vs actual position
 		 */
 
-		leftMaster.config_kF(0, 0.24, RobotMap.lTimeoutMs);
-		leftMaster.config_kP(0, 0.2, RobotMap.lTimeoutMs);
+		leftMaster.config_kF(0, 0.05, RobotMap.lTimeoutMs);
+		leftMaster.config_kP(0, .2, RobotMap.lTimeoutMs);
 		leftMaster.config_kI(0, 0, RobotMap.lTimeoutMs);
 		leftMaster.config_kD(0, 0, RobotMap.lTimeoutMs);
 		leftMaster.selectProfileSlot(RobotMap.lSlotIdx, RobotMap.lPIDLoopIdx);

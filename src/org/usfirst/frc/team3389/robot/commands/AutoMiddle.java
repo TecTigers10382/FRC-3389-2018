@@ -14,6 +14,24 @@ public class AutoMiddle extends CommandGroup {
 	// private properties here
 	
 	public AutoMiddle(int gameData) {
+		if(gameData == 0 || gameData == 1) {
+			addSequential(new DriveDistance(46.5));
+			addSequential(new DriveTurn(.5, -45));
+			addParallel(new LiftAuto(3));
+			addSequential(new DriveDistance(85.4));
+			addSequential(new DriveTurn(.5, 45));
+			addSequential(new DriveDistance(19.9));
+			addSequential(new IntakeAuto(-1, 2));	
+		}
+		else if(gameData == 2 || gameData == 3) {
+			addSequential(new DriveDistance(46.5));
+			addSequential(new DriveTurn(.5, 45));
+			addParallel(new LiftAuto(3));
+			addSequential(new DriveDistance(67.3));
+			addSequential(new DriveTurn(.5, -45));
+			addSequential(new DriveDistance(39));
+			addSequential(new IntakeAuto(-1, 2));
+		}
 		// add any combination of commands in sequential or parallel execution
 		// for example:
 		//   addSequential(new CommandA());

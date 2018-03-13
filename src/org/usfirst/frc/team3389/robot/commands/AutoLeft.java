@@ -17,7 +17,7 @@ public class AutoLeft extends CommandGroup {
 		
 		if(gameData == 0 || gameData == 2) {
 			addParallel(new LiftAuto(3.5));
-			addSequential(new DriveDistance(324.6));
+			addSequential(new DriveDistance(303.8));
 			addSequential(new DriveTurn(.5, 90));
 			addSequential(new IntakeAuto(-1, 2));
 		}
@@ -28,6 +28,7 @@ public class AutoLeft extends CommandGroup {
 			addSequential(new DriveDistance(207.1));
 			addSequential(new DriveTurn(.5, -90));
 			addSequential(new DriveDistance(41.6));
+			addSequential(new IntakeAuto(-1, 2));
 		}
 		
 		

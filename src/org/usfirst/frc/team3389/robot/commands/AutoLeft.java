@@ -16,12 +16,14 @@ public class AutoLeft extends CommandGroup {
 	public AutoLeft(int gameData) {
 		
 		if(gameData == 0 || gameData == 2) {
+			// TODO add description of this autonomous maneuver
 			addParallel(new LiftAuto(3.5));
 			addSequential(new DriveDistance(303.8));
 			addSequential(new DriveTurn(.5, 90));
 			addSequential(new IntakeAuto(-1, 2));
 		}
 		else if(gameData == 1 || gameData == 3) {
+			// TODO add description of this autonomous maneuver
 			addSequential(new DriveDistance(223.2));
 			addSequential(new DriveTurn(.5, 90));
 			addParallel(new LiftAuto(3.5));

@@ -16,7 +16,7 @@ public class AutoMiddle extends CommandGroup {
 	public AutoMiddle(int gameData) {
 		if(gameData == 0 || gameData == 1) {
 			// TODO add description of this autonomous maneuver
-			addSequential(new DriveDistance(46.5));
+			addSequential(new DriveDistance(46.5)); // TODO this could move outside if/then
 			addSequential(new DriveTurn(.5, -45));
 			addParallel(new LiftAuto(3));
 			addSequential(new DriveDistance(85.4));
@@ -26,7 +26,7 @@ public class AutoMiddle extends CommandGroup {
 		}
 		else if(gameData == 2 || gameData == 3) {
 			// TODO add description of this autonomous maneuver
-			addSequential(new DriveDistance(46.5));
+			addSequential(new DriveDistance(46.5)); // TODO this could move outside if/then
 			addSequential(new DriveTurn(.5, 45));
 			addParallel(new LiftAuto(3));
 			addSequential(new DriveDistance(67.3));

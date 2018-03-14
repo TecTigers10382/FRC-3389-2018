@@ -20,7 +20,7 @@ public class AutoLeft extends CommandGroup {
 			addParallel(new LiftAuto(3.5));
 			addSequential(new DriveDistance(303.8));
 			addSequential(new DriveTurn(.5, 90));
-			addSequential(new IntakeAuto(-1, 2));
+			addSequential(new IntakeAuto(-1, 2)); // TODO this could move outside if/then
 		}
 		else if(gameData == 1 || gameData == 3) {
 			// TODO add description of this autonomous maneuver
@@ -30,18 +30,9 @@ public class AutoLeft extends CommandGroup {
 			addSequential(new DriveDistance(207.1));
 			addSequential(new DriveTurn(.5, -90));
 			addSequential(new DriveDistance(41.6));
-			addSequential(new IntakeAuto(-1, 2));
+			addSequential(new IntakeAuto(-1, 2)); // TODO this could move outside if/then
 		}
-		
-		
-		
-		// add any combination of commands in sequential or parallel execution
-		// for example:
-		//   addSequential(new CommandA());
-		//   addParallel(new CommandB());
-		//   addParallel(new CommandC());
-		//   addSequential(new CommandD());
+
 		addSequential(new DriveDistance(36));
-//		addSequential(new DriveTurn(.3, 90));
 	}
 }

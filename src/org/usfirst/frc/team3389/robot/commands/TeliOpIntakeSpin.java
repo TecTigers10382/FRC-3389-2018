@@ -38,8 +38,6 @@ public class TeliOpIntakeSpin extends Command {
 		
 		requires(Robot.intake);
 		intake = Robot.intake;
-		
-		//intakeStick = Robot.operatorControllers.getOperatorJoystick();
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
@@ -66,7 +64,7 @@ public class TeliOpIntakeSpin extends Command {
 	@Override
 	protected void execute() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-		
+
 		double power = .5;
 		
 		intake.driveSeperate(power,-power);

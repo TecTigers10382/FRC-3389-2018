@@ -51,9 +51,8 @@ public class Robot extends TimedRobot {
 	public static int gameDataInt;
 	public static final TimeOfFlight timeOfFlight = new TimeOfFlight();
 	public static final OLEDDisplay robotScreen = new OLEDDisplay();
-	// private static OLEDPong gameEasterEgg= new OLEDPong(1);
 	
-	 // this includes calibration which takes 8-12 seconds
+	// this includes calibration which takes 8-12 seconds
 	public static final DriveTrain driveTrain = new DriveTrain();
 
 	public static final Intake intake = new Intake();
@@ -79,7 +78,9 @@ public class Robot extends TimedRobot {
 		operatorControllers = new OperatorInterface();
 
 		// m_chooser.addDefault("Default Auto", new ExampleCommand());
-		m_chooser.addDefault("Drive Straight", "DriveStraight"); // FIXME need to know the unit of measure for 'distance'
+
+		// these strings are referenced below in autonomousInit()
+		m_chooser.addDefault("Drive Straight", "DriveStraight");
 		m_chooser.addObject("Test Command Group", "TestCommand");
 		m_chooser.addObject("Left","Left");
 		m_chooser.addObject("Middle", "Right");
@@ -136,6 +137,8 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {
 		robotLogger.log(Logger.DEBUG, this, "enter");
 		
+		// TODO log the selected command using (String)m_chooser.getSelected()
+		
 //		m_autonomousCommand = m_chooser.getSelected();
 //		robotLogger.log(Logger.INFO, this,
 //				"autonomous mode = " + m_chooser.getName() + "::" + m_autonomousCommand.getName());
@@ -154,8 +157,7 @@ public class Robot extends TimedRobot {
 		if (!gameData.isEmpty()) {
 			robotLogger.log(Logger.INFO, this, "The field configuration is " + gameData);
 
-			// FIXME we need to add our autonomous commands
-			// FIXME where do we indicate the starting position of the robot - eg right, center, or left?
+			// convert the gameData character string to int for use in the auto commandGroups
 			if (gameData.charAt(0) == 'L') {
 				if (gameData.charAt(1) == 'L') {
 					gameDataInt = 0;
@@ -193,7 +195,8 @@ public class Robot extends TimedRobot {
 		}
 
 		Robot.driveTrain.driveGyro.resetValues();
-		
+
+		// TODO document why we sleep for 1 sec
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {

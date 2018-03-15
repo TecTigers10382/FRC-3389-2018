@@ -14,13 +14,25 @@ public class AutoLeft extends CommandGroup {
 	// private properties here
 	
 	public AutoLeft(int gameData) {
-		// add any combination of commands in sequential or parallel execution
-		// for example:
-		//   addSequential(new CommandA());
-		//   addParallel(new CommandB());
-		//   addParallel(new CommandC());
-		//   addSequential(new CommandD());
+		
+		if(gameData == 0 || gameData == 2) {
+			// TODO add description of this autonomous maneuver
+			addParallel(new LiftAuto(3.5));
+			addSequential(new DriveDistance(303.8));
+			addSequential(new DriveTurn(.5, 90));
+			addSequential(new IntakeAuto(-1, 2)); // TODO this could move outside if/then
+		}
+		else if(gameData == 1 || gameData == 3) {
+			// TODO add description of this autonomous maneuver
+			addSequential(new DriveDistance(223.2));
+			addSequential(new DriveTurn(.5, 90));
+			addParallel(new LiftAuto(3.5));
+			addSequential(new DriveDistance(207.1));
+			addSequential(new DriveTurn(.5, -90));
+			addSequential(new DriveDistance(41.6));
+			addSequential(new IntakeAuto(-1, 2)); // TODO this could move outside if/then
+		}
+
 		addSequential(new DriveDistance(36));
-//		addSequential(new DriveTurn(.3, 90));
 	}
 }

@@ -18,15 +18,32 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OperatorInterface {
+	/* TODO better to declare the properties here
+	 *      and assign them in the constructor below
+	 *      declare private properties for the 
+	 *      joysticks and for the buttons 
+	 */
+	      
 	Joystick jsDriver = new Joystick(0); // typically it's the left joystick
 	Joystick jsOperator = new Joystick(1); // typically it's the right joystick
 	
-	//Button liftFull = new JoystickButton(jsOperator, 1);
+	// Button liftFull = new JoystickButton(jsOperator, 1);
+
 	Button intakeSpin = new JoystickButton(jsOperator, 2);
 
 	public OperatorInterface() {
-		//liftFull.whileHeld(new LiftFull());
-		intakeSpin.whileHeld(new TeliOpIntakeSpin());
+		// liftFull.whileHeld(new LiftFull());
+
+		/* TODO the button(s) should be documented
+		 *      to assist other programmers and code reuse
+		 *      the joystick assignments and all button
+		 *      assignments should be documented here,
+		 *      even the defaults which are referenced in the
+		 *      individual commands
+		*/
+	 		
+		if (intakeSpin != null)
+			intakeSpin.whileHeld(new TeliOpIntakeSpin());
 	}
 
 	/**
@@ -47,6 +64,12 @@ public class OperatorInterface {
 		return jsOperator;
 	}
 
+	/* TODO add getter methods for the buttons
+	 *      joystick and button properties should be private to the class
+	 *      and getter methods used to access the controls
+	 */
+	
+	
 	//// CREATING BUTTONS
 	// One type of button is a joystick button which is any button on a
 	//// joystick.

@@ -103,7 +103,7 @@ public class DriveTrain extends Subsystem {
 	 */
 	private void rawDrive(double leftPower, double rightPower) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:" + leftPower + ", " + rightPower);
-		driveVelocity(leftPower, rightPower);
+		drivePercent(leftPower, rightPower);
 //		leftMaster.set(ControlMode.Current, leftPower*35);
 //		rightMaster.set(ControlMode.Current, rightPower*35);
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit" + leftMaster.getMotorOutputPercent());
@@ -159,9 +159,9 @@ public class DriveTrain extends Subsystem {
 	}
 
 	
-	public void drivePercent(int leftPercent,int rightPercent) {
-		leftMaster.set(ControlMode.PercentOutput, leftPercent);
-		rightMaster.set(ControlMode.PercentOutput, rightPercent);
+	public void drivePercent(double leftPower,double rightPower) {
+		leftMaster.set(ControlMode.PercentOutput, leftPower);
+		rightMaster.set(ControlMode.PercentOutput, rightPower);
 	}
 
 	/**
@@ -259,7 +259,7 @@ public class DriveTrain extends Subsystem {
 		rightMaster.config_kD(RobotMap.rSlotIdx, 0, RobotMap.rTimeoutMs);
 		
 		leftMaster.configMotionCruiseVelocity(RobotMap.cruiseVelocity, RobotMap.lTimeoutMs);
-		leftMaster.configMotionAcceleration(RobotMap.accel, RobotMap.lTimeoutMs);
+		leftMaster.configMotionAcceleration(RobotMap.accel*2, RobotMap.lTimeoutMs);
 		
 		rightMaster.configMotionCruiseVelocity(RobotMap.cruiseVelocity, RobotMap.rTimeoutMs);
 		rightMaster.configMotionAcceleration(RobotMap.accel, RobotMap.rTimeoutMs);
@@ -289,19 +289,25 @@ public class DriveTrain extends Subsystem {
 		rightMaster.configPeakOutputReverse(-1, RobotMap.rTimeoutMs);
 		
 		
+		leftMaster.configMotionCruiseVelocity(RobotMap.cruiseVelocity, RobotMap.lTimeoutMs);
+		leftMaster.configMotionAcceleration(RobotMap.accel*10000, RobotMap.lTimeoutMs);
+		
+		rightMaster.configMotionCruiseVelocity(RobotMap.cruiseVelocity, RobotMap.rTimeoutMs);
+		rightMaster.configMotionAcceleration(RobotMap.accel, RobotMap.rTimeoutMs);
+		
 		/* TODO tune PID to solve acceleration and robot accuracy 
 		 * @see example: https://youtu.be/jI7SnhuVXg4?t=2m17s
 		 * use the dashboard to view desired position vs actual position
 		 */
 
-		leftMaster.config_kF(0, 0.05, RobotMap.lTimeoutMs);
-		leftMaster.config_kP(0, .2, RobotMap.lTimeoutMs);
+		leftMaster.config_kF(0, .24, RobotMap.lTimeoutMs);
+		leftMaster.config_kP(0, .2, RobotMap.lTimeoutMs);//.9 .025
 		leftMaster.config_kI(0, 0, RobotMap.lTimeoutMs);
 		leftMaster.config_kD(0, 0, RobotMap.lTimeoutMs);
 		leftMaster.selectProfileSlot(RobotMap.lSlotIdx, RobotMap.lPIDLoopIdx);
 		
-		rightMaster.config_kF(RobotMap.rSlotIdx, 0.24, RobotMap.rTimeoutMs);
-		rightMaster.config_kP(RobotMap.rSlotIdx, 0.2, RobotMap.rTimeoutMs);
+		rightMaster.config_kF(RobotMap.rSlotIdx, .24, RobotMap.rTimeoutMs);//.24
+		rightMaster.config_kP(RobotMap.rSlotIdx, .2, RobotMap.rTimeoutMs);//.2
 		rightMaster.config_kI(RobotMap.rSlotIdx, 0, RobotMap.rTimeoutMs);
 		rightMaster.config_kD(RobotMap.rSlotIdx, 0, RobotMap.rTimeoutMs);
 		rightMaster.selectProfileSlot(RobotMap.rSlotIdx, RobotMap.rPIDLoopIdx);

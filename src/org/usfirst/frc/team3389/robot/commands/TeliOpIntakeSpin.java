@@ -39,7 +39,7 @@ public class TeliOpIntakeSpin extends Command {
 		requires(Robot.intake);
 		intake = Robot.intake;
 		
-		intakeStick = Robot.operatorControllers.getOperatorJoystick();
+		//intakeStick = Robot.operatorControllers.getOperatorJoystick();
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}

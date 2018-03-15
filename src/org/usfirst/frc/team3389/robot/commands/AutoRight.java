@@ -30,6 +30,8 @@ public class AutoRight extends CommandGroup {
 			addSequential(new DriveTurn(.5, 90));
 			addSequential(new DriveDistance(41.6));
 			addSequential(new IntakeAuto(-1, 2)); // TODO this could move outside if/then
+		}else {
+			addSequential(new DriveDistance(36));
 		}
 	}
 }

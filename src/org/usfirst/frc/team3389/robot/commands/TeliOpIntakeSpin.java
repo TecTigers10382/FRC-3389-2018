@@ -38,10 +38,6 @@ public class TeliOpIntakeSpin extends Command {
 		
 		requires(Robot.intake);
 		intake = Robot.intake;
-		
-		// currently the following is handled directly in OperatorInterface.java
-		//   and operatorController may not yet be defined
-		// intakeStick = Robot.operatorControllers.getOperatorJoystick();
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}

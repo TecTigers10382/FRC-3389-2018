@@ -61,7 +61,7 @@ public class RobotMap {
 	
 	// TODO create constants for scalars for motors used on various subsystems such as the lifter, intake, etc
 
-	public final static int CURRENT_LIMIT = 60;
+	public final static int CURRENT_LIMIT = 38;
 	
 	public final static double LIFT_TIME = 15.5/8;
 	//public static DrivePIDOutput leftDriveOutput = new DrivePIDOutput(DriveTrain.leftFront);	

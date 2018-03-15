@@ -50,7 +50,7 @@ public class Lifter extends Subsystem {
 	public void driveLift(double power) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:\t" + power);
 		
-		lift.set(ControlMode.PercentOutput, -power); // TODO the intake has a scalar for power. does the lift need one also? 
+		lift.set(ControlMode.PercentOutput, power); // TODO the intake has a scalar for power. does the lift need one also? 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 

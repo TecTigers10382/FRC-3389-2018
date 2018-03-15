@@ -60,7 +60,7 @@ public class DriveTrain extends Subsystem {
 		motionMagicPidInit();
 		
 		// FIXME This will overwrite your motionmagic profile
-		velocityPidInit();
+		//velocityPidInit();
 
 		driveGyro = new MPU9250();  // this will take approximately 10 seconds to initialize and calibrate 
 		driveGyro.startUpdatingThread();
@@ -76,15 +76,15 @@ public class DriveTrain extends Subsystem {
 		leftSlave.configPeakCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
 		rightSlave.configPeakCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
 		
-		leftMaster.configPeakCurrentDuration(5, 5);
-		rightMaster.configPeakCurrentDuration(5, 5);
-		rightSlave.configPeakCurrentDuration(5, 5);
-		leftSlave.configPeakCurrentDuration(5, 5);
-
-		leftMaster.enableCurrentLimit(true);
-		rightMaster.enableCurrentLimit(true);
-		leftSlave.enableCurrentLimit(true);
-		rightSlave.enableCurrentLimit(true);
+//		leftMaster.configPeakCurrentDuration(5, 5);
+//		rightMaster.configPeakCurrentDuration(5, 5);
+//		rightSlave.configPeakCurrentDuration(5, 5);
+//		leftSlave.configPeakCurrentDuration(5, 5);
+//
+//		leftMaster.enableCurrentLimit(true);
+//		rightMaster.enableCurrentLimit(true);
+//		leftSlave.enableCurrentLimit(true);
+//		rightSlave.enableCurrentLimit(true);
 		
 		Debug();
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
@@ -103,7 +103,7 @@ public class DriveTrain extends Subsystem {
 	 */
 	private void rawDrive(double leftPower, double rightPower) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:" + leftPower + ", " + rightPower);
-		drivePercent(leftPower, rightPower);
+		driveVelocity(leftPower, rightPower);
 //		leftMaster.set(ControlMode.Current, leftPower*35);
 //		rightMaster.set(ControlMode.Current, rightPower*35);
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit" + leftMaster.getMotorOutputPercent());
@@ -141,8 +141,8 @@ public class DriveTrain extends Subsystem {
 		
 		double rightVelo=rightVelocity*4096*500/600;
 		double leftVelo=leftVelocity*4096*500/600;
-		rightMaster.set(ControlMode.Velocity, rightVelo);
-		leftMaster.set(ControlMode.Velocity, leftVelo);
+		rightMaster.set(ControlMode.Velocity, rightVelo/2);
+		leftMaster.set(ControlMode.Velocity, leftVelo/2);
 	}
 
 	/**
@@ -290,7 +290,7 @@ public class DriveTrain extends Subsystem {
 		
 		
 		leftMaster.configMotionCruiseVelocity(RobotMap.cruiseVelocity, RobotMap.lTimeoutMs);
-		leftMaster.configMotionAcceleration(RobotMap.accel*10000, RobotMap.lTimeoutMs);
+		leftMaster.configMotionAcceleration(RobotMap.accel, RobotMap.lTimeoutMs);
 		
 		rightMaster.configMotionCruiseVelocity(RobotMap.cruiseVelocity, RobotMap.rTimeoutMs);
 		rightMaster.configMotionAcceleration(RobotMap.accel, RobotMap.rTimeoutMs);

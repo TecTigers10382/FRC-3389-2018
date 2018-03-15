@@ -19,10 +19,10 @@ public class RobotMap {
 	 * CAN IDs of all Talon SRXs used for drive train
 	 */
 	public final static int
-		DRIVE_LEFTMASTER = 0,
-		DRIVE_LEFTSLAVE = 1,
-		DRIVE_RIGHTSLAVE = 3,
-		DRIVE_RIGHTMASTER = 2;
+		DRIVE_LEFTMASTER = 2,
+		DRIVE_LEFTSLAVE = 3,
+		DRIVE_RIGHTMASTER = 0,
+		DRIVE_RIGHTSLAVE = 1;
 	
 	public final static int
 		LIFT = 4;
@@ -45,7 +45,7 @@ public class RobotMap {
 		rSlotIdx   = 0,
 		lPIDLoopIdx= 0,
 		rPIDLoopIdx= 0,
-		cruiseVelocity = 1000,
+		cruiseVelocity = 500,
 		accel = 50000;
 	
 	/* Method of computing encoder drive ration:

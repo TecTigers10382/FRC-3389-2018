@@ -98,6 +98,8 @@ public class Robot extends TimedRobot {
 		// FIXME verify this code displays the camera correctly - it may need to be
 		// programmatically added to the dashboard
 		CameraServer.getInstance().startAutomaticCapture();
+		
+		robotScreen.drawTextStringCentered("Hello World!", 0);
 
 		robotLogger.log(Logger.DEBUG, this, "exit");
 	}
@@ -286,11 +288,11 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		// given this is called in a loop its too noisy to be of use for debugging //
 		// robotLogger.log(Logger.DEBUG, this, "enter");
-		robotScreen.drawTextStringCentered("Hello World!", 0);
+		
 
 		// it's probably confusing to mix pixel positioning and character/line
 		// positioning
-		// robotScreen.drawTextLine(String.format("Heading: %+5.1f", angle), 5);
+		 robotScreen.drawTextLine(String.format("Heading: %+5.1f", driveTrain.driveGyro.getFilteredYaw()), 5);
 		// SmartDashboard.putNumber("Heading: ", angle);
 
 		// SmartDashboard.putBoolean("Up switch", lifter.getUp());
@@ -366,6 +368,7 @@ public class Robot extends TimedRobot {
 																										// distance
 
 		SmartDashboard.putBoolean("Down Switch", lifter.getDown());
+		SmartDashboard.putBoolean("Up Switch", lifter.getUp());
 		// robotScreen.refresh();
 		// Display on SmartDashboard
 		// SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());

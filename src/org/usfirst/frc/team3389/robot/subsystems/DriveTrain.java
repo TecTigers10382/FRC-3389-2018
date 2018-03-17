@@ -58,40 +58,39 @@ public class DriveTrain extends Subsystem {
 
 		// encoderInit();
 		motionMagicPidInit();
-		
-		// FIXME This will overwrite your motionmagic profile
-		//velocityPidInit();
 
-		driveGyro = new MPU9250();  // this will take approximately 10 seconds to initialize and calibrate 
+		// FIXME This will overwrite your motionmagic profile
+		// velocityPidInit();
+
+		driveGyro = new MPU9250(); // this will take approximately 10 seconds to initialize and calibrate
 		driveGyro.startUpdatingThread();
 
 		leftMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		rightMaster.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
-		
+
 		rightMaster.setInverted(true);
 		rightSlave.setInverted(true);
-		
+
 		leftMaster.configPeakCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
 		rightMaster.configPeakCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
 		leftSlave.configPeakCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
 		rightSlave.configPeakCurrentLimit(RobotMap.CURRENT_LIMIT, 5);
-		
-//		leftMaster.configPeakCurrentDuration(5, 5);
-//		rightMaster.configPeakCurrentDuration(5, 5);
-//		rightSlave.configPeakCurrentDuration(5, 5);
-//		leftSlave.configPeakCurrentDuration(5, 5);
-//
-//		leftMaster.enableCurrentLimit(true);
-//		rightMaster.enableCurrentLimit(true);
-//		leftSlave.enableCurrentLimit(true);
-//		rightSlave.enableCurrentLimit(true);
-		
+
+		// leftMaster.configPeakCurrentDuration(5, 5);
+		// rightMaster.configPeakCurrentDuration(5, 5);
+		// rightSlave.configPeakCurrentDuration(5, 5);
+		// leftSlave.configPeakCurrentDuration(5, 5);
+		//
+		// leftMaster.enableCurrentLimit(true);
+		// rightMaster.enableCurrentLimit(true);
+		// leftSlave.enableCurrentLimit(true);
+		// rightSlave.enableCurrentLimit(true);
+
 		Debug();
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 		// Outputs Talon debug info
 
 	}
-
 
 	/**
 	 * Sets the power of the 4 TalonSRX's in percent output mode.
@@ -104,12 +103,11 @@ public class DriveTrain extends Subsystem {
 	private void rawDrive(double leftPower, double rightPower) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:" + leftPower + ", " + rightPower);
 		driveVelocity(leftPower, rightPower);
-//		leftMaster.set(ControlMode.Current, leftPower*35);
-//		rightMaster.set(ControlMode.Current, rightPower*35);
+		// leftMaster.set(ControlMode.Current, leftPower*35);
+		// rightMaster.set(ControlMode.Current, rightPower*35);
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit" + leftMaster.getMotorOutputPercent());
 	}
-	
-	
+
 	/**
 	 * Drives the Drive Train with 2 analog stick's y values like a tank.
 	 * 
@@ -124,7 +122,6 @@ public class DriveTrain extends Subsystem {
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
-	
 	/**
 	 * Stops all Talons.
 	 */
@@ -134,62 +131,65 @@ public class DriveTrain extends Subsystem {
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
-	
-
-	
 	public void driveVelocity(double leftVelocity, double rightVelocity) {
-		
-		double rightVelo=rightVelocity*4096*500/600;
-		double leftVelo=leftVelocity*4096*500/600;
-		rightMaster.set(ControlMode.Velocity, rightVelo/2);
-		leftMaster.set(ControlMode.Velocity, leftVelo/2);
+
+		double rightVelo = rightVelocity * 4096 * 500 / 600;
+		double leftVelo = leftVelocity * 4096 * 500 / 600;
+		rightMaster.set(ControlMode.Velocity, rightVelo / 2);
+		leftMaster.set(ControlMode.Velocity, leftVelo / 2);
 	}
 
 	/**
 	 * Drives robot certian distance
-	 * @param leftPosition left distance in inches
-	 * @param rightPosition right distance in inches
+	 * 
+	 * @param leftPosition
+	 *            left distance in inches
+	 * @param rightPosition
+	 *            right distance in inches
 	 */
 	public void drivePosition(double leftPosition, double rightPosition) {
 		rightTicks = RobotMap.convRatio * rightPosition;
 		leftTicks = RobotMap.convRatio * leftPosition;
 		rightMaster.set(ControlMode.MotionMagic, rightTicks);
 		leftMaster.set(ControlMode.MotionMagic, leftTicks);
-		SmartDashboard.putNumber("TickNumber",rightTicks);
+		SmartDashboard.putNumber("TickNumber", rightTicks);
 	}
 
-	
-	public void drivePercent(double leftPower,double rightPower) {
+	public void drivePercent(double leftPower, double rightPower) {
 		leftMaster.set(ControlMode.PercentOutput, leftPower);
 		rightMaster.set(ControlMode.PercentOutput, rightPower);
 	}
 
 	/**
 	 * Returns position in inches from Talons
+	 * 
 	 * @return position in inches
 	 */
 	public double getPosition() {
-		/* TODO find more accurate metric for position
-		 * since 'position' methods assume left and right are
-		 * moving to the same target value, then one possible solution
-		 * is to return the lesser of absolute value of the left and right 
-		 * position values. This would allow the both left and right
-		 * to settle on their target values.
+		/*
+		 * TODO find more accurate metric for position since 'position' methods assume
+		 * left and right are moving to the same target value, then one possible
+		 * solution is to return the lesser of absolute value of the left and right
+		 * position values. This would allow the both left and right to settle on their
+		 * target values.
 		 */
-		return ((double) leftMaster.getSelectedSensorPosition(0) / RobotMap.convRatio);
+
+		if (Math.abs(leftMaster.getSelectedSensorPosition(0))
+				/ RobotMap.convRatio < Math.abs(rightMaster.getSelectedSensorPosition(0)) / RobotMap.convRatio) {
+			return ((double) leftMaster.getSelectedSensorPosition(0) / RobotMap.convRatio);
+		} else {
+			return ((double) rightMaster.getSelectedSensorPosition(0) / RobotMap.convRatio);
+		}
 	}
-	
-	
+
 	public double getLeftTicks() {
 		return leftTicks;
 	}
 
-	
 	public double getRightTicks() {
 		return rightTicks;
 	}
-	
-	
+
 	private void clearStickyFaults() {
 		leftMaster.clearStickyFaults(0);
 		rightSlave.clearStickyFaults(0);
@@ -197,125 +197,130 @@ public class DriveTrain extends Subsystem {
 		rightMaster.clearStickyFaults(0);
 	}
 
-	
 	public void resetEncoders() {
 		leftMaster.setSelectedSensorPosition(0, 0, 0);
 		rightMaster.setSelectedSensorPosition(0, 0, 0);
 	}
-	
 
 	private void motionMagicPidInit() {
-		// @see https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
+		// @see
+		// https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
 
-		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.lPIDLoopIdx, RobotMap.lTimeoutMs); /* PIDLoop=0,timeoutMs=0 */
-		// leftBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /* PIDLoop=0,timeoutMs=0 */
-		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.rPIDLoopIdx, RobotMap.rTimeoutMs); /* PIDLoop=1,timeoutMs=0 */
-		// rightBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /* PIDLoop=0,timeoutMs=0 */
+		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.lPIDLoopIdx,
+				RobotMap.lTimeoutMs); /* PIDLoop=0,timeoutMs=0 */
+		// leftBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /*
+		// PIDLoop=0,timeoutMs=0 */
+		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.rPIDLoopIdx,
+				RobotMap.rTimeoutMs); /* PIDLoop=1,timeoutMs=0 */
+		// rightBack.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0); /*
+		// PIDLoop=0,timeoutMs=0 */
 
 		leftMaster.setSensorPhase(true);
 		rightMaster.setSensorPhase(true);
 		leftMaster.setInverted(false);
 		rightMaster.setInverted(false);
-		
-		leftMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0,   10, RobotMap.lTimeoutMs);
-		leftMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic,  10, RobotMap.lTimeoutMs);
 
-		rightMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0,  10, RobotMap.rTimeoutMs);
+		leftMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, RobotMap.lTimeoutMs);
+		leftMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, RobotMap.lTimeoutMs);
+
+		rightMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10, RobotMap.rTimeoutMs);
 		rightMaster.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10, RobotMap.rTimeoutMs);
 
 		leftMaster.configNominalOutputForward(0, RobotMap.lTimeoutMs);
 		leftMaster.configNominalOutputReverse(0, RobotMap.lTimeoutMs);
 		leftMaster.configPeakOutputForward(1, RobotMap.lTimeoutMs);
 		leftMaster.configPeakOutputReverse(-1, RobotMap.lTimeoutMs);
-		
+
 		rightMaster.configNominalOutputForward(0, RobotMap.rTimeoutMs);
 		rightMaster.configNominalOutputReverse(0, RobotMap.rTimeoutMs);
 		rightMaster.configPeakOutputForward(1, RobotMap.rTimeoutMs);
 		rightMaster.configPeakOutputReverse(-1, RobotMap.rTimeoutMs);
-		
-		/* TODO tune PID to solve acceleration and robot reaching final position 
-		 * @see example: https://youtu.be/jI7SnhuVXg4?t=2m17s
-		 * use the dashboard to view desired position vs actual position
+
+		/*
+		 * TODO tune PID to solve acceleration and robot reaching final position
+		 * 
+		 * @see example: https://youtu.be/jI7SnhuVXg4?t=2m17s use the dashboard to view
+		 * desired position vs actual position
 		 */
-		
-		/* TODO
-		 * watch this: https://www.youtube.com/watch?v=_bWvXn4ilrY
-		 * F = basically adds a delay, smoothes the input (maybe disable from velocity?)
-		 * P = how fast it goes
-		 * I = how much it tries to correct
-		 * D = how much it slows as it nears the target
+
+		/*
+		 * TODO watch this: https://www.youtube.com/watch?v=_bWvXn4ilrY F = basically
+		 * adds a delay, smoothes the input (maybe disable from velocity?) P = how fast
+		 * it goes I = how much it tries to correct D = how much it slows as it nears
+		 * the target
 		 */
-		
+
 		leftMaster.selectProfileSlot(RobotMap.lSlotIdx, RobotMap.lPIDLoopIdx);
 		leftMaster.config_kF(0, 0.2, RobotMap.lTimeoutMs);
 		leftMaster.config_kP(0, 0.2, RobotMap.lTimeoutMs);
 		leftMaster.config_kI(0, 0, RobotMap.lTimeoutMs);
 		leftMaster.config_kD(0, 0, RobotMap.lTimeoutMs);
-		
+
 		rightMaster.selectProfileSlot(RobotMap.rSlotIdx, RobotMap.rPIDLoopIdx);
 		rightMaster.config_kF(RobotMap.rSlotIdx, 0.2, RobotMap.rTimeoutMs);
 		rightMaster.config_kP(RobotMap.rSlotIdx, 0.2, RobotMap.rTimeoutMs);
 		rightMaster.config_kI(RobotMap.rSlotIdx, 0, RobotMap.rTimeoutMs);
 		rightMaster.config_kD(RobotMap.rSlotIdx, 0, RobotMap.rTimeoutMs);
-		
+
 		leftMaster.configMotionCruiseVelocity(RobotMap.cruiseVelocity, RobotMap.lTimeoutMs);
-		leftMaster.configMotionAcceleration(RobotMap.accel*2, RobotMap.lTimeoutMs);
-		
+		leftMaster.configMotionAcceleration(RobotMap.accel * 2, RobotMap.lTimeoutMs);
+
 		rightMaster.configMotionCruiseVelocity(RobotMap.cruiseVelocity, RobotMap.rTimeoutMs);
 		rightMaster.configMotionAcceleration(RobotMap.accel, RobotMap.rTimeoutMs);
-		
+
 		leftMaster.setSelectedSensorPosition(0, RobotMap.lPIDLoopIdx, RobotMap.lTimeoutMs);
 		rightMaster.setSelectedSensorPosition(0, RobotMap.rPIDLoopIdx, RobotMap.rTimeoutMs);
 	}
-	
-	
-	public void velocityPidInit() {	
-		// @see https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
 
-		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.lPIDLoopIdx, RobotMap.lTimeoutMs);  /* PIDLoop=0,timeoutMs=0 */
-		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.rPIDLoopIdx, RobotMap.rTimeoutMs); /* PIDLoop=1,timeoutMs=0 */
-		
+	public void velocityPidInit() {
+		// @see
+		// https://github.com/Team4761/2018-Robot-Code/blob/master/src/org/robockets/robot/drivetrain/Drivetrain.java
+
+		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.lPIDLoopIdx,
+				RobotMap.lTimeoutMs); /* PIDLoop=0,timeoutMs=0 */
+		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, RobotMap.rPIDLoopIdx,
+				RobotMap.rTimeoutMs); /* PIDLoop=1,timeoutMs=0 */
+
 		leftMaster.setSensorPhase(true);
 		rightMaster.setSensorPhase(true);
-		
+
 		leftMaster.configNominalOutputForward(0, RobotMap.lTimeoutMs);
 		leftMaster.configNominalOutputReverse(0, RobotMap.lTimeoutMs);
 		leftMaster.configPeakOutputForward(1, RobotMap.lTimeoutMs);
 		leftMaster.configPeakOutputReverse(-1, RobotMap.lTimeoutMs);
-		
+
 		rightMaster.configNominalOutputForward(0, RobotMap.rTimeoutMs);
 		rightMaster.configNominalOutputReverse(0, RobotMap.rTimeoutMs);
 		rightMaster.configPeakOutputForward(1, RobotMap.rTimeoutMs);
 		rightMaster.configPeakOutputReverse(-1, RobotMap.rTimeoutMs);
-		
-		
+
 		leftMaster.configMotionCruiseVelocity(RobotMap.cruiseVelocity, RobotMap.lTimeoutMs);
 		leftMaster.configMotionAcceleration(RobotMap.accel, RobotMap.lTimeoutMs);
-		
+
 		rightMaster.configMotionCruiseVelocity(RobotMap.cruiseVelocity, RobotMap.rTimeoutMs);
 		rightMaster.configMotionAcceleration(RobotMap.accel, RobotMap.rTimeoutMs);
-		
-		/* TODO tune PID to solve acceleration and robot accuracy 
-		 * @see example: https://youtu.be/jI7SnhuVXg4?t=2m17s
-		 * use the dashboard to view desired position vs actual position
+
+		/*
+		 * TODO tune PID to solve acceleration and robot accuracy
+		 * 
+		 * @see example: https://youtu.be/jI7SnhuVXg4?t=2m17s use the dashboard to view
+		 * desired position vs actual position
 		 */
 
 		leftMaster.config_kF(0, .24, RobotMap.lTimeoutMs);
-		leftMaster.config_kP(0, .2, RobotMap.lTimeoutMs);//.9 .025
+		leftMaster.config_kP(0, .2, RobotMap.lTimeoutMs);// .9 .025
 		leftMaster.config_kI(0, 0, RobotMap.lTimeoutMs);
 		leftMaster.config_kD(0, 0, RobotMap.lTimeoutMs);
 		leftMaster.selectProfileSlot(RobotMap.lSlotIdx, RobotMap.lPIDLoopIdx);
-		
-		rightMaster.config_kF(RobotMap.rSlotIdx, .24, RobotMap.rTimeoutMs);//.24
-		rightMaster.config_kP(RobotMap.rSlotIdx, .2, RobotMap.rTimeoutMs);//.2
+
+		rightMaster.config_kF(RobotMap.rSlotIdx, .24, RobotMap.rTimeoutMs);// .24
+		rightMaster.config_kP(RobotMap.rSlotIdx, .2, RobotMap.rTimeoutMs);// .2
 		rightMaster.config_kI(RobotMap.rSlotIdx, 0, RobotMap.rTimeoutMs);
 		rightMaster.config_kD(RobotMap.rSlotIdx, 0, RobotMap.rTimeoutMs);
 		rightMaster.selectProfileSlot(RobotMap.rSlotIdx, RobotMap.rPIDLoopIdx);
-		
-		
-		}
 
-	
+	}
+
 	/**
 	 * Outputs all data from Talons to robotLogger.
 	 */
@@ -359,23 +364,24 @@ public class DriveTrain extends Subsystem {
 
 		clearStickyFaults();
 	}
-	public void lPidVal(double f,double p,double i,double d) {
-	leftMaster.config_kF(RobotMap.lSlotIdx, f, RobotMap.lTimeoutMs);
-	leftMaster.config_kP(RobotMap.lSlotIdx, p, RobotMap.lTimeoutMs);
-	leftMaster.config_kI(RobotMap.lSlotIdx, i, RobotMap.lTimeoutMs);
-	leftMaster.config_kD(RobotMap.lSlotIdx, d, RobotMap.lTimeoutMs);
-	}
-	public void rPidVal(double f,double p,double i,double d) {
-	rightMaster.config_kF(RobotMap.rSlotIdx, f, RobotMap.rTimeoutMs);
-	rightMaster.config_kP(RobotMap.rSlotIdx, p, RobotMap.rTimeoutMs);
-	rightMaster.config_kI(RobotMap.rSlotIdx, i, RobotMap.rTimeoutMs);
-	rightMaster.config_kD(RobotMap.rSlotIdx, d, RobotMap.rTimeoutMs);
+
+	public void lPidVal(double f, double p, double i, double d) {
+		leftMaster.config_kF(RobotMap.lSlotIdx, f, RobotMap.lTimeoutMs);
+		leftMaster.config_kP(RobotMap.lSlotIdx, p, RobotMap.lTimeoutMs);
+		leftMaster.config_kI(RobotMap.lSlotIdx, i, RobotMap.lTimeoutMs);
+		leftMaster.config_kD(RobotMap.lSlotIdx, d, RobotMap.lTimeoutMs);
 	}
 
-	
+	public void rPidVal(double f, double p, double i, double d) {
+		rightMaster.config_kF(RobotMap.rSlotIdx, f, RobotMap.rTimeoutMs);
+		rightMaster.config_kP(RobotMap.rSlotIdx, p, RobotMap.rTimeoutMs);
+		rightMaster.config_kI(RobotMap.rSlotIdx, i, RobotMap.rTimeoutMs);
+		rightMaster.config_kD(RobotMap.rSlotIdx, d, RobotMap.rTimeoutMs);
+	}
+
 	/**
-	 * Initializes the DriveTrain's default command to the Drive command.
-	 * The default for this subsystem is the associated teliop command. 
+	 * Initializes the DriveTrain's default command to the Drive command. The
+	 * default for this subsystem is the associated teliop command.
 	 * 
 	 * @see org.usfirst.frc.team3389.robot.commands.Drive
 	 */

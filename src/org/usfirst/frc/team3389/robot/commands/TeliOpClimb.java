@@ -70,7 +70,7 @@ public class TeliOpClimb extends Command {
 		double speed;
 		
 		if(climbStick.getRawButton(1)) {
-			speed = .4;
+			speed = 1;
 		} else {
 			speed = 0;
 		}

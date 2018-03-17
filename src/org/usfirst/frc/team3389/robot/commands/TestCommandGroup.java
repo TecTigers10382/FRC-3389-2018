@@ -8,6 +8,8 @@
 
 package org.usfirst.frc.team3389.robot.commands;
 
+import org.usfirst.frc.team3389.robot.RobotMap;
+
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class TestCommandGroup extends CommandGroup {
@@ -19,17 +21,8 @@ public class TestCommandGroup extends CommandGroup {
 //		addSequential(new IntakeAuto(.5, 2));
 //		addSequential(new LiftAuto(1.5));
 		
-//		addParallel(new LiftAuto(2));
-//		addSequential(new DriveDistance(11*12+4-33));
-		addSequential(new DriveTurn(.5, 90));
-		
-//		addSequential(new DriveDistance(48.0)); // TODO what is the unit of measure for distance ?
-//		addSequential(new DriveTurn(.5, 90.0));	
-//		addSequential(new DriveDistance(2.0)); // TODO what is the unit of measure for distance ?
-//		addSequential(new DriveTurn(.5, 90.0));	
-//		addSequential(new DriveDistance(10.0)); // TODO what is the unit of measure for distance ?
-//		addSequential(new DriveTurn(.5, 90.0));	
-//		addSequential(new DriveDistance(2.0)); // TODO what is the unit of measure for distance ?
-//		addSequential(new DriveTurn(.5, 90.0));	
+		addParallel(new LiftAuto(RobotMap.LIFT_TIME));
+		addSequential(new DriveDistance(101));
+		addSequential(new IntakeAuto(-1, 2));
 	}
 }

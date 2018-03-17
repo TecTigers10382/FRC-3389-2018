@@ -22,16 +22,16 @@ public class AutoRightSwitch extends CommandGroup {
 			addSequential(new DriveTurn(.5,90));
 			addSequential(new DriveDistance(150));
 			addSequential(new DriveTurn(.5,-90));
-			addParallel(new LiftAuto(RobotMap.LIFT_TIME/2));
+			addParallel(new LiftAuto(RobotMap.LIFT_TIME));
 			addSequential(new DriveDistance(101-20));
 			addSequential(new IntakeAuto(-1,2));
-			addSequential(new DriveDistance(-10));
+//			addSequential(new DriveDistance(-10));
 		}
 		else if(gameData == 2 || gameData == 3) {
-			addParallel(new LiftAuto(RobotMap.LIFT_TIME/2));
+			addParallel(new LiftAuto(RobotMap.LIFT_TIME));
 			addSequential(new DriveDistance(101));
 			addSequential(new IntakeAuto(-1, 2));
-			addSequential(new DriveDistance(-10));
+//			addSequential(new DriveDistance(-10));
 		}
 	}
 }

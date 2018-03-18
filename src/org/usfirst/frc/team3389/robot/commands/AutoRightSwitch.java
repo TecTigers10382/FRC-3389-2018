@@ -16,22 +16,28 @@ public class AutoRightSwitch extends CommandGroup {
 	// private properties here
 	
 	public AutoRightSwitch(int gameData) {
-		if(gameData == 0 || gameData == 1) {
+		if(gameData == 0 ) {
 			// TODO add description of this autonomous maneuver
-			addSequential(new DriveDistance(20));
-			addSequential(new DriveTurn(.5,90));
-			addSequential(new DriveDistance(150));
-			addSequential(new DriveTurn(.5,-90));
-			addParallel(new LiftAuto(RobotMap.LIFT_TIME));
-			addSequential(new DriveDistance(101-20));
-			addSequential(new IntakeAuto(-1,2));
-//			addSequential(new DriveDistance(-10));
+			addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
+			addSequential(new DriveDistance(101));
 		}
 		else if(gameData == 2 || gameData == 3) {
-			addParallel(new LiftAuto(RobotMap.LIFT_TIME));
-			addSequential(new DriveDistance(101));
+			addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
+			addSequential(new DriveDistance(144));
+			addSequential(new DriveTurn(.65,90));
+			addSequential(new DriveDistance(20));
+			addSequential(new IntakeAuto(-1,2));
+		}
+		else if(gameData == 1) {
+			addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
+			addSequential(new DriveDistance(298));
+			addSequential(new LiftAuto(RobotMap.LIFT_TIME * 2.25));
+			addSequential(new DriveTurn(.65, 90));
+			addSequential(new DriveDistance(22));
 			addSequential(new IntakeAuto(-1, 2));
-//			addSequential(new DriveDistance(-10));
+			addSequential(new DriveDistance(-30));
+		//	addSequential(new LiftAuto(RobotMap.LIFT_TIME * 4));
+		//  LiftAuto needs to be refined to allow for going down
 		}
 	}
 }

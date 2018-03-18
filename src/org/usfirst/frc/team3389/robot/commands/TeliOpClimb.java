@@ -8,6 +8,7 @@
 package org.usfirst.frc.team3389.robot.commands;
 
 import org.usfirst.frc.team3389.robot.Robot;
+import org.usfirst.frc.team3389.robot.RobotMap;
 import org.usfirst.frc.team3389.robot.subsystems.Climber;
 import org.usfirst.frc.team3389.robot.subsystems.Lifter;
 import org.usfirst.frc.team3389.robot.utils.Logger;
@@ -27,7 +28,7 @@ public class TeliOpClimb extends Command {
 
 	Joystick climbStick;
 	Climber climber;
-	
+	boolean dropLift= true;
 	/**
 	 * Constructor gains control of the Intake subsystem of the robot.
 	 * 
@@ -55,6 +56,8 @@ public class TeliOpClimb extends Command {
 	protected void initialize() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		// perform each-use setup here
+		
+		
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
@@ -71,11 +74,16 @@ public class TeliOpClimb extends Command {
 		
 		if(climbStick.getRawButton(1)) {
 			speed = 1;
-		} else {
+		} else { 
 			speed = 0;
 		}
 		
 		climber.lift(speed);
+		
+		if(dropLift == true) {
+			dropLift = false;
+			Robot.lifter.driveLift(RobotMap.LIFT_TIME * .75);
+		}
 		
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}

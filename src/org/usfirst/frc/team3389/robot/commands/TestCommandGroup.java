@@ -21,7 +21,7 @@ public class TestCommandGroup extends CommandGroup {
 //		addSequential(new IntakeAuto(.5, 2));
 //		addSequential(new LiftAuto(1.5));
 		
-		addParallel(new LiftAuto(RobotMap.LIFT_TIME));
+		addParallel(new LiftAuto(RobotMap.LIFT_TIME*2));
 		addSequential(new DriveDistance(101));
 		addSequential(new IntakeAuto(-1, 2));
 	}

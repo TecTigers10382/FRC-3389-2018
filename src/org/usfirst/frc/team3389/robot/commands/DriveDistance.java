@@ -46,6 +46,7 @@ public class DriveDistance extends Command {
 	protected void initialize() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		// do any pre-loop setup here
+		drive.resetEncoders();
 		drive.drivePosition(distance, distance);
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}

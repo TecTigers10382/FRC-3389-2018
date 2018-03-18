@@ -135,8 +135,8 @@ public class DriveTrain extends Subsystem {
 
 		double rightVelo = rightVelocity * 4096 * 500 / 600;
 		double leftVelo = leftVelocity * 4096 * 500 / 600;
-		rightMaster.set(ControlMode.Velocity, rightVelo / 2);
-		leftMaster.set(ControlMode.Velocity, leftVelo / 2);
+		rightMaster.set(ControlMode.Velocity, rightVelo / 1.5);
+		leftMaster.set(ControlMode.Velocity, leftVelo / 1.5);
 	}
 
 	/**

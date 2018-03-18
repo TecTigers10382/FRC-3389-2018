@@ -176,9 +176,9 @@ public class Robot extends TimedRobot {
 				}
 			} else {
 				if (gameData.charAt(1) == 'L') {
-					gameDataInt = 3;
+					gameDataInt = 2;
 				} else {
-					gameDataInt = 4;
+					gameDataInt = 3;
 				}
 			}
 		} else {

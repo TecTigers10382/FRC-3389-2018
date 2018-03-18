@@ -75,7 +75,12 @@ public class TeliOpDrive extends Command {
 		if (Math.abs(right) < .1) // TODO the joystick 'deadzone' should be defined in RobotMap
 			right = 0;
 		
+		if(Robot.lifter.getUp()==true) {
+			left = left/2;
+			right = right/2;
+		}
 		drive.tankDrive(-left, -right);
+		
 		
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 

@@ -19,23 +19,21 @@ public class AutoLeftSwitch extends CommandGroup {
 		
 		if(gameData == 0 || gameData == 1) {
 			// TODO add description of this autonomous maneuver
-			addParallel(new LiftAuto(RobotMap.LIFT_TIME));
-			addSequential(new DriveDistance(101));
-			addSequential(new IntakeAuto(-1, 2));
-//			addSequential(new DriveDistance(-10));
+			addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
+			addSequential(new DriveDistance(144));
+			addSequential(new DriveTurn(.65,-90));
+			addSequential(new DriveDistance(20));
+			addSequential(new IntakeAuto(-1,2));
 		}
 		else if(gameData == 2 || gameData == 3) {
-			addSequential(new DriveDistance(20));
+			addSequential(new DriveDistance(101));
 			addSequential(new DriveTurn(.5,90));
 			addSequential(new DriveDistance(150));
 			addSequential(new DriveTurn(.5,-90));
 			addParallel(new LiftAuto(RobotMap.LIFT_TIME));
 			addSequential(new DriveDistance(101-20));
 			addSequential(new IntakeAuto(-1,2));
-//			addSequential(new DriveDistance(-10));
 		}
-
-		addSequential(new DriveDistance(36));
 	}
 }
 ;

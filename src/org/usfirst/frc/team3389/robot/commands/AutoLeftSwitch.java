@@ -25,7 +25,7 @@ public class AutoLeftSwitch extends CommandGroup {
 			addSequential(new DriveDistance(20));
 			addSequential(new IntakeAuto(-1,2));
 		}
-		else if(gameData == 2 || gameData == 3) {
+		else if(gameData == 3) {
 			addSequential(new DriveDistance(101));
 			addSequential(new DriveTurn(.5,90));
 			addSequential(new DriveDistance(150));
@@ -34,6 +34,17 @@ public class AutoLeftSwitch extends CommandGroup {
 			addSequential(new DriveDistance(101-20));
 			addSequential(new IntakeAuto(-1,2));
 		}
+		else if(gameData == 2) {
+			addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
+			addSequential(new DriveDistance(298));
+			addSequential(new LiftAuto(RobotMap.LIFT_TIME * 2.25));
+			addSequential(new DriveTurn(.65, -90));
+			addSequential(new DriveDistance(22));
+			addSequential(new IntakeAuto(-1, 2));
+			addSequential(new DriveDistance(-30));
+			// add lower lift command when finished
+		}
+		
 	}
 }
 ;

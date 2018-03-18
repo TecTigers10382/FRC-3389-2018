@@ -18,8 +18,15 @@ public class AutoRightSwitch extends CommandGroup {
 	public AutoRightSwitch(int gameData) {
 		if(gameData == 0 ) {
 			// TODO add description of this autonomous maneuver
+			addSequential(new DriveDistance(256));
+			addSequential(new DriveTurn(.5, 90));
 			addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
-			addSequential(new DriveDistance(101));
+			addSequential(new DriveDistance(140));
+			addSequential(new LiftAuto(RobotMap.LIFT_TIME * 2.25));
+			addSequential(new DriveTurn(.5, -135));
+			addSequential(new DriveDistance(20));
+			addSequential(new IntakeAuto(-1, 2));
+			// add drop lift command when finished
 		}
 		else if(gameData == 2 || gameData == 3) {
 			addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));

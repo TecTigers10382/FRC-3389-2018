@@ -149,6 +149,7 @@ public class OLEDDisplay extends I2CUpdatableAddress {
     	writeByte(0x00,(byte) 0x40);
     	writeByte(0x00,SSD1306_DISPLAYALLON_RESUME);           // 0xA4
     	writeByte(0x00,SSD1306_NORMALDISPLAY);
+    	writeByte(0x00,SSD1306_DEACTIVATE_SCROLL);
     	writeByte(0x00,SSD1306_DISPLAYON);//--turn on oled panel
             
     	this.inited = true;;

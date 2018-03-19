@@ -288,7 +288,8 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		// given this is called in a loop its too noisy to be of use for debugging //
 		// robotLogger.log(Logger.DEBUG, this, "enter");
-		
+
+		// robotScreen.drawTextStringCentered("Hello World!", 0);
 
 		// it's probably confusing to mix pixel positioning and character/line
 		// positioning
@@ -344,15 +345,17 @@ public class Robot extends TimedRobot {
 		// DriveTrain.leftSlave.getMotorOutputVoltage());
 		// SmartDashboard.putNumber("OutputVoltage RightSlave",
 		// DriveTrain.rightSlave.getMotorOutputVoltage());
-		 SmartDashboard.putNumber("OutputCurrent LeftMaster",
-		 driveTrain.leftMaster.getOutputCurrent());
-		 SmartDashboard.putNumber("OutputCurrent RightMaster",
-		 driveTrain.rightMaster.getOutputCurrent());
-		 SmartDashboard.putNumber("OutputCurrent LeftSlave",
-		 driveTrain.leftSlave.getOutputCurrent());
-		 SmartDashboard.putNumber("OutputCurrent RightSlave",
-		 driveTrain.rightSlave.getOutputCurrent());
+		SmartDashboard.putNumber("OutputCurrent LeftMaster",
+		driveTrain.leftMaster.getOutputCurrent());
+		SmartDashboard.putNumber("OutputCurrent RightMaster",
+		driveTrain.rightMaster.getOutputCurrent());
+		SmartDashboard.putNumber("OutputCurrent LeftSlave",
+		driveTrain.leftSlave.getOutputCurrent());
+		SmartDashboard.putNumber("OutputCurrent RightSlave",
+		driveTrain.rightSlave.getOutputCurrent());
 		SmartDashboard.putNumber("gyro", driveTrain.driveGyro.getFilteredYaw());
+		
+		// robotScreen.updateTextLine(String.format("Heading: %06.2f", driveTrain.driveGyro.getFilteredYaw()), 6);
 
 		SmartDashboard.putNumber("LeftPosition", driveTrain.leftMaster.getSelectedSensorPosition(0)); // TODO should the
 																										// dashboard
@@ -370,8 +373,11 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putBoolean("Down Switch", lifter.getDown());
 		SmartDashboard.putBoolean("Up Switch", lifter.getUp());
 		// robotScreen.refresh();
+
 		// Display on SmartDashboard
 		// SmartDashboard.putNumber("Distance", timeOfFlight.getDistanceMillimeters());
+
+		// robotScreen.refresh();
 
 		Scheduler.getInstance().run();
 

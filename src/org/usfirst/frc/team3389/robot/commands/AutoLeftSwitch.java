@@ -5,7 +5,6 @@
 * the project.
 */
 
-
 package org.usfirst.frc.team3389.robot.commands;
 
 import org.usfirst.frc.team3389.robot.RobotMap;
@@ -14,37 +13,60 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutoLeftSwitch extends CommandGroup {
 	// private properties here
-	
+
 	public AutoLeftSwitch(int gameData) {
-		
-		if(gameData == 0 || gameData == 1) {
-			// TODO add description of this autonomous maneuver
+		// For LL & LR: drop cube in left plate of switch from side
+		if (gameData == 0 || gameData == 1) {
+			// Lift half height & drive to side of switch
 			addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
 			addSequential(new DriveDistance(144));
-			addSequential(new DriveTurn(.65,-90));
+			// Turn right to face switch
+			addSequential(new DriveTurn(.65, 90));
+			// Drive to switch
 			addSequential(new DriveDistance(20));
-			addSequential(new IntakeAuto(-1,2));
+			// Expel cube
+			addSequential(new IntakeAuto(-1, 2));
 		}
-		else if(gameData == 3) {
-			addSequential(new DriveDistance(101));
-			addSequential(new DriveTurn(.5,90));
-			addSequential(new DriveDistance(150));
-			addSequential(new DriveTurn(.5,-90));
-			addParallel(new LiftAuto(RobotMap.LIFT_TIME));
-			addSequential(new DriveDistance(101-20));
-			addSequential(new IntakeAuto(-1,2));
+
+		// For RR: drop cube in right plate of scale
+		// Needs to be fixed for opposite scale
+		else if (gameData == 3) {
+			// Drives past switch
+			addSequential(new DriveDistance(256));
+			// Turns right 90
+			addSequential(new DriveTurn(.65, 90));
+			// Lift half height & drive slightly past right plate
+			addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
+			addSequential(new DriveDistance(140));
+			// Lift to full height
+			addSequential(new LiftAuto(RobotMap.LIFT_TIME * 2.25));
+			// Turn left 135 to face corner of right plate
+			addSequential(new DriveTurn(.65, -135));
+			// Drive forward to right plate
+			addSequential(new DriveDistance(20));
+			// Expel cube
+			addSequential(new IntakeAuto(-1, 2));
+			// Drive backwards
+			addSequential(new DriveDistance(-30));
+			// add drop lift command when finished
 		}
-		else if(gameData == 2) {
+
+		// For RL: drop cube in left plate of scale if switch is on right side
+		else if (gameData == 2) {
+			// Lift half height & drive forward to side of scale
 			addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
 			addSequential(new DriveDistance(298));
+			// Lift full height
 			addSequential(new LiftAuto(RobotMap.LIFT_TIME * 2.25));
-			addSequential(new DriveTurn(.65, -90));
+			// Turn right to face scale
+			addSequential(new DriveTurn(.65, 90));
+			// Drive to scale plate
 			addSequential(new DriveDistance(22));
+			// Expel cube
 			addSequential(new IntakeAuto(-1, 2));
+			// Drive backwards
 			addSequential(new DriveDistance(-30));
 			// add lower lift command when finished
 		}
-		
 	}
-}
-;
+};

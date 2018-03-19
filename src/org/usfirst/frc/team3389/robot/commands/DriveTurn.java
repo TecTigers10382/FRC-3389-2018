@@ -96,9 +96,9 @@ public class DriveTurn extends Command {
 			Robot.driveTrain.driveVelocity(-(direction * result_speed), (direction * result_speed));
 		} */
 		if(turn < 0 ) {
-			Robot.driveTrain.driveVelocity(-(direction * result_speed), (direction * result_speed));
-		} else {
 			Robot.driveTrain.driveVelocity((direction * result_speed), -(direction * result_speed));
+		} else {
+			Robot.driveTrain.driveVelocity(-(direction * result_speed), (direction * result_speed));
 		}
 			
 		double[] temp = { timer, current, error, integral, derivative, result_speed };

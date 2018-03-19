@@ -13,24 +13,33 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutoMiddle extends CommandGroup {
 	// private properties here
-	
+
 	public AutoMiddle(int gameData) {
-		if(gameData == 0 || gameData == 1) {
+		// For LL & LR: drop cube in left plate of switch
+		if (gameData == 0 || gameData == 1) {
 			// TODO add description of this autonomous maneuver
+			// Drive forward slightly
 			addSequential(new DriveDistance(20));
-			addSequential(new DriveTurn(.65,90));
+			// Turn left 90
+			addSequential(new DriveTurn(.65, -90));
+			// Lift half height & drive forward
 			addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
 			addSequential(new DriveDistance(120));
-			addSequential(new DriveTurn(.65,-90));
-			addSequential(new DriveDistance(101-23));
-			addSequential(new IntakeAuto(-1,2));
-//			addSequential(new DriveDistance(-10));
+			// Turn right to face switch
+			addSequential(new DriveTurn(.65, 90));
+			// Drive to left switch plate
+			addSequential(new DriveDistance(101 - 23));
+			// Expel cube
+			addSequential(new IntakeAuto(-1, 2));
 		}
-		else if(gameData == 2 || gameData == 3) {
+
+		// For RL & RR: drop cube in right plate of switch
+		else if (gameData == 2 || gameData == 3) {
+			// Lift half height & drive to right switch plate
 			addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
 			addSequential(new DriveDistance(101));
+			// Expel cube
 			addSequential(new IntakeAuto(-1, 2));
-//			addSequential(new DriveDistance(-10));
 		}
 	}
 }

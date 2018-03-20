@@ -11,10 +11,10 @@ import org.usfirst.frc.team3389.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class AutoLeftSwitch extends CommandGroup {
+public class AutoLeft extends CommandGroup {
 	// private properties here
 
-	public AutoLeftSwitch(int gameData) {
+	public AutoLeft(int gameData) {
 		// For LL & LR: drop cube in left plate of switch from side
 		if (gameData == 0 || gameData == 1) {
 			// Lift half height & drive to side of switch

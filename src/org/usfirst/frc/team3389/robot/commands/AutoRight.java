@@ -11,10 +11,10 @@ import org.usfirst.frc.team3389.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
-public class AutoRightSwitch extends CommandGroup {
+public class AutoRight extends CommandGroup {
 	// private properties here
 
-	public AutoRightSwitch(int gameData) {
+	public AutoRight(int gameData) {
 
 		// For LL: drop cube in left plate of scale
 		// Numbers need to be adjusted for opposite scale

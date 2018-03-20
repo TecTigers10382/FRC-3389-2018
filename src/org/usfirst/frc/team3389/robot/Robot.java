@@ -8,11 +8,11 @@
 package org.usfirst.frc.team3389.robot;
 
 import org.usfirst.frc.team3389.robot.commands.AutoAlternativeLeft;
-import org.usfirst.frc.team3389.robot.commands.AutoLeftSwitch;
+import org.usfirst.frc.team3389.robot.commands.AutoLeft;
 import org.usfirst.frc.team3389.robot.commands.AutoLine;
 import org.usfirst.frc.team3389.robot.commands.AutoMiddle;
 import org.usfirst.frc.team3389.robot.commands.AutoAlternativeRight;
-import org.usfirst.frc.team3389.robot.commands.AutoRightSwitch;
+import org.usfirst.frc.team3389.robot.commands.AutoRight;
 import org.usfirst.frc.team3389.robot.commands.TestCommandGroup;
 import org.usfirst.frc.team3389.robot.ioDevices.OLEDDisplay;
 import org.usfirst.frc.team3389.robot.ioDevices.TimeOfFlight;
@@ -193,13 +193,13 @@ public class Robot extends TimedRobot {
 		} else if (value.equals("Left")) {
 			cmd = new AutoAlternativeLeft(gameDataInt);
 		} else if (value.equals("LeftSwitch")) {
-			cmd = new AutoLeftSwitch(gameDataInt);
+			cmd = new AutoLeft(gameDataInt);
 		} else if (value.equals("Middle")) {
 			cmd = new AutoMiddle(gameDataInt);
 		} else if (value.equals("Right")) {
 			cmd = new AutoAlternativeRight(gameDataInt);
 		} else if (value.equals("RightSwitch")) {
-			cmd = new AutoRightSwitch(gameDataInt);
+			cmd = new AutoRight(gameDataInt);
 		} else if (value.equals("TestCommand")) {
 			cmd = new TestCommandGroup();
 		} else if (value.equals("Line")) {

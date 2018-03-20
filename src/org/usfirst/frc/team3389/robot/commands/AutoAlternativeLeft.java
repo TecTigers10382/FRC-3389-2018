@@ -5,7 +5,6 @@
 * the project.
 */
 
-
 package org.usfirst.frc.team3389.robot.commands;
 
 import org.usfirst.frc.team3389.robot.RobotMap;
@@ -14,9 +13,13 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutoAlternativeLeft extends CommandGroup {
 	// private properties here
-	
+	/*
+	 * This auto command is if we are in left position and in the case of LL where
+	 * the other team can score the switch and we want to score the scale
+	 */
+
 	public AutoAlternativeLeft(int gameData) {
-		
+
 		// For LR: drop cube in left plate of switch from side
 		if (gameData == 1) {
 			// Lift half height & drive to side of switch
@@ -54,7 +57,7 @@ public class AutoAlternativeLeft extends CommandGroup {
 		}
 
 		// For LL & RL: drop cube in left plate of scale if switch is on right side
-		else if (gameData ==0 || gameData == 2) {
+		else if (gameData == 0 || gameData == 2) {
 			// Lift half height & drive forward to side of scale
 			addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
 			addSequential(new DriveDistance(298));

@@ -70,9 +70,11 @@ public class Lifter extends Subsystem {
 		while (!((height >= wantedInch - 1) && (height <= wantedInch + 1))) {
 			getHeight();
 			if (wantedInch > height) {
+				driveLift(.75);
 				// TODO Make motor go up
 			}
 			if (wantedInch < height) {
+				driveLift(-.75);
 				// TODO Make motor go down
 			}
 		}

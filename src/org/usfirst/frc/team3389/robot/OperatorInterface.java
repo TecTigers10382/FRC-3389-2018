@@ -29,7 +29,8 @@ public class OperatorInterface {
 	
 	// Button liftFull = new JoystickButton(jsOperator, 1);
 
-	Button intakeSpin = new JoystickButton(jsOperator, 2);
+	Button intakeSpinRight = new JoystickButton(jsOperator, 6);
+	Button intakeSpinLeft = new JoystickButton(jsOperator, 5);
 
 	public OperatorInterface() {
 		// liftFull.whileHeld(new LiftFull());
@@ -42,8 +43,10 @@ public class OperatorInterface {
 		 *      individual commands
 		*/
 	 		
-		if (intakeSpin != null)
-			intakeSpin.whileHeld(new TeliOpIntakeSpin());
+		if (intakeSpinRight != null)
+			intakeSpinRight.whileHeld(new TeliOpIntakeSpin(-.75));
+		if(intakeSpinLeft != null)
+			intakeSpinLeft.whileHeld(new TeliOpIntakeSpin(.75));
 	}
 
 	/**

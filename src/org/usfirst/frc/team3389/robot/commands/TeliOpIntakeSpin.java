@@ -26,18 +26,20 @@ public class TeliOpIntakeSpin extends Command {
 
 	Joystick intakeStick;
 	Intake intake; 
+	double intakePower;
 
 	/**
 	 * Constructor gains control of the Intake subsystem of the robot.
 	 * 
 	 * @see org.usfirst.frc.team3389.robot.subsystems.Intake
 	 */
-	public TeliOpIntakeSpin() {
+	public TeliOpIntakeSpin(double power) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		// perform one-time setup here
 		
 		requires(Robot.intake);
 		intake = Robot.intake;
+		intakePower = power;
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
@@ -64,10 +66,8 @@ public class TeliOpIntakeSpin extends Command {
 	@Override
 	protected void execute() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-
-		double power = .5;
 		
-		intake.driveSeperate(power,-power);
+		intake.driveSeperate(intakePower,-intakePower);
 		
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 

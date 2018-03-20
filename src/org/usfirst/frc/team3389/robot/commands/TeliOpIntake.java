@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class TeliOpIntake extends Command {
 
 	Joystick intakeStick;
-	Intake intake; 
+	Intake intake;
 
 	/**
 	 * Constructor gains control of the Intake subsystem of the robot.
@@ -35,10 +35,10 @@ public class TeliOpIntake extends Command {
 	public TeliOpIntake() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		// perform one-time setup here
-		
+
 		requires(Robot.intake);
 		intake = Robot.intake;
-		
+
 		intakeStick = Robot.operatorControllers.getOperatorJoystick();
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
@@ -58,8 +58,8 @@ public class TeliOpIntake extends Command {
 	}
 
 	/**
-	 * As the command is run, updates the joystick values and controls the
-	 * Intake with them.
+	 * As the command is run, updates the joystick values and controls the Intake
+	 * with them.
 	 * 
 	 * @see org.usfirst.frc.team3389.robot.subsystems.Intake
 	 */
@@ -70,10 +70,11 @@ public class TeliOpIntake extends Command {
 		double power = intakeStick.getRawAxis(1);
 
 		if (Math.abs(power) < .1) // TODO the deadzone should be define in RobotMap
-			intake.driveSeperate(.3, 0);
-		
-		intake.driveBoth(power/2); // TODO the scaler for the stick should be defined somewhere
-		
+			intake.driveSeperate(-.3, 0);
+
+		else
+			intake.driveBoth(power / 2); // TODO the scaler for the stick should be defined somewhere
+
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 
 	}
@@ -96,7 +97,7 @@ public class TeliOpIntake extends Command {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 
 		intake.stop();
-		
+
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 
 	}

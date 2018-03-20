@@ -28,9 +28,12 @@ public class AutoLeft extends CommandGroup {
 			addSequential(new IntakeAuto(-1, 2));
 		}
 
-		// For RR: drop cube in right plate of scale
-		// Needs to be fixed for opposite scale
+		// For RR: drive past auto line
 		else if (gameData == 3) {
+			// Drive past auto line
+			addSequential(new DriveDistance(101));
+			
+			/* Code to drop cube in right plate of scale, not tested:
 			// Drives past switch
 			addSequential(new DriveDistance(256));
 			// Turns right 90
@@ -48,7 +51,7 @@ public class AutoLeft extends CommandGroup {
 			addSequential(new IntakeAuto(-1, 2));
 			// Drive backwards
 			addSequential(new DriveDistance(-30));
-			// add drop lift command when finished
+			// add drop lift command when finished */
 		}
 
 		// For RL: drop cube in left plate of scale if switch is on right side

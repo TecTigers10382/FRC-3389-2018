@@ -14,8 +14,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
-
-
 public class Lifter extends Subsystem {
 	public final TalonSRX lift;
 	StickyFaults liftSFaults;
@@ -25,39 +23,36 @@ public class Lifter extends Subsystem {
 	DigitalInput downSwitch;
 
 	// The Pitch diameter is 1.45 inches
-	private double radius = 1.45/2d;
+	private double radius = 1.45 / 2d;
 
-	
 	public Lifter() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		lift = new TalonSRX(4); // TODO the specific ID should be in the RobotMap
 
 		lift.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		lift.setInverted(true);
-		
+
 		liftFaults = new Faults();
 		liftSFaults = new StickyFaults();
 		enc = new Encoder(4, 5, false, Encoder.EncodingType.k4X);
-		
+
 		upSwitch = new DigitalInput(RobotMap.UP_SWITCH_PIN);
 		downSwitch = new DigitalInput(RobotMap.DOWN_SWITCH_PIN);
-		
+
 		Debug();
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
-	
 	public void driveLift(double power) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:\t" + power);
-		
+
 		// TODO the intake has a scalar for power. does the lift need one also?
 		// TODO test both ends stops as a safety measure
-		
+
 		lift.set(ControlMode.PercentOutput, power);
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
-	
 	public void stop() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 
@@ -66,12 +61,11 @@ public class Lifter extends Subsystem {
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
-	
 	public boolean gotoHeight(int inches) {
 		getHeight();
 		double wantedInch = inches;
 		double height = getHeight();
-		
+
 		// FIXME Might want to write an actual PID Loop here
 		if (!((height >= wantedInch - 1) && (height <= wantedInch + 1))) {
 			if (wantedInch > height) {
@@ -87,30 +81,26 @@ public class Lifter extends Subsystem {
 		}
 	}
 
-	
 	public double getHeight() {
 		// FIXME 'radius' is not initialized so this calculation is undefined
 		double height = radius * (enc.get() / 360);
 		return height;
 	}
 
-	
 	public boolean getUp() {
 		return upSwitch.get();
 	}
 
-	
 	public boolean getDown() {
 		return downSwitch.get();
 	}
 
-	
-	/* TODO add PID for encoder
-	 * if the encoder is able to installed on the chain shaft, then 
-	 * the PID setup will resemble the motionMagicPidInit() implementation
-	 * from DriveTrain.java
+	/*
+	 * TODO add PID for encoder if the encoder is able to installed on the chain
+	 * shaft, then the PID setup will resemble the motionMagicPidInit()
+	 * implementation from DriveTrain.java
 	 */
-	
+
 	private void Debug() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "TALON DEBUG\n==================================");
 		Robot.robotLogger.log(Logger.DEBUG, this, "Output Current");
@@ -135,7 +125,6 @@ public class Lifter extends Subsystem {
 		clearStickyFaults();
 	}
 
-	
 	private void clearStickyFaults() {
 		lift.clearStickyFaults(0);
 	}
@@ -151,4 +140,3 @@ public class Lifter extends Subsystem {
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 }
-

@@ -20,13 +20,6 @@ public class LiftEncoderAuto extends Command {
 	double current;
 	
 	
-	/**
-	 * Constructor for a controlling the lifter in auto
-	 * @param speed
-	 *            the motor speed for the lift motor
-	 * @param duration
-	 *            the length of time that the lift will run
-	 */
 	public LiftEncoderAuto(int height) {
 		// Use requires() here to declare subsystem dependencies
 		// requires(Robot.kExampleSubsystem);

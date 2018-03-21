@@ -24,7 +24,9 @@ public class Lifter extends Subsystem {
 	DigitalInput upSwitch;
 	DigitalInput downSwitch;
 
+	// TODO the 'height' class property should be a local method variable  
 	private double height;
+	// TODO the 'radius' class property is used but never set / initialized
 	private double radius;
 
 	
@@ -50,7 +52,10 @@ public class Lifter extends Subsystem {
 	public void driveLift(double power) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:\t" + power);
 		
-		lift.set(ControlMode.PercentOutput, power); // TODO the intake has a scalar for power. does the lift need one also? 
+		// TODO the intake has a scalar for power. does the lift need one also?
+		// TODO test both ends stops as a safety measure
+		
+		lift.set(ControlMode.PercentOutput, power);
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
@@ -68,21 +73,20 @@ public class Lifter extends Subsystem {
 		getHeight();
 		double wantedInch = inches;
 		while (!((height >= wantedInch - 1) && (height <= wantedInch + 1))) {
-			getHeight();
+			// FIXME the return value from getHeight() is never used
 			if (wantedInch > height) {
-				driveLift(.75);
-				// TODO Make motor go up
+				driveLift(.75); // raise lifter
 			}
 			if (wantedInch < height) {
-				driveLift(-.75);
-				// TODO Make motor go down
+				driveLift(-.75); // lower lifter
 			}
 		}
-
 	}
 
 	
 	public double getHeight() {
+		// FIXME 'radius' is not initialized so this calculation is undefined
+		// TODO 'height' should be a local variable; doesn't need to be a class property
 		height = radius * (enc.get() / 360);
 		return height;
 	}

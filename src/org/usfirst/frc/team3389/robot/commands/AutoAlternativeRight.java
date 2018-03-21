@@ -12,37 +12,55 @@ import org.usfirst.frc.team3389.robot.RobotMap;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutoAlternativeRight extends CommandGroup {
-	// private properties here
-	/*
+
+	/**
 	 * This auto command is if we are in left position and in the case of LL where
 	 * the other team can score the switch and we want to score the scale
+	 * 
+	 * @param gameData
+	 *            int to represent field layout
 	 */
-
 	public AutoAlternativeRight(int gameData) {
+
+		// gameDataInt values
+		// 0 = LL*
+		// 1 = LR*
+		// 2 = RL*
+		// 3 = RR*
+
 		// For LL: drive past auto line
 		if (gameData == 0) {
 			// Drives past auto line
 			addSequential(new DriveDistance(101));
-			
-		/* Code to drop cube in left plate of scale, not tested:
+
+			// TODO test Code to drop cube in left plate of scale, not tested:
+
 			// Drives past switch
-			addSequential(new DriveDistance(256));
+			// addSequential(new DriveDistance(256));
+
 			// Turns left 90
-			addSequential(new DriveTurn(.65, -90));
+			// addSequential(new DriveTurn(.65, -90));
+
 			// Lift half height & drive slightly past left plate
-			addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
-			addSequential(new DriveDistance(140));
+			// addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
+			// addSequential(new DriveDistance(140));
+
 			// Lift to full height
-			addSequential(new LiftAuto(RobotMap.LIFT_TIME * 2.25));
+			// addSequential(new LiftAuto(RobotMap.LIFT_TIME * 2.25));
+
 			// Turn right 135 to face corner of left plate
-			addSequential(new DriveTurn(.65, 135));
+			// addSequential(new DriveTurn(.65, 135));
+
 			// Drive forward to left plate
-			addSequential(new DriveDistance(20));
+			// addSequential(new DriveDistance(20));
+
 			// Expel cube
-			addSequential(new IntakeAuto(-1, 2));
+			// addSequential(new IntakeAuto(-1, 2));
+
 			// Drive backwards
-			addSequential(new DriveDistance(-30));
-			// add drop lift command when finished */
+			// addSequential(new DriveDistance(-30));
+
+			// TODO add drop lift command when finished
 		}
 
 		// For RL: drop cube in right plate of switch from side
@@ -73,7 +91,8 @@ public class AutoAlternativeRight extends CommandGroup {
 			addSequential(new IntakeAuto(-1, 2));
 			// Drive backwards
 			addSequential(new DriveDistance(-30));
-			// add drop lift command when finished
+
+			// TODO add drop lift command when finished
 		}
 	}
 }

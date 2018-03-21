@@ -12,9 +12,22 @@ import org.usfirst.frc.team3389.robot.RobotMap;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutoLeft extends CommandGroup {
-	// private properties here
 
+	/**
+	 * Autonomous for left side placement that prioritizes placing in the switch
+	 * over the scale
+	 * 
+	 * @param gameData
+	 *            int that represents field layout
+	 */
 	public AutoLeft(int gameData) {
+
+		// gameDataInt values
+		// 0 = LL*
+		// 1 = LR*
+		// 2 = RL*
+		// 3 = RR*
+
 		// For LL & LR: drop cube in left plate of switch from side
 		if (gameData == 0 || gameData == 1) {
 			// Lift half height & drive to side of switch
@@ -32,26 +45,35 @@ public class AutoLeft extends CommandGroup {
 		else if (gameData == 3) {
 			// Drive past auto line
 			addSequential(new DriveDistance(101));
-			
-			/* Code to drop cube in right plate of scale, not tested:
+
+			// TODO Test code to drop cube in right plate of scale, not tested:
+
 			// Drives past switch
-			addSequential(new DriveDistance(256));
+			// addSequential(new DriveDistance(256));
+
 			// Turns right 90
-			addSequential(new DriveTurn(.65, 90));
+			// addSequential(new DriveTurn(.65, 90));
+
 			// Lift half height & drive slightly past right plate
-			addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
-			addSequential(new DriveDistance(140));
+			// addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
+			// addSequential(new DriveDistance(140));
+
 			// Lift to full height
-			addSequential(new LiftAuto(RobotMap.LIFT_TIME * 2.25));
+			// addSequential(new LiftAuto(RobotMap.LIFT_TIME * 2.25));
+
 			// Turn left 135 to face corner of right plate
-			addSequential(new DriveTurn(.65, -135));
+			// addSequential(new DriveTurn(.65, -135));
+
 			// Drive forward to right plate
-			addSequential(new DriveDistance(20));
+			// addSequential(new DriveDistance(20));
+
 			// Expel cube
-			addSequential(new IntakeAuto(-1, 2));
+			// addSequential(new IntakeAuto(-1, 2));
+
 			// Drive backwards
-			addSequential(new DriveDistance(-30));
-			// add drop lift command when finished */
+			// addSequential(new DriveDistance(-30));
+
+			// TODO add drop lift command when finished
 		}
 
 		// For RL: drop cube in left plate of scale if switch is on right side

@@ -94,8 +94,6 @@ public class Robot extends TimedRobot {
 
 		driverStation = DriverStation.getInstance();
 
-		// FIXME verify this code displays the camera correctly - it may need to be
-		// programmatically added to the dashboard
 		CameraServer.getInstance().startAutomaticCapture();
 		
 		robotScreen.drawTextStringCentered("Hello World!", 0);
@@ -155,11 +153,13 @@ public class Robot extends TimedRobot {
 		driveTrain.rightMaster.setSelectedSensorPosition(0, 0, 0);
 
 		/*
-		 * I would recommend instead of changing the auto command here, have the command
-		 * have the conditionals We will most likely need a Left, Center, and Right auto
-		 * depending on robot placement Having it be decided here will limit you to only
-		 * one auto per situation.
+		 * gameDataInt values
+		 * 	0 = LL*
+		 * 	1 = LR*
+		 * 	2 = RL*
+		 * 	3 = RR*
 		 */
+
 		// This pulls the FMS game data
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
 		if (!gameData.isEmpty()) {

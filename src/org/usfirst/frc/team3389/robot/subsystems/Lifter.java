@@ -23,11 +23,11 @@ public class Lifter extends Subsystem {
 	DigitalInput downSwitch;
 
 	// The Pitch diameter is 1.45 inches
-	private double radius = 1.45 / 2d;
+	private double encoderConversionFactor = (Math.PI*1.45)/1440;
 
 	public Lifter() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
-		lift = new TalonSRX(4); // TODO the specific ID should be in the RobotMap
+		lift = new TalonSRX(RobotMap.LIFT);
 
 		lift.setNeutralMode(com.ctre.phoenix.motorcontrol.NeutralMode.Brake);
 		lift.setInverted(true);
@@ -46,7 +46,7 @@ public class Lifter extends Subsystem {
 	public void driveLift(double power) {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter:\t" + power);
 
-		// TODO the intake has a scalar for power. does the lift need one also?
+		// TODO the intake has a scalar for power. does the lift need one also? no
 		// TODO test both ends stops as a safety measure
 
 		lift.set(ControlMode.PercentOutput, power);
@@ -87,7 +87,7 @@ public class Lifter extends Subsystem {
 	 * @return lift's height in inches
 	 */
 	public double getHeight() {
-		double height = radius * (enc.get() / 360);
+		double height = encoderConversionFactor * enc.get();
 		return height;
 	}
 

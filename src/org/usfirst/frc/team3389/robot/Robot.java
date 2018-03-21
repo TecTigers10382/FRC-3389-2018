@@ -254,6 +254,7 @@ public class Robot extends TimedRobot {
 																										// distance
 		SmartDashboard.putNumber("gyro", driveTrain.driveGyro.getFilteredYaw());
 		SmartDashboard.putNumber("PosValues", driveTrain.getPosition());
+		SmartDashboard.putNumber("Lift Height", lifter.getHeight());
 		robotLogger.log(Logger.DEBUG, this, "auto Periodic exit");
 	}
 
@@ -371,6 +372,8 @@ public class Robot extends TimedRobot {
 
 		SmartDashboard.putBoolean("Down Switch", lifter.getDown());
 		SmartDashboard.putBoolean("Up Switch", lifter.getUp());
+		SmartDashboard.putNumber("Lift Height", lifter.getHeight());
+		
 		// robotScreen.refresh();
 
 		// Display on SmartDashboard

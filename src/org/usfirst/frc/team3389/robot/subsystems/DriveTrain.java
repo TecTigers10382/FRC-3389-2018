@@ -6,7 +6,6 @@ import org.usfirst.frc.team3389.robot.commands.TeliOpDrive;
 import org.usfirst.frc.team3389.robot.ioDevices.MPU9250;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
-import com.ctre.phoenix.motion.MotionProfileStatus;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.Faults;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;

@@ -10,7 +10,6 @@ package org.usfirst.frc.team3389.robot.commands;
 import org.usfirst.frc.team3389.robot.Robot;
 import org.usfirst.frc.team3389.robot.RobotMap;
 import org.usfirst.frc.team3389.robot.subsystems.Climber;
-import org.usfirst.frc.team3389.robot.subsystems.Lifter;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
 import edu.wpi.first.wpilibj.Joystick;

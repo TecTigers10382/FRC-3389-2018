@@ -5,14 +5,18 @@
 * the project.
 */
 
-
 package org.usfirst.frc.team3389.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutoLine extends CommandGroup {
-	// private properties here
-	
+
+	/**
+	 * Autonomous that drives across the auto-run line
+	 * 
+	 * @param gameData
+	 *            int that represents the field layout
+	 */
 	public AutoLine(int gameData) {
 		addSequential(new DriveDistance(90));
 	}

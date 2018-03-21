@@ -12,12 +12,17 @@ import org.usfirst.frc.team3389.robot.RobotMap;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutoMiddle extends CommandGroup {
-	// private properties here
 
+	/**
+	 * Autonomous that places cube in either side of switch starting with right side
+	 * of robot lined up with right side of switch.
+	 * 
+	 * @param gameData
+	 *            int that represents field layout
+	 */
 	public AutoMiddle(int gameData) {
 		// For LL & LR: drop cube in left plate of switch
 		if (gameData == 0 || gameData == 1) {
-			// TODO add description of this autonomous maneuver
 			// Drive forward slightly
 			addSequential(new DriveDistance(20));
 			// Turn left 90

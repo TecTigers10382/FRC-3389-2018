@@ -24,10 +24,8 @@ public class Lifter extends Subsystem {
 	DigitalInput upSwitch;
 	DigitalInput downSwitch;
 
-	// TODO the 'height' class property should be a local method variable  
-	private double height;
-	// TODO the 'radius' class property is used but never set / initialized
-	private double radius;
+	// The Pitch diameter is 1.45 inches
+	private double radius = 1.45/2d;
 
 	
 	public Lifter() {
@@ -69,11 +67,13 @@ public class Lifter extends Subsystem {
 	}
 
 	
-	public void gotoHeight(int inches) {
+	public boolean gotoHeight(int inches) {
 		getHeight();
 		double wantedInch = inches;
+		double height = getHeight();
+		
+		//Might want to write an actual PID Loop here
 		while (!((height >= wantedInch - 1) && (height <= wantedInch + 1))) {
-			// FIXME the return value from getHeight() is never used
 			if (wantedInch > height) {
 				driveLift(.75); // raise lifter
 			}
@@ -81,13 +81,13 @@ public class Lifter extends Subsystem {
 				driveLift(-.75); // lower lifter
 			}
 		}
+		return false;
 	}
 
 	
 	public double getHeight() {
 		// FIXME 'radius' is not initialized so this calculation is undefined
-		// TODO 'height' should be a local variable; doesn't need to be a class property
-		height = radius * (enc.get() / 360);
+		double height = radius * (enc.get() / 360);
 		return height;
 	}
 
@@ -138,10 +138,7 @@ public class Lifter extends Subsystem {
 	}
 
 	/**
-	 * Initializes the DriveTrain's default command to the Drive command.
-	 * The default for this subsystem is the associated teliop command. 
-	 * 
-	 * @see org.usfirst.frc.team3389.robot.commands.Drive
+	 * Initiliazes Lift's Default Command
 	 */
 	protected void initDefaultCommand() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");

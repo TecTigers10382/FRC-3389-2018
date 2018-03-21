@@ -81,8 +81,12 @@ public class Lifter extends Subsystem {
 		}
 	}
 
+	/**
+	 * get's the lift's current height
+	 * 
+	 * @return lift's height in inches
+	 */
 	public double getHeight() {
-		// FIXME 'radius' is not initialized so this calculation is undefined
 		double height = radius * (enc.get() / 360);
 		return height;
 	}

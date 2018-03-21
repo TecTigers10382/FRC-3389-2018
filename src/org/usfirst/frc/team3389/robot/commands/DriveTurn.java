@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * An example command. You can replace me with your own command.
  */
 public class DriveTurn extends Command {
-	double kP = 1.75, kI = 1.0, kD = 0.05; // we wont be using derivative data
+	double kP = 1.75, kI = 1.0, kD = 0.05;
 	double result_speed = 0, integral = 0, derivative = 0, error = 0, previous_error = 0;
 	double target_heading = 0, current = 0, initial = 0, pivot = 0;
 	double target_speed = 0;
@@ -44,14 +44,14 @@ public class DriveTurn extends Command {
 		target_speed = speed;
 		// TODO this will run when the object is made, not when the command runs.
 		// Consider putting this in the initialize method
-		this.turn =turn;
+		this.turn = turn;
 	}
 
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
 		timer = System.nanoTime();
-		
+
 		// get initial heading
 		Robot.driveTrain.driveGyro.resetValues();
 		initial = Robot.driveTrain.driveGyro.getFilteredYaw();
@@ -68,8 +68,8 @@ public class DriveTurn extends Command {
 		// whatever the sign of the incoming angle is right?
 		// ex:
 		// if(target_heading - initial < 0)
-		//		direction = -direction;
-		}
+		// direction = -direction;
+	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
@@ -90,17 +90,18 @@ public class DriveTurn extends Command {
 		// heading to get a value between 0 .. 1
 		result_speed = target_speed * ((kP * error + kI * integral + kD * derivative) / target_heading);
 
-		/*if ((target_heading > initial) && (target_heading <= pivot)) {
-			Robot.driveTrain.driveVelocity((direction * result_speed), -(direction * result_speed));
-		} else {
-			Robot.driveTrain.driveVelocity(-(direction * result_speed), (direction * result_speed));
-		} */
-		if(turn < 0 ) {
+		/*
+		 * if ((target_heading > initial) && (target_heading <= pivot)) {
+		 * Robot.driveTrain.driveVelocity((direction * result_speed), -(direction *
+		 * result_speed)); } else { Robot.driveTrain.driveVelocity(-(direction *
+		 * result_speed), (direction * result_speed)); }
+		 */
+		if (turn < 0) {
 			Robot.driveTrain.driveVelocity((direction * result_speed), -(direction * result_speed));
 		} else {
 			Robot.driveTrain.driveVelocity(-(direction * result_speed), (direction * result_speed));
 		}
-			
+
 		double[] temp = { timer, current, error, integral, derivative, result_speed };
 		SmartDashboard.putNumberArray("turn", temp);
 

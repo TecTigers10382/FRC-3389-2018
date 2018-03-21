@@ -15,14 +15,14 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class LiftPIDAuto extends Command {
 
-	int targetHeight;
+	// change these
 	final double kP = 0, kI = 0, kD = 0;
+
+	double targetHeight;
 	double error, integral, derivative;
 	long lastTime;
 
-	public LiftPIDAuto(int height) {
-		// Use requires() here to declare subsystem dependencies
-		// requires(Robot.kExampleSubsystem);
+	public LiftPIDAuto(double height) {
 		requires(Robot.lifter);
 		targetHeight = height;
 	}
@@ -30,15 +30,14 @@ public class LiftPIDAuto extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-		
+		lastTime = System.currentTimeMillis();
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
-
 	protected void execute() {
 		long currentTime = System.currentTimeMillis();
-		long timeElapsed = currentTime - lastTime;
+		double timeElapsed = ((double) (currentTime - lastTime)) / 1000;
 		lastTime = currentTime;
 
 		double current = Robot.lifter.getHeight();
@@ -57,7 +56,7 @@ public class LiftPIDAuto extends Command {
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		if(Math.abs(Robot.lifter.getHeight()-targetHeight)<.1) {
+		if (Math.abs(Robot.lifter.getHeight() - targetHeight) < .1) {
 			return true;
 		}
 		return false;

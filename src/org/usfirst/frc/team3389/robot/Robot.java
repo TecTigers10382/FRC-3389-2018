@@ -82,14 +82,13 @@ public class Robot extends TimedRobot {
 		// m_chooser.addDefault("Default Auto", new ExampleCommand());
 
 		// these strings are referenced below in autonomousInit()
-		m_chooser.addDefault("Drive Straight", "DriveStraight");
-		m_chooser.addObject("Test Command Group", "TestCommand");
+		m_chooser.addDefault("Line", "Line");
 		m_chooser.addObject("Left", "Left");
 		m_chooser.addObject("Left Switch", "LeftSwitch");
 		m_chooser.addObject("Middle", "Right");
 		m_chooser.addObject("Right", "Middle");
 		m_chooser.addObject("Right Switch","RightSwitch");
-		m_chooser.addObject("Line", "Line");
+		m_chooser.addObject("Test Command Group", "TestCommand");
 
 		SmartDashboard.putData("Auto mode", m_chooser);
 

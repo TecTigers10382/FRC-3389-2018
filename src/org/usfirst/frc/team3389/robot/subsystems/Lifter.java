@@ -72,16 +72,19 @@ public class Lifter extends Subsystem {
 		double wantedInch = inches;
 		double height = getHeight();
 		
-		//Might want to write an actual PID Loop here
-		while (!((height >= wantedInch - 1) && (height <= wantedInch + 1))) {
+		// FIXME Might want to write an actual PID Loop here
+		if (!((height >= wantedInch - 1) && (height <= wantedInch + 1))) {
 			if (wantedInch > height) {
 				driveLift(.75); // raise lifter
 			}
 			if (wantedInch < height) {
 				driveLift(-.75); // lower lifter
 			}
+			return false;
+		} else {
+			stop();
+			return true;
 		}
-		return false;
 	}
 
 	

@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class LiftPIDAuto extends Command {
 
 	// change these
-	final double kP = 0, kI = 0, kD = 0;
+	final double kP = 0.1, kI = 0, kD = 0;
 
 	double targetHeight;
 	double error, integral, derivative;
@@ -50,7 +50,7 @@ public class LiftPIDAuto extends Command {
 
 		double power = kP * error + kI * integral + kD * derivative;
 
-		Robot.lifter.driveLift(power);
+		Robot.lifter.driveLift(-power);
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

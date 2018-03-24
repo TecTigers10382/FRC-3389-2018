@@ -80,7 +80,21 @@ public class TeliOpDrive extends Command {
 			right = right/2;
 		}
 		
+		// TODO test logarithmic drive
+		/*final double constant = 5;
+		final double power = Math.log(constant*2)/Math.log(constant);
 		
+		if(left>.1) {
+			left = Math.pow((((left-.1)*(1.0/0.9))*constant), power)/(constant*2);
+		} else if(left<-.1) {
+			left = -Math.pow((((Math.abs(left)-.1)*(1.0/0.9))*constant), power)/(constant*2);
+		}
+		
+		if(right>.1) {
+			right = Math.pow((((right-.1)*(1.0/0.9))*constant), power)/(constant*2);
+		} else if (right<-.1) {
+			right = -Math.pow((((Math.abs(right)-.1)*(1.0/0.9))*constant), power)/(constant*2);
+		}*/
 		
 		drive.tankDrive(-left, -right);
 		

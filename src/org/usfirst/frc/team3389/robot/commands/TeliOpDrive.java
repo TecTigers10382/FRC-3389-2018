@@ -8,6 +8,7 @@
 package org.usfirst.frc.team3389.robot.commands;
 
 import org.usfirst.frc.team3389.robot.Robot;
+import org.usfirst.frc.team3389.robot.RobotMap;
 import org.usfirst.frc.team3389.robot.subsystems.DriveTrain;
 import org.usfirst.frc.team3389.robot.utils.Logger;
 
@@ -35,19 +36,19 @@ public class TeliOpDrive extends Command {
 	public TeliOpDrive() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 		// perform one-time setup here
-		
+
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.driveTrain);
 		drive = Robot.driveTrain;
 
 		driveStick = Robot.operatorControllers.getDriverJoystick();
-		
+
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
 	/**
 	 * initialize is called each time the command is going to be used
-	 *  
+	 * 
 	 * @see org.usfirst.frc.team3389.robot.OIs
 	 */
 	@Override
@@ -69,36 +70,44 @@ public class TeliOpDrive extends Command {
 
 		double left = driveStick.getRawAxis(5); // TODO the axis used for drive should be defined in RobotMap
 		double right = driveStick.getRawAxis(1); // TODO the axis used for drive should be defined in RobotMap
-//CHANGE THIS BACK TO ONE
+		// CHANGE THIS BACK TO ONE
 		if (Math.abs(left) < .1) // TODO the joystick 'deadzone' should be defined in RobotMap
 			left = 0;
 		if (Math.abs(right) < .1) // TODO the joystick 'deadzone' should be defined in RobotMap
 			right = 0;
-		
-		if(Robot.lifter.getUp()==true) {
-			left = left/2;
-			right = right/2;
+
+		if (Robot.lifter.getUp() == true) {
+			left = left / 2;
+			right = right / 2;
 		}
-		
+
 		// TODO test logarithmic drive
-		/*final double constant = 5;
-		final double power = Math.log(constant*2)/Math.log(constant);
+		/*
+		 * final double constant = 5; final double power =
+		 * Math.log(constant*2)/Math.log(constant);
+		 * 
+		 * if(left>.1) { left = Math.pow((((left-.1)*(1.0/0.9))*constant),
+		 * power)/(constant*2); } else if(left<-.1) { left =
+		 * -Math.pow((((Math.abs(left)-.1)*(1.0/0.9))*constant), power)/(constant*2); }
+		 * 
+		 * if(right>.1) { right = Math.pow((((right-.1)*(1.0/0.9))*constant),
+		 * power)/(constant*2); } else if (right<-.1) { right =
+		 * -Math.pow((((Math.abs(right)-.1)*(1.0/0.9))*constant), power)/(constant*2); }
+		 */
+
+		// TODO Test lift slow down capability
+		/*
+		final double slow = .3;
 		
-		if(left>.1) {
-			left = Math.pow((((left-.1)*(1.0/0.9))*constant), power)/(constant*2);
-		} else if(left<-.1) {
-			left = -Math.pow((((Math.abs(left)-.1)*(1.0/0.9))*constant), power)/(constant*2);
+		if (Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT > 0
+				&& Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT <= 1.1) {
+			left = left * ((Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT) * (1-slow) + slow);
+			right = right * ((Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT) * (1-slow) + slow);
 		}
-		
-		if(right>.1) {
-			right = Math.pow((((right-.1)*(1.0/0.9))*constant), power)/(constant*2);
-		} else if (right<-.1) {
-			right = -Math.pow((((Math.abs(right)-.1)*(1.0/0.9))*constant), power)/(constant*2);
-		}*/
-		
+		*/
+
 		drive.tankDrive(-left, -right);
-		
-		
+
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 
 	}

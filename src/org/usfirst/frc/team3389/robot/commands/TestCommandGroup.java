@@ -8,8 +8,6 @@
 
 package org.usfirst.frc.team3389.robot.commands;
 
-import org.usfirst.frc.team3389.robot.RobotMap;
-
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class TestCommandGroup extends CommandGroup {

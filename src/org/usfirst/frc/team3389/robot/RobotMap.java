@@ -69,6 +69,8 @@ public class RobotMap {
 
 	public static final int CLIMBER = 0;
 	
+	//TODO find max height
+	public static final double MAX_HEIGHT = 0;
 	
 	
 	// For example to map the left and right motors, you could define the

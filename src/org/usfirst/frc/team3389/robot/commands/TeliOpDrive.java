@@ -79,6 +79,9 @@ public class TeliOpDrive extends Command {
 			left = left/2;
 			right = right/2;
 		}
+		
+		
+		
 		drive.tankDrive(-left, -right);
 		
 		

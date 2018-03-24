@@ -12,7 +12,8 @@ import org.usfirst.frc.team3389.robot.RobotMap;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class AutoLeft extends CommandGroup {
-
+	// 19.8" for switch
+	// 41.1" for scale
 	/**
 	 * Autonomous for left side placement that prioritizes placing in the switch
 	 * over the scale

@@ -18,12 +18,12 @@ public class Lifter extends Subsystem {
 	public final TalonSRX lift;
 	StickyFaults liftSFaults;
 	Faults liftFaults;
-	Encoder enc;
+	public Encoder enc;
 	DigitalInput upSwitch;
 	DigitalInput downSwitch;
 
 	// The Pitch diameter is 1.45 inches
-	private double encoderConversionFactor = (Math.PI*1.45)/1440;
+	private double encoderConversionFactor = (34.8125)/2782.0;
 
 	public Lifter() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
@@ -87,7 +87,7 @@ public class Lifter extends Subsystem {
 	 * @return lift's height in inches
 	 */
 	public double getHeight() {
-		double height = encoderConversionFactor * enc.get();
+		double height = encoderConversionFactor*enc.get();
 		return height;
 	}
 
@@ -142,5 +142,11 @@ public class Lifter extends Subsystem {
 		setDefaultCommand(new TeliOpLift());
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
+	}
+
+	public void resetEnc() {
+		enc.reset();
+		// TODO Auto-generated method stub
+		
 	}
 }

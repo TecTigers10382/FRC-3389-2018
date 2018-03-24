@@ -44,9 +44,9 @@ public class OperatorInterface {
 		*/
 	 		
 		if (intakeSpinRight != null)
-			intakeSpinRight.whileHeld(new TeliOpIntakeSpin(-.75));
+			intakeSpinRight.whileHeld(new TeliOpIntakeSpin(.75));
 		if(intakeSpinLeft != null)
-			intakeSpinLeft.whileHeld(new TeliOpIntakeSpin(.75));
+			intakeSpinLeft.whileHeld(new TeliOpIntakeSpin(-.75));
 	}
 
 	/**

@@ -70,7 +70,7 @@ public class TeliOpIntake extends Command {
 		double power = intakeStick.getRawAxis(1);
 
 		if (Math.abs(power) < .1) // TODO the deadzone should be define in RobotMap
-			intake.driveSeperate(-.3, 0);
+			intake.driveSeperate(.2, 0);
 
 		else
 			intake.driveBoth(power / 2); // TODO the scaler for the stick should be defined somewhere

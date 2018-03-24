@@ -9,6 +9,7 @@ package org.usfirst.frc.team3389.robot.commands;
 import org.usfirst.frc.team3389.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Moves lift to given height using PID loop
@@ -16,7 +17,7 @@ import edu.wpi.first.wpilibj.command.Command;
 public class LiftPIDAuto extends Command {
 
 	// change these
-	final double kP = 0.1, kI = 0, kD = 0;
+	final double kP = .01, kI = 0, kD = 0;
 
 	double targetHeight;
 	double error, integral, derivative;
@@ -30,6 +31,7 @@ public class LiftPIDAuto extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
+		Robot.lifter.resetEnc();
 		lastTime = System.currentTimeMillis();
 	}
 
@@ -44,12 +46,12 @@ public class LiftPIDAuto extends Command {
 
 		double lastError = error;
 		error = targetHeight - current;
-
+		SmartDashboard.putNumber("error", error);
 		integral += error * timeElapsed;
 		derivative = (error - lastError) / timeElapsed;
 
 		double power = kP * error + kI * integral + kD * derivative;
-
+		SmartDashboard.putNumber("test", power);
 		Robot.lifter.driveLift(-power);
 	}
 

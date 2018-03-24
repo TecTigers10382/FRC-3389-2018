@@ -85,8 +85,8 @@ public class Robot extends TimedRobot {
 		m_chooser.addDefault("Line", "Line");
 		m_chooser.addObject("Left", "Left");
 		m_chooser.addObject("Left Switch", "LeftSwitch");
-		m_chooser.addObject("Middle", "Right");
-		m_chooser.addObject("Right", "Middle");
+		m_chooser.addObject("Middle", "Middle");
+		m_chooser.addObject("Right", "Right");
 		m_chooser.addObject("Right Switch","RightSwitch");
 		m_chooser.addObject("Test Command Group", "TestCommand");
 

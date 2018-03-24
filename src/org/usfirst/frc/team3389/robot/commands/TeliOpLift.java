@@ -76,6 +76,14 @@ public class TeliOpLift extends Command {
 				power=power/4;
 			}
 			
+			if(Robot.lifter.getUp()&&power<0) {
+				power = -.12;
+			} 
+			
+			if(Robot.lifter.getDown() == false &&power>0) {
+				power = 0;
+			}
+			
 			
 			lifter.driveLift(power);
 		

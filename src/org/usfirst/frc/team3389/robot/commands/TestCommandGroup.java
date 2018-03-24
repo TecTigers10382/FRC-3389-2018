@@ -19,6 +19,6 @@ public class TestCommandGroup extends CommandGroup {
 //		addSequential(new IntakeAuto(.5, 2));
 //		addSequential(new LiftAuto(1.5));
 		
-		addSequential(new LiftPIDAuto(19.8));
+		addSequential(new DriveTurn(.05, -90));
 	}
 }

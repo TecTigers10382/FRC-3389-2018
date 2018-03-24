@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class LiftPIDAuto extends Command {
 
 	// change these
-	final double kP = .01, kI = 0, kD = 0;
+	final double kP = .75, kI = 0.075, kD = 0;
 
 	double targetHeight;
 	double error, integral, derivative;

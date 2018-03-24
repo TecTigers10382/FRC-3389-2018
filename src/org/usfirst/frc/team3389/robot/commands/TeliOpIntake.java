@@ -73,7 +73,7 @@ public class TeliOpIntake extends Command {
 			intake.driveSeperate(.2, 0);
 
 		else
-			intake.driveBoth(power / 2); // TODO the scaler for the stick should be defined somewhere
+			intake.driveBoth(power); // TODO the scaler for the stick should be defined somewhere
 
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 

@@ -45,6 +45,8 @@ public class AutoMiddle extends CommandGroup {
 			addSequential(new DriveDistance(101));
 			// Expel cube
 			addSequential(new IntakeAuto(-1, 2));
+			// Drive backwards
+			addSequential(new DriveDistance(-20));
 		}
 	}
 }

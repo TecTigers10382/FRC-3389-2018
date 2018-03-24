@@ -80,7 +80,7 @@ public class AutoAlternativeLeft extends CommandGroup {
 		else if (gameData == 0 || gameData == 2) {
 			// Lift half height & drive forward to side of scale
 			addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
-			addSequential(new DriveDistance(298));
+			addSequential(new DriveDistance(298+6));
 			// Lift full height
 			addSequential(new LiftAuto(RobotMap.LIFT_TIME * 2.25));
 			// Turn right to face scale

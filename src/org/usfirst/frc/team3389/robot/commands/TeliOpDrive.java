@@ -27,6 +27,9 @@ public class TeliOpDrive extends Command {
 
 	Joystick driveStick;
 	DriveTrain drive;
+	
+	final double constant = 5;
+	final double power = Math.log(constant * 2) / Math.log(constant); 
 
 	/**
 	 * Constructor gains control of the DriveTrain subsystem of the robot.
@@ -82,29 +85,29 @@ public class TeliOpDrive extends Command {
 		}
 
 		// TODO test logarithmic drive
-		/*
-		 * final double constant = 5; final double power =
-		 * Math.log(constant*2)/Math.log(constant);
-		 * 
-		 * if(left>.1) { left = Math.pow((((left-.1)*(1.0/0.9))*constant),
-		 * power)/(constant*2); } else if(left<-.1) { left =
-		 * -Math.pow((((Math.abs(left)-.1)*(1.0/0.9))*constant), power)/(constant*2); }
-		 * 
-		 * if(right>.1) { right = Math.pow((((right-.1)*(1.0/0.9))*constant),
-		 * power)/(constant*2); } else if (right<-.1) { right =
-		 * -Math.pow((((Math.abs(right)-.1)*(1.0/0.9))*constant), power)/(constant*2); }
-		 */
+
+		if (left > .1) {
+			left = Math.pow((((left - .1) * (1.0 / 0.9)) * constant), power) / (constant * 2);
+		} else if (left < -.1) {
+			left = -Math.pow((((Math.abs(left) - .1) * (1.0 / 0.9)) * constant), power) / (constant * 2);
+		}
+
+		if (right > .1) {
+			right = Math.pow((((right - .1) * (1.0 / 0.9)) * constant), power) / (constant * 2);
+		} else if (right < -.1) {
+			right = -Math.pow((((Math.abs(right) - .1) * (1.0 / 0.9)) * constant), power) / (constant * 2);
+		}
 
 		// TODO Test lift slow down capability
 		/*
-		final double slow = .3;
-		
-		if (Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT > 0
-				&& Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT <= 1.1) {
-			left = left * ((Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT) * (1-slow) + slow);
-			right = right * ((Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT) * (1-slow) + slow);
-		}
-		*/
+		 * final double slow = .3;
+		 * 
+		 * if (Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT > 0 &&
+		 * Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT <= 1.1) { left = left *
+		 * ((Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT) * (1-slow) + slow); right =
+		 * right * ((Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT) * (1-slow) + slow);
+		 * }
+		 */
 
 		drive.tankDrive(-left, -right);
 

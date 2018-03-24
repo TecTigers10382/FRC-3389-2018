@@ -8,17 +8,37 @@
 
 package org.usfirst.frc.team3389.robot.commands;
 
+import org.usfirst.frc.team3389.robot.RobotMap;
+
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 public class TestCommandGroup extends CommandGroup {
 	// private properties here
 	
 	public TestCommandGroup() {
-		// drive a rectangle of size 10 x 2
-//		addSequential(new DriveTurn(.5, -90));
-//		addSequential(new IntakeAuto(.5, 2));
-//		addSequential(new LiftAuto(1.5));
-		
-		addSequential(new DriveTurn(.05, -90));
+		// Drives past switch
+					 addSequential(new DriveDistance(210));
+
+					// Turns left 90
+					 addSequential(new DriveTurn(.65, -90));
+
+					// Lift half height & drive slightly past left plate
+					 addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
+					 addSequential(new DriveDistance(190));
+
+					// Lift to full height
+					 addSequential(new LiftAuto(RobotMap.LIFT_TIME * 2.25));
+
+					// Turn right 135 to face corner of left plate
+					 addSequential(new DriveTurn(.65, 90));
+
+					// Drive forward to left plate
+					 addSequential(new DriveDistance(36));
+
+					// Expel cube
+					 addSequential(new IntakeAuto(-1, 2));
+
+					// Drive backwards
+					 addSequential(new DriveDistance(-30));
 	}
 }

@@ -36,7 +36,7 @@ public class AutoAlternativeLeft extends CommandGroup {
 			// Turn right to face switch
 			addSequential(new DriveTurn(.65, 90));
 			// Drive to switch
-			addSequential(new DriveDistance(20));
+			addSequential(new DriveDistance(20-3));
 			// Expel cube
 			addSequential(new IntakeAuto(-1, 2));
 		}
@@ -80,7 +80,7 @@ public class AutoAlternativeLeft extends CommandGroup {
 		else if (gameData == 0 || gameData == 2) {
 			// Lift half height & drive forward to side of scale
 			addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
-			addSequential(new DriveDistance(298+6));
+			addSequential(new DriveDistance(298+12));
 			// Lift full height
 			addSequential(new LiftAuto(RobotMap.LIFT_TIME * 2.25));
 			// Turn right to face scale

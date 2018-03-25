@@ -84,6 +84,9 @@ public class TeliOpLift extends Command {
 				power = 0;
 			}
 			
+			if(power<-.121) {
+				power = power/1.5;
+			}
 			
 			lifter.driveLift(power);
 		

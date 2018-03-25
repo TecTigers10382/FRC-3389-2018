@@ -73,7 +73,9 @@ public class TeliOpClimb extends Command {
 		
 		if(climbStick.getRawButton(1)) {
 			speed = 1;
-		} else { 
+		} else if (climbStick.getRawButton(7) && climbStick.getRawButton(8)) {
+			speed = -1;
+		} else {
 			speed = 0;
 		}
 		

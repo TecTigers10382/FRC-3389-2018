@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * An example command. You can replace me with your own command.
  */
 public class DriveTurn extends Command {
-	double kP = 1.75, kI = 1, kD = 0.05;
+	double kP = 1.8, kI = 1, kD = 0.05;
 	double result_speed = 0, integral = 0, derivative = 0, error = 0, previous_error = 0;
 	double target_heading = 0, current = 0, initial = 0, pivot = 0;
 	double target_speed = 0;

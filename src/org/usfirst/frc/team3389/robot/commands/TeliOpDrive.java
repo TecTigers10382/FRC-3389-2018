@@ -27,9 +27,9 @@ public class TeliOpDrive extends Command {
 
 	Joystick driveStick;
 	DriveTrain drive;
-	
+
 	final double constant = 5;
-	final double power = Math.log(constant * 2) / Math.log(constant); 
+	final double power = Math.log(constant * 2) / Math.log(constant);
 
 	/**
 	 * Constructor gains control of the DriveTrain subsystem of the robot.
@@ -99,15 +99,14 @@ public class TeliOpDrive extends Command {
 		}
 
 		// TODO Test lift slow down capability
-		/*
-		 * final double slow = .3;
-		 * 
-		 * if (Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT > 0 &&
-		 * Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT <= 1.1) { left = left *
-		 * ((Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT) * (1-slow) + slow); right =
-		 * right * ((Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT) * (1-slow) + slow);
-		 * }
-		 */
+
+		final double slow = .5;
+
+		if (Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT > 0
+				&& Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT <= 1.1) {
+			left = left - (left * ((Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT) * (1 - slow)));
+			right = right - (right * ((Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT) * (1 - slow)));
+		}
 
 		drive.tankDrive(-left, -right);
 

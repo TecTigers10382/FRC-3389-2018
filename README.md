@@ -18,14 +18,10 @@ It can intake!
 
 ### \*NEW!\* Climb
 
-**It can climb!**
+### Climbing
 
-## WIP:
-
-~~### Climbing~~
-
-~~Still needs a physical climber subsystem.~~
+It can climb!
 
 ### Autonomous
 
-Currently working on putting it together.
+It works!

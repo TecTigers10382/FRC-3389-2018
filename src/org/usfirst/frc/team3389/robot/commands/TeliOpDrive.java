@@ -71,12 +71,12 @@ public class TeliOpDrive extends Command {
 	protected void execute() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 
-		double left = driveStick.getRawAxis(5); // TODO the axis used for drive should be defined in RobotMap
-		double right = driveStick.getRawAxis(1); // TODO the axis used for drive should be defined in RobotMap
-		// CHANGE THIS BACK TO ONE
-		if (Math.abs(left) < .1) // TODO the joystick 'deadzone' should be defined in RobotMap
+		double left = driveStick.getRawAxis(RobotMap.LEFT_DRIVE_STICK);
+		double right = driveStick.getRawAxis(RobotMap.RIGHT_DRIVE_STICK);
+
+		if (Math.abs(left) < RobotMap.DEADZONE)
 			left = 0;
-		if (Math.abs(right) < .1) // TODO the joystick 'deadzone' should be defined in RobotMap
+		if (Math.abs(right) < RobotMap.DEADZONE)
 			right = 0;
 
 		if (Robot.lifter.getUp() == true) {
@@ -84,7 +84,7 @@ public class TeliOpDrive extends Command {
 			right = right / 2;
 		}
 
-		// TODO test logarithmic drive
+		// Logarithmic Drive
 
 		if (left > .1) {
 			left = Math.pow((((left - .1) * (1.0 / 0.9)) * constant), power) / (constant * 2);
@@ -98,7 +98,7 @@ public class TeliOpDrive extends Command {
 			right = -Math.pow((((Math.abs(right) - .1) * (1.0 / 0.9)) * constant), power) / (constant * 2);
 		}
 
-		// TODO Test lift slow down capability
+		// Slows down drive as lift goes up
 
 		final double slow = .5;
 

@@ -73,7 +73,7 @@ public class TeliOpLift extends Command {
 			power = -.12;
 			
 			if(power>0) {
-				power=power/4;
+				power=power/2; // used to be divided by 4
 			}
 			
 			if(Robot.lifter.getUp()&&power<0) {
@@ -85,7 +85,7 @@ public class TeliOpLift extends Command {
 			}
 			
 			if(power<-.121) {
-				power = power/1.5;
+				power = power; // used to be divided by 1.5
 			}
 			
 			lifter.driveLift(power);

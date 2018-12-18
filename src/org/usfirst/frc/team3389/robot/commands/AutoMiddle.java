@@ -23,8 +23,10 @@ public class AutoMiddle extends CommandGroup {
 	public AutoMiddle(int gameData) {
 		// For LL & LR: drop cube in left plate of switch
 		if (gameData == 0 || gameData == 1) {
+			// Lift slightly
+			addSequential(new LiftAuto(.5));
 			// Drive forward slightly
-			addSequential(new DriveDistance(20));
+			addSequential(new DriveDistance(20));;
 			// Turn left 90
 			addSequential(new DriveTurn(.65, -90));
 			// Lift half height & drive forward

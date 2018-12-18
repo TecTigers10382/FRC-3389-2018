@@ -71,8 +71,9 @@ public class TeliOpDrive extends Command {
 	protected void execute() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
 
-		double left = driveStick.getRawAxis(RobotMap.LEFT_DRIVE_STICK);
-		double right = driveStick.getRawAxis(RobotMap.RIGHT_DRIVE_STICK);
+	
+		double left = -driveStick.getRawAxis(RobotMap.LEFT_DRIVE_STICK);
+		double right = -driveStick.getRawAxis(RobotMap.RIGHT_DRIVE_STICK);
 
 		if (Math.abs(left) < RobotMap.DEADZONE)
 			left = 0;
@@ -83,9 +84,21 @@ public class TeliOpDrive extends Command {
 			left = left / 2;
 			right = right / 2;
 		}
-
+		
+		
+		//turbo button forward
+		if(driveStick.getRawButton(4)) {
+			left = 1;
+			right = 1;
+		}
+		//turbo button backwards
+		if(driveStick.getRawButton(1)) {
+			left = -1;
+			right = -1;
+		}
+			
 		// Logarithmic Drive
-
+		
 		if (left > .1) {
 			left = Math.pow((((left - .1) * (1.0 / 0.9)) * constant), power) / (constant * 2);
 		} else if (left < -.1) {
@@ -97,19 +110,21 @@ public class TeliOpDrive extends Command {
 		} else if (right < -.1) {
 			right = -Math.pow((((Math.abs(right) - .1) * (1.0 / 0.9)) * constant), power) / (constant * 2);
 		}
+		
+		
 
 		// Slows down drive as lift goes up
-
-		final double slow = .5;
+		
+		final double slow = .2; //used to be .5
 
 		if (Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT > 0
 				&& Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT <= 1.1) {
 			left = left - (left * ((Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT) * (1 - slow)));
 			right = right - (right * ((Robot.lifter.getHeight() / RobotMap.MAX_HEIGHT) * (1 - slow)));
 		}
-
+	
 		drive.tankDrive(-left, -right);
-
+		
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 
 	}

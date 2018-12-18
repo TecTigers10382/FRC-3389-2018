@@ -42,7 +42,7 @@ public class RobotMap {
 
 	public final static int CURRENT_LIMIT = 38;
 
-	public final static double LIFT_TIME = 15.5 / 8;
+	public final static double LIFT_TIME = 15.5 / 6; // 15.5 / 8
 
 	public static final int CLIMBER = 0;
 
@@ -52,7 +52,7 @@ public class RobotMap {
 	public static final double MAX_HEIGHT = 42.8;
 
 	public static final double DEADZONE = 0.1;
-	public static final int LEFT_DRIVE_STICK = 5, RIGHT_DRIVE_STICK = 1;
+	public static final int LEFT_DRIVE_STICK = 1 /*5*/, RIGHT_DRIVE_STICK = 4 /*1*/;
 
 	// For example to map the left and right motors, you could define the
 	// following variables to use with your DriveTrain subsystem.

@@ -58,9 +58,6 @@ public class DriveTrain extends Subsystem {
 		// encoderInit();
 		motionMagicPidInit();
 
-		// FIXME This will overwrite your motionmagic profile
-		// velocityPidInit();
-
 		driveGyro = new MPU9250(); // this will take approximately 10 seconds to initialize and calibrate
 		driveGyro.startUpdatingThread();
 

@@ -75,7 +75,7 @@ public class AutoAlternativeLeft extends CommandGroup {
 
 			// add drop lift command when finished */
 		}
-
+		/*
 		// For LL & RL: drop cube in left plate of scale if switch is on right side
 		else if (gameData == 0 || gameData == 2) {
 			// Lift half height & drive forward to side of scale
@@ -91,7 +91,8 @@ public class AutoAlternativeLeft extends CommandGroup {
 			addSequential(new IntakeAuto(-1, 2));
 			// Drive backwards
 			addSequential(new DriveDistance(-30));
+			
+			*/
 			// TODO add lower lift command when finished
 		}
 	}
-}

@@ -83,7 +83,7 @@ public class AutoLeft extends CommandGroup {
 			addParallel(new LiftAuto(RobotMap.LIFT_TIME * 2));
 			addSequential(new DriveDistance(298+12));
 			// Lift full height
-			addSequential(new LiftAuto(RobotMap.LIFT_TIME * 2.25));
+			addSequential(new LiftAuto(RobotMap.LIFT_TIME * 2.25)); // used to be 2.25
 			// Turn right to face scale
 			addSequential(new DriveTurn(.65, 90));
 			// Drive to scale plate

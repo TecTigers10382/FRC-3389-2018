@@ -61,26 +61,6 @@ public class Lifter extends Subsystem {
 		Robot.robotLogger.log(Logger.DEBUG, this, "exit");
 	}
 
-	public boolean gotoHeight(int inches) {
-		getHeight();
-		double wantedInch = inches;
-		double height = getHeight();
-
-		// FIXME Might want to write an actual PID Loop here
-		if (!((height >= wantedInch - 1) && (height <= wantedInch + 1))) {
-			if (wantedInch > height) {
-				driveLift(.75); // raise lifter
-			}
-			if (wantedInch < height) {
-				driveLift(-.75); // lower lifter
-			}
-			return false;
-		} else {
-			stop();
-			return true;
-		}
-	}
-
 	/**
 	 * get's the lift's current height
 	 * 

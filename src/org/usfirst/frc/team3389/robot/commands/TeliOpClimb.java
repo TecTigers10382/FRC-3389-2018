@@ -31,7 +31,7 @@ public class TeliOpClimb extends Command {
 	/**
 	 * Constructor gains control of the Intake subsystem of the robot.
 	 * 
-	 * @see org.usfirst.frc.team3389.robot.subsystems.Intake
+	 * @see org.usfirst.frc.team3389.robot.subsystems.In  take
 	 */
 	public TeliOpClimb() {
 		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
@@ -61,14 +61,14 @@ public class TeliOpClimb extends Command {
 	}
 
 	/**
-	 * As the command is run, updates the joystick values and controls the
+	 * As the command is run, updates the joystick values nd controls the
 	 * Intake with them.
 	 * 
 	 * @see org.usfirst.frc.team3389.robot.subsystems.Intake
 	 */
 	@Override
 	protected void execute() {
-		Robot.robotLogger.log(Logger.DEBUG, this, "enter");
+		Robot.robotLogger.log(Logger.DEBUG, this, "enter"); 
 		double speed;
 		
 		if(climbStick.getRawButton(1)) {

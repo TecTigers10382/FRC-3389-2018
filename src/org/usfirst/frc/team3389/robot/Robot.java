@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
 		m_chooser.addObject("Left Switch", "LeftSwitch");
 		m_chooser.addObject("Middle", "Middle");
 		m_chooser.addObject("Right", "Right");
-		m_chooser.addObject("Right Switch","RightSwitch");
+		m_chooser.addObject("Right Switch", "RightSwitch");
 		m_chooser.addObject("Test Command Group", "TestCommand");
 
 		SmartDashboard.putData("Auto mode", m_chooser);
@@ -95,7 +95,7 @@ public class Robot extends TimedRobot {
 		driverStation = DriverStation.getInstance();
 
 		CameraServer.getInstance().startAutomaticCapture();
-		
+
 		robotScreen.drawTextStringCentered("Hello World!", 0);
 
 		robotLogger.log(Logger.DEBUG, this, "exit");
@@ -153,11 +153,7 @@ public class Robot extends TimedRobot {
 		driveTrain.rightMaster.setSelectedSensorPosition(0, 0, 0);
 
 		/*
-		 * gameDataInt values
-		 * 	0 = LL*
-		 * 	1 = LR*
-		 * 	2 = RL*
-		 * 	3 = RR*
+		 * gameDataInt values 0 = LL* 1 = LR* 2 = RL* 3 = RR*
 		 */
 
 		// This pulls the FMS game data
@@ -293,7 +289,7 @@ public class Robot extends TimedRobot {
 
 		// it's probably confusing to mix pixel positioning and character/line
 		// positioning
-		 robotScreen.drawTextLine(String.format("Heading: %+5.1f", driveTrain.driveGyro.getFilteredYaw()), 5);
+		robotScreen.drawTextLine(String.format("Heading: %+5.1f", driveTrain.driveGyro.getFilteredYaw()), 5);
 		// SmartDashboard.putNumber("Heading: ", angle);
 
 		// SmartDashboard.putBoolean("Up switch", lifter.getUp());
@@ -345,17 +341,14 @@ public class Robot extends TimedRobot {
 		// DriveTrain.leftSlave.getMotorOutputVoltage());
 		// SmartDashboard.putNumber("OutputVoltage RightSlave",
 		// DriveTrain.rightSlave.getMotorOutputVoltage());
-		SmartDashboard.putNumber("OutputCurrent LeftMaster",
-		driveTrain.leftMaster.getOutputCurrent());
-		SmartDashboard.putNumber("OutputCurrent RightMaster",
-		driveTrain.rightMaster.getOutputCurrent());
-		SmartDashboard.putNumber("OutputCurrent LeftSlave",
-		driveTrain.leftSlave.getOutputCurrent());
-		SmartDashboard.putNumber("OutputCurrent RightSlave",
-		driveTrain.rightSlave.getOutputCurrent());
+		SmartDashboard.putNumber("OutputCurrent LeftMaster", driveTrain.leftMaster.getOutputCurrent());
+		SmartDashboard.putNumber("OutputCurrent RightMaster", driveTrain.rightMaster.getOutputCurrent());
+		SmartDashboard.putNumber("OutputCurrent LeftSlave", driveTrain.leftSlave.getOutputCurrent());
+		SmartDashboard.putNumber("OutputCurrent RightSlave", driveTrain.rightSlave.getOutputCurrent());
 		SmartDashboard.putNumber("gyro", driveTrain.driveGyro.getFilteredYaw());
-		
-		// robotScreen.updateTextLine(String.format("Heading: %06.2f", driveTrain.driveGyro.getFilteredYaw()), 6);
+
+		// robotScreen.updateTextLine(String.format("Heading: %06.2f",
+		// driveTrain.driveGyro.getFilteredYaw()), 6);
 
 		SmartDashboard.putNumber("LeftPosition", driveTrain.leftMaster.getSelectedSensorPosition(0)); // TODO should the
 																										// dashboard
@@ -373,7 +366,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putBoolean("Down Switch", lifter.getDown());
 		SmartDashboard.putBoolean("Up Switch", lifter.getUp());
 		SmartDashboard.putNumber("Lift Height", lifter.getHeight());
-		
+
 		// robotScreen.refresh();
 
 		// Display on SmartDashboard
